@@ -5,7 +5,7 @@ networks:
         external: true
 services:
   fliji-sockets:
-    container_name: fliji_sockets
+    container_name: fliji-sockets
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -17,7 +17,7 @@ services:
     #   TZ: Europe/Moscow
 
   fliji-sockets-api:
-    container_name: fliji_sockets_api
+    container_name: fliji-sockets-api
     build:
       context: .
       dockerfile: ./Dockerfile

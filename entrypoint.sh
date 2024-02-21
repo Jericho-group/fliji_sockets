@@ -1,3 +1,3 @@
-#!/bin sh
+#!/bin/sh
 
-pdm run socketio-prod
+pdm run serve-prod

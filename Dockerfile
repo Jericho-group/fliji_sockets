@@ -1,6 +1,6 @@
 # --- Build Stage ---
 FROM python:3.10-slim as builder
-WORKDIR /build
+WORKDIR /app
 
 # Install system dependencies required for compiling
 RUN apt-get update && \
@@ -31,7 +31,7 @@ RUN pip install -U pip setuptools wheel
 RUN pip install pdm==2.12.3
 
 # Copy installed packages from the builder stage
-COPY --from=builder /build/.venv /app/.venv
+COPY --from=builder /app/.venv /app/.venv
 
 # Copy the rest of your application code
 COPY . .

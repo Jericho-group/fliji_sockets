@@ -1,0 +1,30 @@
+[tool.pdm.scripts]
+_.env_file = ".env"
+socketio = 'uvicorn fliji_sockets.socketio:app --host 0.0.0.0 --port 8097 --reload'
+socketio-prod = 'uvicorn fliji_sockets.socketio:app --proxy-headers --host 0.0.0.0 --port 80'
+
+serve-prod = 'uvicorn fliji_sockets.api:app --proxy-headers --host 0.0.0.0 --port 80'
+serve = 'uvicorn fliji_sockets.api:app --host 0.0.0.0 --port 8098 --reload'
+
+[project]
+name = "fliji-sockets"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    { name = "", email = "none" },
+]
+dependencies = [
+    "python-socketio==4.6.1",
+    "fastapi>=0.109.2",
+    "uvicorn[standard]>=0.27.1",
+    "pymongo>=4.6.1",
+    "sentry-sdk[fastapi]>=1.40.4",
+    "httpx>=0.26.0",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = { text = "Proprietary" }
+
+
+[tool.pdm]
+distribution = false

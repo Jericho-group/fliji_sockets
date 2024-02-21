@@ -1,0 +1,29 @@
+version: "3"
+networks:
+    fliji-db:
+        name: fliji-db
+        external: true
+services:
+  fliji-sockets:
+    container_name: fliji_sockets
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: .env
+    entrypoint: ./entrypoint-sockets.sh
+    networks:
+        - fliji-db
+    # environment:
+    #   TZ: Europe/Moscow
+
+  fliji-sockets-api:
+    container_name: fliji_sockets_api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    entrypoint: ./entrypoint
+    env_file: .env
+    networks:
+        - fliji-db
+    # environment:
+    #   TZ: Europe/Moscow

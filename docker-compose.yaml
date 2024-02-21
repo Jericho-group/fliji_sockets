@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     env_file: .env
-    #entrypoint: ./entrypoint-sockets.sh
+    entrypoint: ./entrypoint-sockets.sh
     networks:
         - fliji-db
     # environment:
@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    #entrypoint: ./entrypoint.sh
+    entrypoint: ./entrypoint.sh
     env_file: .env
     networks:
         - fliji-db

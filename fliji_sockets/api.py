@@ -9,6 +9,8 @@ from fliji_sockets.store import (
     get_view_sessions_for_video,
     get_view_session_by_user_uuid,
     get_view_sessions_count_for_video,
+    get_most_watched_videos,
+    get_most_watched_videos_by_user_uuids,
 )
 from pymongo.database import Database
 
@@ -44,3 +46,26 @@ async def user_current_session(
 ) -> ViewSession:
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
     return view_session
+
+
+@app.get("/videos/most-watching")
+async def most_watched_videos(
+    page: int = 1, page_size: int = 15, db: Database = Depends(get_database)
+) -> dict:
+    # pages use 0 based index so we subtract 1
+    most_watched = await get_most_watched_videos(db, page=page - 1, page_size=page_size)
+    return most_watched
+
+
+@app.post("/videos/most-watching-by-users")
+async def most_watched_videos_by_user_uuids(
+    user_uuids: list[str],
+    page: int = 1,
+    page_size: int = 15,
+    db: Database = Depends(get_database),
+) -> dict:
+    # pages use 0 based index so we subtract 1
+    most_watched = await get_most_watched_videos_by_user_uuids(
+        db, page=page - 1, page_size=page_size, user_uuids=user_uuids
+    )
+    return most_watched

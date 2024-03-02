@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from fliji_sockets.data_models import ViewSession
+from fliji_sockets.data_models import ViewSession, MostWatchedVideosResponse
 from fliji_sockets.settings import (
     MONGO_PORT,
     MONGO_HOST,
@@ -79,3 +79,54 @@ async def delete_sessions_for_user(db: Database, user_uuid: str) -> int:
 def delete_all_sessions(db: Database) -> int:
     result = db.view_sessions.delete_many({})
     return result.deleted_count
+
+
+async def get_most_watched_videos(db: Database, page: int, page_size: int) -> dict:
+    pipeline = [
+        {
+            "$group": {
+                "_id": "$video_uuid",
+                "watching_count": {"$sum": 1},
+                "video_uuid": {"$first": "$video_uuid"},
+            }
+        },
+        {"$sort": {"watching_count": -1}},
+        {"$skip": page * page_size},
+        {"$limit": page_size},
+    ]
+    most_watched_videos = db.view_sessions.aggregate(pipeline)
+
+    videos = {}
+    for i, video in enumerate(most_watched_videos, start=1):
+        video["rank"] = i + page * page_size
+        videos[video["video_uuid"]] = video
+
+    return videos
+
+
+async def get_most_watched_videos_by_user_uuids(
+    db: Database, page: int, page_size: int, user_uuids: list[str]
+) -> dict:
+    pipeline = [
+        {"$match": {"user_uuid": {"$in": user_uuids}}},
+        {
+            "$group": {
+                # also show what users are watching each video
+                "_id": "$video_uuid",
+                "watching_count": {"$sum": 1},
+                "video_uuid": {"$first": "$video_uuid"},
+                "users_watching": {"$addToSet": "$user_uuid"},
+            }
+        },
+        {"$sort": {"watching_count": -1}},
+        {"$skip": page * page_size},
+        {"$limit": page_size},
+    ]
+    most_watched_videos = db.view_sessions.aggregate(pipeline)
+
+    videos = {}
+    for i, video in enumerate(most_watched_videos, start=1):
+        video["rank"] = i + page * page_size
+        videos[video["video_uuid"]] = video
+
+    return videos

@@ -33,6 +33,22 @@ class UpdateViewSessionRequest(MyBaseModel):
     current_watch_time: int
 
 
+class MostWatchedVideosResponse(MyBaseModel):
+    # loads from _id to video_uuid
+    video_uuid: str
+    watching_count: int
+
+    class Config:
+        # import by alias
+        allow_population_by_field_name = True
+        json_extra_schema = {
+            "example": {
+                "video_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",
+                "watch_count": 100,
+            },
+        }
+
+
 class ViewSession(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     user_uuid: str

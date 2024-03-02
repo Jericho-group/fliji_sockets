@@ -9,7 +9,7 @@ from bson import json_util
 from pydantic import ValidationError
 
 from fliji_sockets.data_models import ViewSession, UpdateViewSessionRequest
-from fliji_sockets.settings import USER_SERVICE_URL
+from fliji_sockets.settings import USER_SERVICE_URL, APP_ENV
 from fliji_sockets.store import (
     get_db,
     upsert_view_session,
@@ -29,8 +29,9 @@ app = socketio.ASGIApp(sio)
 
 
 def on_startup():
-    # delete all leftover sessions on startup (in case of a crash)
-    delete_all_sessions(db)
+    # delete all leftover sessions on startup (in case of a crash) on non-local environments
+    if APP_ENV != "local":
+        delete_all_sessions(db)
 
 
 on_startup()

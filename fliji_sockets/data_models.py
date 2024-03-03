@@ -39,8 +39,6 @@ class MostWatchedVideosResponse(MyBaseModel):
     watching_count: int
 
     class Config:
-        # import by alias
-        allow_population_by_field_name = True
         json_extra_schema = {
             "example": {
                 "video_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",

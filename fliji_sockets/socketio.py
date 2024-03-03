@@ -12,7 +12,7 @@ from fliji_sockets.store import (
     get_db,
     upsert_view_session,
     delete_all_sessions,
-    get_session_by_socket_id,
+    get_view_session_by_socket_id,
     get_view_sessions_for_video,
     serialize_doc,
 )
@@ -43,10 +43,10 @@ async def send_error_message(sid, message, body=None):
     await sio.emit("error", {"message": message, "body": body}, room=sid)
 
 
-async def check_get_session(sid):
+async def check_get_view_session(sid):
     """Checks if the user is authenticated. If not, disconnect the user. If yes, return the
     session."""
-    session = await get_session_by_socket_id(db, sid)
+    session = await get_view_session_by_socket_id(db, sid)
     if not session or "user_uuid" not in session:
         await send_error_message(sid, "Unauthorized")
         await sio.disconnect(sid)
@@ -95,16 +95,6 @@ async def on_connect(sid, data):
         return
     logging.debug(f"authenticated user {user_uuid} for sid {sid}")
 
-    session = ViewSession(
-        sid=sid,
-        user_uuid=user_uuid,
-        last_update_time=datetime.now(),
-        start_time=datetime.now(),
-    )
-
-    await upsert_view_session(db, session)
-    logging.debug(f"session created for user {user_uuid} for sid {sid}")
-
     # Also store user_uuid in the user's session for later use
     await sio.save_session(sid, {"user_uuid": user_uuid})
 
@@ -114,14 +104,21 @@ async def update_watch_time(sid, data):
     logging.debug(f"received update watch time event for sid {sid}")
     now = datetime.now()
 
-    session = await check_get_session(sid)
-    if not session:
-        logging.debug(f"session not found for sid {sid}")
+    logging.debug("getting uuid from socketio session")
+    try:
+        current_sio_session = await sio.get_session(sid)
+    except Exception as e:
+        logging.debug(f"error getting session {e}")
         return
 
-    logging.debug(f"session found for sid {sid} with user_uuid {session['user_uuid']}")
+    user_uuid = current_sio_session.get("user_uuid")
+    if not user_uuid:
+        logging.debug(f"user_uuid not found for sid {sid}")
+        await send_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
 
-    # validate with pydantic
     try:
         update_view_session_request = UpdateViewSessionRequest.model_validate(data)
         logging.debug(f"validated request {update_view_session_request} for sid {sid}")
@@ -141,7 +138,7 @@ async def update_watch_time(sid, data):
             last_update_time=now,
             current_watch_time=current_time,
             video_uuid=video_uuid,
-            user_uuid=session["user_uuid"],
+            user_uuid=user_uuid,
         )
     except ValidationError as e:
         logging.debug(f"validation error for ViewSession {e.errors()} for sid {sid}")
@@ -159,7 +156,7 @@ async def end_video_watch_session(sid):
 
 @sio.event
 async def get_sessions_for_video(sid):
-    session = await check_get_session(sid)
+    session = await check_get_view_session(sid)
     if not session:
         return
 

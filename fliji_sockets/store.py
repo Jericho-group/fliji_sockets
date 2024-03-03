@@ -42,13 +42,13 @@ def get_db():
 async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
     view_session_id = db.view_sessions.update_one(
         {"sid": view_session.sid},
-        {"$set": view_session.model_dump()},
+        {"$set": view_session.model_dump(exclude_none=True)},
         upsert=True,
     )
     return view_session_id
 
 
-async def get_session_by_socket_id(db: Database, sid: str) -> ViewSession:
+async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:
     view_session = db.view_sessions.find_one({"sid": sid})
     return view_session
 

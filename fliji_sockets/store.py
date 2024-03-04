@@ -1,7 +1,8 @@
 import json
+from datetime import datetime
 from typing import List
 
-from fliji_sockets.data_models import ViewSession, MostWatchedVideosResponse
+from fliji_sockets.data_models import ViewSession, MostWatchedVideosResponse, OnlineUser
 from fliji_sockets.settings import (
     MONGO_PORT,
     MONGO_HOST,
@@ -46,6 +47,38 @@ async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
         upsert=True,
     )
     return view_session_id
+
+
+async def upsert_online_user(db: Database, online_user: OnlineUser) -> int:
+    result = db.online_users.update_one(
+        {"sid": online_user.sid},
+        {"$set": online_user.model_dump(exclude_none=True)},
+        upsert=True,
+    )
+    return result
+
+
+async def get_online_user_by_sid(db: Database, sid: str) -> OnlineUser:
+    online_user = db.online_users.find_one({"sid": sid})
+    return online_user
+
+
+async def delete_online_user_by_sid(db: Database, sid: str) -> int:
+    result = db.online_users.delete_one({"sid": sid})
+    return result.deleted_count
+
+
+async def get_online_users_by_uuids(db: Database, user_uuids: list[str]) -> List[dict]:
+    online_users_cursor = db.online_users.find({"user_uuid": {"$in": user_uuids}})
+    online_users = []
+    for online_user in online_users_cursor:
+        online_users.append(online_user)
+    return online_users
+
+
+async def delete_all_online_users(db: Database) -> int:
+    result = db.online_users.delete_many({})
+    return result.deleted_count
 
 
 async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:

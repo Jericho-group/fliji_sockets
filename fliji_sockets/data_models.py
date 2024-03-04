@@ -33,6 +33,21 @@ class UpdateViewSessionRequest(MyBaseModel):
     current_watch_time: int
 
 
+class OnlineUser(MyBaseModel):
+    user_uuid: str
+    last_online_at: datetime
+    sid: str
+
+    class Config:
+        json_extra_schema = {
+            "example": {
+                "user_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",
+                "last_online_at": "2021-08-01 12:00:00",
+                "sid": "1234567890",
+            },
+        }
+
+
 class MostWatchedVideosResponse(MyBaseModel):
     # loads from _id to video_uuid
     video_uuid: str

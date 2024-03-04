@@ -6,7 +6,7 @@ from datetime import datetime
 
 from pydantic import ValidationError
 
-from fliji_sockets.data_models import ViewSession, UpdateViewSessionRequest
+from fliji_sockets.data_models import ViewSession, UpdateViewSessionRequest, OnlineUser
 from fliji_sockets.settings import USER_SERVICE_URL, APP_ENV
 from fliji_sockets.store import (
     get_db,
@@ -15,6 +15,8 @@ from fliji_sockets.store import (
     get_view_session_by_socket_id,
     get_view_sessions_for_video,
     serialize_doc,
+    upsert_online_user,
+    delete_online_user_by_sid,
 )
 
 # Set up global MongoDB connection
@@ -95,6 +97,12 @@ async def on_connect(sid, data):
         return
     logging.debug(f"authenticated user {user_uuid} for sid {sid}")
 
+    # set user online
+    online_user = OnlineUser(
+        user_uuid=user_uuid, last_online_at=datetime.now(), sid=sid
+    )
+    await upsert_online_user(db, online_user)
+
     # Also store user_uuid in the user's session for later use
     await sio.save_session(sid, {"user_uuid": user_uuid})
 
@@ -172,6 +180,8 @@ async def get_sessions_for_video(sid):
 @sio.event
 async def disconnect(sid):
     # This handles both manual disconnects and connection drops
+    # set user offline
+    await delete_online_user_by_sid(db, sid)
     await end_video_watch_session(sid)
 
 

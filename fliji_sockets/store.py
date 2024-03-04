@@ -63,17 +63,28 @@ async def get_online_user_by_sid(db: Database, sid: str) -> OnlineUser:
     return online_user
 
 
+async def get_online_by_user_uuid(db: Database, user_uuid: str) -> OnlineUser:
+    online_user = db.online_users.find_one({"user_uuid": user_uuid})
+    return online_user
+
+
 async def delete_online_user_by_sid(db: Database, sid: str) -> int:
     result = db.online_users.delete_one({"sid": sid})
     return result.deleted_count
 
 
-async def get_online_users_by_uuids(db: Database, user_uuids: list[str]) -> List[dict]:
+async def get_online_users_by_uuids(db: Database, user_uuids: list[str]) -> dict:
     online_users_cursor = db.online_users.find({"user_uuid": {"$in": user_uuids}})
-    online_users = []
+    # return in such structure {"user_uuid": true/false, ...}
+    online_users = {}
     for online_user in online_users_cursor:
-        online_users.append(online_user)
+        online_users[online_user["user_uuid"]] = True
+    for user_uuid in user_uuids:
+        if user_uuid not in online_users:
+            online_users[user_uuid] = False
+
     return online_users
+
 
 
 async def delete_all_online_users(db: Database) -> int:

@@ -1,8 +1,10 @@
 import json
-from datetime import datetime
 from typing import List
 
-from fliji_sockets.data_models import ViewSession, MostWatchedVideosResponse, OnlineUser
+from pymongo import MongoClient
+from pymongo.database import Database
+
+from fliji_sockets.data_models import ViewSession, OnlineUser
 from fliji_sockets.settings import (
     MONGO_PORT,
     MONGO_HOST,
@@ -10,9 +12,6 @@ from fliji_sockets.settings import (
     MONGO_PASSWORD,
     MONGO_DB,
 )
-from pymongo import MongoClient
-from pymongo.database import Database
-from bson.objectid import ObjectId
 
 
 def ensure_indexes(db: Database):
@@ -26,7 +25,7 @@ def serialize_doc(doc):
     return json.loads(json.dumps(doc, default=str))
 
 
-def get_db():
+def get_database():
     # with password
     connection_url = (
         f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}"
@@ -51,7 +50,7 @@ async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
 
 async def upsert_online_user(db: Database, online_user: OnlineUser) -> int:
     result = db.online_users.update_one(
-        {"sid": online_user.sid},
+        {"user_uuid": online_user.user_uuid},
         {"$set": online_user.model_dump(exclude_none=True)},
         upsert=True,
     )
@@ -68,8 +67,13 @@ async def get_online_by_user_uuid(db: Database, user_uuid: str) -> OnlineUser:
     return online_user
 
 
-async def delete_online_user_by_sid(db: Database, sid: str) -> int:
+async def delete_online_user_by_socket_id(db: Database, sid: str) -> int:
     result = db.online_users.delete_one({"sid": sid})
+    return result.deleted_count
+
+
+async def delete_online_user_by_user_uuid(db: Database, user_uuid: str) -> int:
+    result = db.online_users.delete_one({"user_uuid": user_uuid})
     return result.deleted_count
 
 
@@ -84,7 +88,6 @@ async def get_online_users_by_uuids(db: Database, user_uuids: list[str]) -> dict
             online_users[user_uuid] = False
 
     return online_users
-
 
 
 async def delete_all_online_users(db: Database) -> int:
@@ -113,6 +116,16 @@ async def get_view_sessions_count_for_video(db: Database, video_uuid: str) -> in
 async def get_view_session_by_user_uuid(db: Database, user_uuid: str) -> ViewSession:
     view_session = db.view_sessions.find_one({"user_uuid": user_uuid})
     return view_session
+
+
+async def delete_view_session_by_socket_id(db: Database, sid: str) -> int:
+    result = db.view_sessions.delete_one({"sid": sid})
+    return result.deleted_count
+
+
+async def delete_view_session_by_user_uuid(db: Database, user_uuid: str) -> int:
+    result = db.view_sessions.delete_one({"user_uuid": user_uuid})
+    return result.deleted_count
 
 
 async def delete_sessions_for_user(db: Database, user_uuid: str) -> int:

@@ -28,9 +28,26 @@ class MyBaseModel(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+class UserSession(MyBaseModel):
+    user_uuid: str
+
+
 class UpdateViewSessionRequest(MyBaseModel):
     video_uuid: str
     current_watch_time: int
+
+
+class GetViewSessionsForVideoRequest(MyBaseModel):
+    video_uuid: str
+
+
+class JoinRoomRequest(MyBaseModel):
+    # room uuid
+    voice: str
+
+
+class OnConnectRequest(MyBaseModel):
+    auth_token: str
 
 
 class OnlineUser(MyBaseModel):

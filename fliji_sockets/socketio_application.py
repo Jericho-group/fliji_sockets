@@ -122,5 +122,3 @@ class SocketioApplication:
 
     def run(self) -> None:
         uvicorn.run(self.sio_app, host="127.0.0.1", log_level="debug")
-
-

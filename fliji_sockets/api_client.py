@@ -56,31 +56,6 @@ class FlijiApiService:
 
             raise ApiException("Failed to get voice room")
 
-    async def leave_room(self, voice_uuid: str, user_uuid: str) -> dict or None:
-        async with httpx.AsyncClient() as httpx_client:
-            try:
-                response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/leave/{voice_uuid}",
-                    headers={"X-API-KEY": self.api_key},
-                    data={"user_uuid": user_uuid, "voice_uuid": voice_uuid},
-                    timeout=5,
-                )
-                if response.status_code == 200:
-                    return response.json()
-            except httpx.TimeoutException:
-                logging.error("Voice room service timed out")
-                return None
-
-            if response.status_code == 404:
-                return None
-
-            logging.error(
-                f"Failed to get voice room with status code {response.status_code}"
-            )
-            logging.error(response.text)
-
-            raise ApiException("Failed to get voice room")
-
     async def leave_all_rooms(self, user_uuid: str) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:

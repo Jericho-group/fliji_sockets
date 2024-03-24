@@ -43,3 +43,7 @@ def get_log_level() -> int:
     }
 
     return switch.get(LOG_LEVEL)
+
+
+def get_room_name(voice_uuid: str) -> str:
+    return f"room_{voice_uuid}"

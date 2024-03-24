@@ -4,7 +4,7 @@ from typing import List
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from fliji_sockets.data_models import ViewSession, OnlineUser
+from fliji_sockets.models.database import ViewSession, OnlineUser
 from fliji_sockets.settings import (
     MONGO_PORT,
     MONGO_HOST,

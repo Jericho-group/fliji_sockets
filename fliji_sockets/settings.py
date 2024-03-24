@@ -21,3 +21,4 @@ MONGO_USER = os.environ.get("MONGO_USER", "fliji_sockets")
 MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD", "fliji_sockets")
 
 USER_SERVICE_URL = os.environ.get("USER_SERVICE_URL", "http://user-service:8000")
+USER_SERVICE_API_KEY = os.environ.get("USER_SERVICE_API_KEY")

@@ -3,7 +3,7 @@ from typing import List
 from fastapi import FastAPI, Depends
 from pymongo.database import Database
 
-from fliji_sockets.data_models import ViewSession
+from fliji_sockets.models.database import ViewSession
 from fliji_sockets.dependencies import get_db
 from fliji_sockets.helpers import configure_logging
 from fliji_sockets.store import (

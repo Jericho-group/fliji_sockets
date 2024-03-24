@@ -9,7 +9,7 @@ from pydantic import ValidationError
 
 from pydantic import BaseModel
 
-from fliji_sockets.data_models import UserSession
+from fliji_sockets.models.base import UserSession
 
 
 def Depends(dependency_callable: Callable):
@@ -98,8 +98,8 @@ class SocketioApplication:
     async def save_session(self, sid, session: UserSession) -> None:
         await self.sio.save_session(sid, session)
 
-    async def emit(self, event, data, room=None) -> None:
-        await self.sio.emit(event, data, room=room)
+    async def emit(self, event, data, room=None, skip_sid=None) -> None:
+        await self.sio.emit(event, data, room=room, skip_sid=skip_sid)
 
     async def send_error_message(self, sid, message, body=None) -> None:
         """Send an error message to the client."""
@@ -108,6 +108,12 @@ class SocketioApplication:
 
         await self.sio.emit("err", {"message": message, "body": body}, room=sid)
         logging.debug(f"Emitting error message to {sid}: {message}")
+
+    def enter_room(self, sid, room) -> None:
+        self.sio.enter_room(sid, room)
+
+    def leave_room(self, sid, room) -> None:
+        self.sio.leave_room(sid, room)
 
     async def send_fatal_error_message(self, sid, message, body=None) -> None:
         """Send a fatal error message to the client."""

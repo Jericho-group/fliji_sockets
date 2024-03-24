@@ -1,6 +1,6 @@
 from pymongo.database import Database
 
-from fliji_sockets.api_service import FlijiApiService
+from fliji_sockets.api_client import FlijiApiService
 from fliji_sockets.store import get_database
 
 
@@ -11,4 +11,4 @@ def get_db() -> Database:
 
 def get_api_service() -> FlijiApiService:
     # Initialize and return an instance of your ApiService
-    return FlijiApiService("your_api_key")
+    return FlijiApiService()

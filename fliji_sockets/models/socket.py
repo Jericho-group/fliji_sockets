@@ -10,7 +10,16 @@ class GetViewSessionsForVideoRequest(MyBaseModel):
     video_uuid: str
 
 
+class ToggleVoiceUserMicRequest(MyBaseModel):
+    user_uuid: str
+    room_uuid: str
+
+
 class JoinRoomRequest(MyBaseModel):
+    room_uuid: str
+
+
+class RoomActionRequest(MyBaseModel):
     room_uuid: str
 
 

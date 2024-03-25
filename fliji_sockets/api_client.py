@@ -7,6 +7,10 @@ import httpx
 class ApiException(Exception):
     pass
 
+class ForbiddenException(Exception):
+    def __init__(self, message="You are not allowed to perform this action."):
+        super().__init__(message)
+
 
 class FlijiApiService:
     """
@@ -80,3 +84,57 @@ class FlijiApiService:
             logging.error(response.text)
 
             raise ApiException("Failed to leave voice rooms")
+
+    async def get_status(self, voice_uuid: str):
+        async with httpx.AsyncClient() as httpx_client:
+            try:
+                response = await httpx_client.get(
+                    f"{self.base_url}/socket/voice/status/{voice_uuid}",
+                    headers={"X-API-KEY": self.api_key},
+                    timeout=5,
+                )
+                if response.status_code == 200:
+                    return response.json()
+            except httpx.TimeoutException:
+                logging.error("Voice room service timed out")
+                return None
+
+            if response.status_code == 404:
+                return None
+
+            logging.error(
+                f"Failed to get voice status with status code {response.status_code}"
+            )
+            logging.error(response.text)
+
+            raise ApiException(f"Failed to get voice status for {voice_uuid}")
+
+    async def toggle_voice_user_mic(
+        self, voice_uuid: str, user_uuid: str, from_user_uuid: str
+    ) -> dict or None:
+        async with httpx.AsyncClient() as httpx_client:
+            try:
+                response = await httpx_client.post(
+                    f"{self.base_url}/socket/voice/toggle-mic/{voice_uuid}",
+                    data={"user_uuid": user_uuid, "from_user_uuid": from_user_uuid},
+                    headers={"X-API-KEY": self.api_key},
+                    timeout=5,
+                )
+                if response.status_code == 200:
+                    return response.json()
+            except httpx.TimeoutException:
+                logging.error("Voice room service timed out")
+                return None
+
+            if response.status_code == 404:
+                return None
+
+            if response.status_code == 403:
+                raise ForbiddenException()
+
+            logging.error(
+                f"Failed to toggle mic with status code {response.status_code}"
+            )
+            logging.error(response.text)
+
+            raise ApiException(f"Failed to toggle mic in {voice_uuid}")

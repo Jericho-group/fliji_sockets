@@ -11,3 +11,22 @@ class JoinRoomResponse(MyBaseModel):
 
 class LeaveAllRoomsResponse(MyBaseModel):
     room_uuids: list[str]
+
+
+class GetStatusVoiceUser(MyBaseModel):
+    username: str
+    uuid: str
+    status: str
+    role: str
+    mic: bool | None = None
+    mic_ban: bool | None = None
+    right_to_speak: bool | None = None
+
+
+class GetStatusResponse(MyBaseModel):
+    users: list[GetStatusVoiceUser]
+
+class ToggleVoiceUserMicResponse(MyBaseModel):
+    mic: bool
+    right_to_speak: str | None = None
+    user_uuid: str

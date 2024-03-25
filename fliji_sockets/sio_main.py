@@ -3,13 +3,15 @@ from datetime import datetime
 
 from pydantic import ValidationError
 
-from fliji_sockets.api_client import FlijiApiService, ApiException
+from fliji_sockets.api_client import FlijiApiService, ApiException, ForbiddenException
 from fliji_sockets.helpers import get_room_name, configure_logging
 from fliji_sockets.models.socket import (
     OnConnectRequest,
     UpdateViewSessionRequest,
     GetViewSessionsForVideoRequest,
     JoinRoomRequest,
+    RoomActionRequest,
+    ToggleVoiceUserMicRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -17,6 +19,8 @@ from fliji_sockets.dependencies import get_db, get_api_service
 from fliji_sockets.models.user_service_api import (
     JoinRoomResponse,
     LeaveAllRoomsResponse,
+    GetStatusResponse,
+    ToggleVoiceUserMicResponse,
 )
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from pymongo.database import Database
@@ -160,15 +164,14 @@ async def get_sessions_for_video(
 async def join_room(
     sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
 ):
-    logging.debug(f"received join room event for sid {sid}")
-    session = await app.get_session(sid)
-    if not session:
-        await app.send_fatal_error_message(
-            sid, "Unauthorized: could not find user_uuid in socketio session"
-        )
-        return
-    user_uuid = session.user_uuid
-    # user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+    # session = await app.get_session(sid)
+    # if not session:
+    #     await app.send_fatal_error_message(
+    #         sid, "Unauthorized: could not find user_uuid in socketio session"
+    #     )
+    #     return
+    # user_uuid = session.user_uuid
+    user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
 
     try:
         response_data = await api_service.join_room(data.room_uuid, user_uuid)
@@ -233,6 +236,114 @@ async def leave_room(sid, api_service: FlijiApiService = Depends(get_api_service
             room=get_room_name(room_uuid),
             skip_sid=sid,
         )
+
+
+@app.event("video_play")
+async def video_play(sid, data: RoomActionRequest):
+    await app.emit("video_play", data, room=get_room_name(RoomActionRequest.room_uuid))
+
+
+@app.event("video_pause")
+async def video_play(sid, data: RoomActionRequest):
+    await app.emit("video_pause", data, room=get_room_name(RoomActionRequest.room_uuid))
+
+
+@app.event("video_timecode")
+async def video_timecode(sid, data: RoomActionRequest):
+    await app.emit(
+        "video_timecode",
+        data,
+        room=get_room_name(RoomActionRequest.room_uuid),
+        skip_sid=sid,
+    )
+
+
+@app.event("current_duration")
+async def current_duration(sid, data: RoomActionRequest):
+    await app.emit(
+        "current_duration",
+        data,
+        room=get_room_name(RoomActionRequest.room_uuid),
+        skip_sid=sid,
+    )
+
+
+@app.event("get_status")
+async def get_status(
+    sid,
+    data: RoomActionRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    user_session = await app.get_session(sid)
+    if not user_session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    try:
+        response_data = await api_service.get_status(data.room_uuid)
+        response = GetStatusResponse.model_validate({"users": response_data})
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error getting the voice status: {e}")
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid, f"Error getting the voice status: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
+        return
+
+    await app.emit("status", response.model_dump(), room=sid)
+
+
+@app.event("toggle_user_mic")
+async def toggle_user_mic(
+    sid,
+    data: ToggleVoiceUserMicRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    # session = await app.get_session(sid)
+    # if not session:
+    #     await app.send_fatal_error_message(
+    #         sid, "Unauthorized: could not find user_uuid in socketio session"
+    #     )
+    #     return
+    # user_uuid = session.user_uuid
+    user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+
+    try:
+        response_data = await api_service.toggle_voice_user_mic(
+            data.room_uuid, data.user_uuid, from_user_uuid=user_uuid
+        )
+        response = ToggleVoiceUserMicResponse.model_validate(response_data)
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error toggling the user mic: {e}")
+        return
+    except ForbiddenException as e:
+        await app.send_error_message(sid, f"Error toggling the user mic: {e}")
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid, f"Error toggling the user mic: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(
+            sid,
+            f"Voice with uuid {data.room_uuid} or user with uuid {data.user_uuid} not found",
+        )
+        return
+
+    await app.emit(
+        "mic_user",
+        response.model_dump(),
+        room=get_room_name(data.room_uuid),
+    )
 
 
 # Expose the sio_app for Uvicorn to run

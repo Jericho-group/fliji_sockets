@@ -12,6 +12,7 @@ from fliji_sockets.models.socket import (
     JoinRoomRequest,
     RoomActionRequest,
     ToggleVoiceUserMicRequest,
+    TransferRoomOwnershipRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -21,6 +22,7 @@ from fliji_sockets.models.user_service_api import (
     LeaveAllRoomsResponse,
     GetStatusResponse,
     ToggleVoiceUserMicResponse,
+    TransferRoomOwnershipResponse,
 )
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from pymongo.database import Database
@@ -306,14 +308,13 @@ async def toggle_user_mic(
     data: ToggleVoiceUserMicRequest,
     api_service: FlijiApiService = Depends(get_api_service),
 ):
-    # session = await app.get_session(sid)
-    # if not session:
-    #     await app.send_fatal_error_message(
-    #         sid, "Unauthorized: could not find user_uuid in socketio session"
-    #     )
-    #     return
-    # user_uuid = session.user_uuid
-    user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
 
     try:
         response_data = await api_service.toggle_voice_user_mic(
@@ -341,6 +342,45 @@ async def toggle_user_mic(
 
     await app.emit(
         "mic_user",
+        response.model_dump(),
+        room=get_room_name(data.room_uuid),
+    )
+
+
+@app.event("transfer_room_ownership")
+async def transfer_room_ownership(
+    sid,
+    data: TransferRoomOwnershipRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+    # user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+    try:
+        response_data = await api_service.transfer_room_ownership(
+            data.room_uuid, new_owner_uuid=data.new_owner_uuid, from_user_uuid=user_uuid
+        )
+        response = TransferRoomOwnershipResponse.model_validate(response_data)
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error transferring room ownership: {e}")
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid, f"Error transferring room ownership: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
+        return
+
+    await app.emit(
+        "role_updated",
         response.model_dump(),
         room=get_room_name(data.room_uuid),
     )

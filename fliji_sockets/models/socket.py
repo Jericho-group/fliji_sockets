@@ -15,6 +15,11 @@ class ToggleVoiceUserMicRequest(MyBaseModel):
     room_uuid: str
 
 
+class TransferRoomOwnershipRequest(MyBaseModel):
+    room_uuid: str
+    new_owner_uuid: str
+
+
 class JoinRoomRequest(MyBaseModel):
     room_uuid: str
 

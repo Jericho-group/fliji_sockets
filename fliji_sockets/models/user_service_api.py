@@ -26,7 +26,14 @@ class GetStatusVoiceUser(MyBaseModel):
 class GetStatusResponse(MyBaseModel):
     users: list[GetStatusVoiceUser]
 
+
 class ToggleVoiceUserMicResponse(MyBaseModel):
     mic: bool
     right_to_speak: str | None = None
     user_uuid: str
+
+
+class TransferRoomOwnershipResponse(MyBaseModel):
+    user_uuid: str
+    from_admin_uuid: str
+    role: str

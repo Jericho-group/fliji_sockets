@@ -172,14 +172,13 @@ async def get_sessions_for_video(
 async def join_room(
     sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
 ):
-    # session = await app.get_session(sid)
-    # if not session:
-    #     await app.send_fatal_error_message(
-    #         sid, "Unauthorized: could not find user_uuid in socketio session"
-    #     )
-    #     return
-    # user_uuid = session.user_uuid
-    user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
 
     try:
         response_data = await api_service.join_room(data.room_uuid, user_uuid)

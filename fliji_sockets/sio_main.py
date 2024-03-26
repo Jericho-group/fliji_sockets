@@ -14,6 +14,7 @@ from fliji_sockets.models.socket import (
     ToggleVoiceUserMicRequest,
     TransferRoomOwnershipRequest,
     ConfirmRoomOwnershipTransferRequest,
+    SendChatMessageRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -23,7 +24,7 @@ from fliji_sockets.models.user_service_api import (
     LeaveAllRoomsResponse,
     GetStatusResponse,
     ToggleVoiceUserMicResponse,
-    TransferRoomOwnershipResponse,
+    TransferRoomOwnershipResponse, SendChatMessageResponse,
 )
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from pymongo.database import Database
@@ -424,6 +425,45 @@ async def confirm_room_ownership_transfer(
 
     await app.emit(
         "role_updated",
+        response.model_dump(),
+        room=get_room_name(data.room_uuid),
+    )
+
+
+@app.event("send_chat_message")
+async def send_chat_message(
+    sid,
+    data: SendChatMessageRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    try:
+        response_data = await api_service.send_chat_message(
+            data.room_uuid, user_uuid=user_uuid, message=data.message
+        )
+        response = SendChatMessageResponse.model_validate(response_data)
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error sending chat message: {e}")
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid, f"Error sending chat message: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
+        return
+
+    await app.emit(
+        "chat_message",
         response.model_dump(),
         room=get_room_name(data.room_uuid),
     )

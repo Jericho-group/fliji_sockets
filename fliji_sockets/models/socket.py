@@ -37,6 +37,11 @@ class OnConnectRequest(MyBaseModel):
     auth_token: str
 
 
+class SendChatMessageRequest(MyBaseModel):
+    message: str
+    room_uuid: str
+
+
 class MostWatchedVideosResponse(MyBaseModel):
     # loads from _id to video_uuid
     video_uuid: str

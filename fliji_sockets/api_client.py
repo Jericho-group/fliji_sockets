@@ -205,3 +205,33 @@ class FlijiApiService:
             logging.error(response.text)
 
             raise ApiException(f"Failed to confirm ownership transfer in {voice_uuid}")
+
+    async def send_chat_message(
+        self, voice_uuid: str, user_uuid: str, message: str
+    ) -> dict or None:
+        async with httpx.AsyncClient() as httpx_client:
+            try:
+                response = await httpx_client.post(
+                    f"{self.base_url}/socket/voice/send-chat-message/{voice_uuid}",
+                    data={"user_uuid": user_uuid, "message": message},
+                    headers={"X-API-KEY": self.api_key},
+                    timeout=5,
+                )
+                if response.status_code == 200:
+                    return response.json()
+            except httpx.TimeoutException:
+                logging.error("Voice room service timed out")
+                return None
+
+            if response.status_code == 404:
+                return None
+
+            if response.status_code == 403:
+                raise ForbiddenException()
+
+            logging.error(
+                f"Failed to send chat message with status code {response.status_code}"
+            )
+            logging.error(response.text)
+
+            raise ApiException(f"Failed to send chat message in {voice_uuid}")

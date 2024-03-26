@@ -41,3 +41,9 @@ class TransferRoomOwnershipResponse(MyBaseModel):
 class ConfirmRoomOwnershipTransferResponse(MyBaseModel):
     user_uuid: str
     role: str
+
+class SendChatMessageResponse(MyBaseModel):
+    message: str
+    user_uuid: str
+    username: str
+    time: str

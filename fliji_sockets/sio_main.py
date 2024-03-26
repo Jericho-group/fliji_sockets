@@ -572,9 +572,9 @@ async def handle_right_to_speak(
 
 if APP_ENV != "local":
     # remove all transient session data
-    db = get_database()
-    delete_all_sessions(db)
-    delete_all_online_users(db)
+    database = get_database()
+    delete_all_sessions(database)
+    delete_all_online_users(database)
 
 
 # Expose the sio_app for Uvicorn to run

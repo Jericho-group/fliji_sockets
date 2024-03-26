@@ -30,6 +30,7 @@ from fliji_sockets.models.user_service_api import (
     SendChatMessageResponse,
     HandleRightToSpeakResponse,
 )
+from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from pymongo.database import Database
 
@@ -42,6 +43,9 @@ from fliji_sockets.store import (
     upsert_view_session,
     get_view_sessions_for_video,
     serialize_doc,
+    get_database,
+    delete_all_online_users,
+    delete_all_sessions,
 )
 
 app = SocketioApplication()
@@ -564,6 +568,13 @@ async def handle_right_to_speak(
         response.model_dump(),
         room=get_room_name(data.room_uuid),
     )
+
+
+if APP_ENV != "local":
+    # remove all transient session data
+    db = get_database()
+    delete_all_sessions(db)
+    delete_all_online_users(db)
 
 
 # Expose the sio_app for Uvicorn to run

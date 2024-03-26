@@ -90,7 +90,7 @@ async def get_online_users_by_uuids(db: Database, user_uuids: list[str]) -> dict
     return online_users
 
 
-async def delete_all_online_users(db: Database) -> int:
+def delete_all_online_users(db: Database) -> int:
     result = db.online_users.delete_many({})
     return result.deleted_count
 

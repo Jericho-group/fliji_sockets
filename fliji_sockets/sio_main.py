@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from fliji_sockets.api_client import FlijiApiService, ApiException, ForbiddenException
 from fliji_sockets.helpers import get_room_name, configure_logging
+from fliji_sockets.models.enums import RightToSpeakState
 from fliji_sockets.models.socket import (
     OnConnectRequest,
     UpdateViewSessionRequest,
@@ -15,6 +16,7 @@ from fliji_sockets.models.socket import (
     TransferRoomOwnershipRequest,
     ConfirmRoomOwnershipTransferRequest,
     SendChatMessageRequest,
+    HandleRightToSpeakRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -24,7 +26,9 @@ from fliji_sockets.models.user_service_api import (
     LeaveAllRoomsResponse,
     GetStatusResponse,
     ToggleVoiceUserMicResponse,
-    TransferRoomOwnershipResponse, SendChatMessageResponse,
+    TransferRoomOwnershipResponse,
+    SendChatMessageResponse,
+    HandleRightToSpeakResponse,
 )
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from pymongo.database import Database
@@ -244,16 +248,37 @@ async def leave_room(sid, api_service: FlijiApiService = Depends(get_api_service
 
 @app.event("video_play")
 async def video_play(sid, data: RoomActionRequest):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
     await app.emit("video_play", data, room=get_room_name(RoomActionRequest.room_uuid))
 
 
 @app.event("video_pause")
 async def video_play(sid, data: RoomActionRequest):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
     await app.emit("video_pause", data, room=get_room_name(RoomActionRequest.room_uuid))
 
 
 @app.event("video_timecode")
 async def video_timecode(sid, data: RoomActionRequest):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
     await app.emit(
         "video_timecode",
         data,
@@ -464,6 +489,79 @@ async def send_chat_message(
 
     await app.emit(
         "chat_message",
+        response.model_dump(),
+        room=get_room_name(data.room_uuid),
+    )
+
+
+@app.event("request_right_to_speak")
+async def request_right_to_speak(sid):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    await app.emit(
+        "right_to_speak_reqeust",
+        {"user_uuid": user_uuid},
+        room=get_room_name(RoomActionRequest.room_uuid),
+        skip_sid=sid,
+    )
+
+
+@app.event("handle_right_to_speak")
+async def handle_right_to_speak(
+    sid,
+    data: HandleRightToSpeakRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    # convert the boolean to the enum state string
+    if data.right_to_speak is True:
+        right_to_speak = RightToSpeakState.ACCEPTED
+    else:
+        right_to_speak = RightToSpeakState.DECLINED
+
+    try:
+        response_data = await api_service.handle_right_to_speak(
+            data.room_uuid,
+            from_user_uuid=user_uuid,
+            user_uuid=data.user_uuid,
+            right_to_speak=right_to_speak,
+        )
+        response = HandleRightToSpeakResponse.model_validate(response_data)
+
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error handling right to speak: {e}")
+        return
+    except ForbiddenException as e:
+        await app.send_error_message(sid, f"Error handling right to speak: {e}")
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid, f"Error handling right to speak: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(
+            sid,
+            f"Voice with uuid {data.room_uuid} or user with uuid {data.user_uuid} not found",
+        )
+        return
+
+    await app.emit(
+        "right_to_speak_updated",
         response.model_dump(),
         room=get_room_name(data.room_uuid),
     )

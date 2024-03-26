@@ -42,6 +42,16 @@ class SendChatMessageRequest(MyBaseModel):
     room_uuid: str
 
 
+class RequestRightToSpeakRequest(MyBaseModel):
+    room_uuid: str
+
+
+class HandleRightToSpeakRequest(MyBaseModel):
+    room_uuid: str
+    user_uuid: str
+    right_to_speak: bool
+
+
 class MostWatchedVideosResponse(MyBaseModel):
     # loads from _id to video_uuid
     video_uuid: str

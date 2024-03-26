@@ -35,5 +35,9 @@ class ToggleVoiceUserMicResponse(MyBaseModel):
 
 class TransferRoomOwnershipResponse(MyBaseModel):
     user_uuid: str
-    from_admin_uuid: str
+    role: str
+
+
+class ConfirmRoomOwnershipTransferResponse(MyBaseModel):
+    user_uuid: str
     role: str

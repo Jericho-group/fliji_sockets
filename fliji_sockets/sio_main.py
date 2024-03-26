@@ -13,6 +13,7 @@ from fliji_sockets.models.socket import (
     RoomActionRequest,
     ToggleVoiceUserMicRequest,
     TransferRoomOwnershipRequest,
+    ConfirmRoomOwnershipTransferRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -360,7 +361,7 @@ async def transfer_room_ownership(
         )
         return
     user_uuid = session.user_uuid
-    # user_uuid = "82c52b5f-6ff3-4c44-a000-a94952a85326"
+
     try:
         response_data = await api_service.transfer_room_ownership(
             data.room_uuid, new_owner_uuid=data.new_owner_uuid, from_user_uuid=user_uuid
@@ -372,6 +373,48 @@ async def transfer_room_ownership(
     except ValidationError as e:
         await app.send_error_message(
             sid, f"Error transferring room ownership: couldn't validate response: {e}"
+        )
+        return
+
+    if not response:
+        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
+        return
+
+    await app.emit(
+        "role_updated",
+        response.model_dump(),
+        room=get_room_name(data.room_uuid),
+    )
+
+
+@app.event("confirm_room_ownership_transfer")
+async def confirm_room_ownership_transfer(
+    sid,
+    data: ConfirmRoomOwnershipTransferRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    try:
+        response_data = await api_service.confirm_room_ownership_transfer(
+            data.room_uuid, old_owner_uuid=data.old_owner_uuid, from_user_uuid=user_uuid
+        )
+        response = TransferRoomOwnershipResponse.model_validate(response_data)
+    except ApiException as e:
+        await app.send_error_message(
+            sid, f"Error confirming room ownership transfer: {e}"
+        )
+        return
+    except ValidationError as e:
+        await app.send_error_message(
+            sid,
+            f"Error confirming room ownership transfer: couldn't validate response: {e}",
         )
         return
 

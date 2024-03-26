@@ -20,6 +20,11 @@ class TransferRoomOwnershipRequest(MyBaseModel):
     new_owner_uuid: str
 
 
+class ConfirmRoomOwnershipTransferRequest(MyBaseModel):
+    room_uuid: str
+    old_owner_uuid: str
+
+
 class JoinRoomRequest(MyBaseModel):
     room_uuid: str
 

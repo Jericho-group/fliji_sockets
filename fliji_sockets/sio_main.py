@@ -47,6 +47,7 @@ from fliji_sockets.store import (
     get_database,
     delete_all_online_users,
     delete_all_sessions,
+    get_view_session_by_user_uuid,
 )
 
 app = SocketioApplication()
@@ -103,30 +104,46 @@ async def disconnect(
         await delete_online_user_by_socket_id(db, sid)
         return
 
-    await delete_view_session_by_user_uuid(db, user_session.user_uuid)
-    await delete_online_user_by_user_uuid(db, user_session.user_uuid)
-
     # leave room
     user_uuid = user_session.user_uuid
+    response_data = None
     try:
         response = await api_service.leave_all_rooms(user_uuid)
         response_data = LeaveAllRoomsResponse.model_validate(response)
     except ApiException as e:
         logging.error(f"Error leaving voice rooms: {e}")
-        return
     except ValidationError as e:
         await app.send_error_message(
             sid, f"Error leaving the voice rooms: couldn't validate response: {e}"
         )
-        return
 
-    for room_uuid in response_data.room_uuids:
-        await app.emit(
-            "leave_user",
-            {"uuid": user_uuid},
-            room=get_room_name(room_uuid),
-            skip_sid=sid,
-        )
+    if response_data:
+        for room_uuid in response_data.room_uuids:
+            await app.emit(
+                "leave_user",
+                {"uuid": user_uuid},
+                room=get_room_name(room_uuid),
+                skip_sid=sid,
+            )
+
+    # save the dangling view session
+    view_session = await get_view_session_by_user_uuid(db, user_uuid)
+    video_uuid = view_session.get("video_uuid")
+    current_watch_time = view_session.get("current_watch_time")
+
+    if video_uuid and current_watch_time:
+        try:
+            await api_service.save_video_view(
+                video_uuid,
+                user_uuid=user_uuid,
+                time=current_watch_time,
+            )
+        except ApiException as e:
+            logging.error(f"Error saving video view: {e}")
+
+    # delete the view session
+    await delete_view_session_by_user_uuid(db, user_session.user_uuid)
+    await delete_online_user_by_user_uuid(db, user_session.user_uuid)
 
 
 @app.event("end_video_watch_session")

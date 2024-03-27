@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from pymongo import MongoClient
 from pymongo.database import Database
@@ -100,7 +99,7 @@ async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:
     return view_session
 
 
-async def get_view_sessions_for_video(db: Database, video_uuid: str) -> List[dict]:
+async def get_view_sessions_for_video(db: Database, video_uuid: str) -> list[dict]:
     view_sessions_cursor = db.view_sessions.find({"video_uuid": video_uuid})
     view_sessions = []
     for view_session in view_sessions_cursor:

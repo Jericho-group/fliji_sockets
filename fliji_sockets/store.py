@@ -112,7 +112,7 @@ async def get_view_sessions_count_for_video(db: Database, video_uuid: str) -> in
     return count
 
 
-async def get_view_session_by_user_uuid(db: Database, user_uuid: str) -> ViewSession:
+async def get_view_session_by_user_uuid(db: Database, user_uuid: str) -> dict:
     view_session = db.view_sessions.find_one({"user_uuid": user_uuid})
     return view_session
 

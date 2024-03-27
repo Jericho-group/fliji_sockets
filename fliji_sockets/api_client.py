@@ -237,12 +237,22 @@ class FlijiApiService:
 
             raise ApiException(f"Failed to send chat message in {voice_uuid}")
 
-    async def handle_right_to_speak(self, voice_uuid: str, from_user_uuid, user_uuid: str, right_to_speak: RightToSpeakState) -> dict or None:
+    async def handle_right_to_speak(
+        self,
+        voice_uuid: str,
+        from_user_uuid,
+        user_uuid: str,
+        right_to_speak: RightToSpeakState,
+    ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
                     f"{self.base_url}/socket/voice/handle-right-to-speak/{voice_uuid}",
-                    data={"user_uuid": user_uuid, "from_user_uuid": from_user_uuid, "right_to_speak": right_to_speak.value},
+                    data={
+                        "user_uuid": user_uuid,
+                        "from_user_uuid": from_user_uuid,
+                        "right_to_speak": right_to_speak.value,
+                    },
                     headers={"X-API-KEY": self.api_key},
                     timeout=5,
                 )
@@ -264,4 +274,3 @@ class FlijiApiService:
             logging.error(response.text)
 
             raise ApiException(f"Failed to handle right to speak in {voice_uuid}")
-

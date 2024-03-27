@@ -43,7 +43,6 @@ from fliji_sockets.store import (
     delete_online_user_by_user_uuid,
     upsert_view_session,
     get_view_sessions_for_video,
-    serialize_doc,
     get_database,
     delete_all_online_users,
     delete_all_sessions,
@@ -210,8 +209,18 @@ async def get_sessions_for_video(
         return
 
     view_sessions = await get_view_sessions_for_video(db, data.video_uuid)
+
+    view_sessions_response = []
+    for view_session in view_sessions:
+        last_update_time = view_session.get("last_update_time")
+        view_sessions_response.append({
+            "user_uuid": view_session.get("user_uuid"),
+            "current_watch_time": view_session.get("current_watch_time"),
+            "last_update_time": last_update_time.isoformat() if last_update_time else None,
+        })
+
     await app.emit(
-        "current_video_view_sessions", serialize_doc(view_sessions), room=sid
+        "current_video_view_sessions", view_sessions_response, room=sid
     )
 
 

@@ -274,3 +274,28 @@ class FlijiApiService:
             logging.error(response.text)
 
             raise ApiException(f"Failed to handle right to speak in {voice_uuid}")
+
+    async def save_video_view(self, video_uuid: str, user_uuid: str, time: int) -> dict or None:
+        async with httpx.AsyncClient() as httpx_client:
+            try:
+                response = await httpx_client.post(
+                    f"{self.base_url}/socket/video/save-view/{video_uuid}",
+                    data={"user_uuid": user_uuid, "time": time},
+                    headers={"X-API-KEY": self.api_key},
+                    timeout=5,
+                )
+                if response.status_code == 200:
+                    return response.json()
+            except httpx.TimeoutException:
+                logging.error("Video service timed out")
+                return None
+
+            if response.status_code == 404:
+                return None
+
+            logging.error(
+                f"Failed to save video view with status code {response.status_code}"
+            )
+            logging.error(response.text)
+
+            raise ApiException(f"Failed to save video view in {video_uuid}")

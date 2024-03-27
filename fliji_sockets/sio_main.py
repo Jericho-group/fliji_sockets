@@ -17,6 +17,7 @@ from fliji_sockets.models.socket import (
     ConfirmRoomOwnershipTransferRequest,
     SendChatMessageRequest,
     HandleRightToSpeakRequest,
+    EndVideoWatchSessionRequest,
 )
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
@@ -129,15 +130,40 @@ async def disconnect(
 
 
 @app.event("end_video_watch_session")
-async def end_video_watch_session(sid, db: Database = Depends(get_db)):
+async def end_video_watch_session(
+    sid,
+    data: EndVideoWatchSessionRequest,
+    db: Database = Depends(get_db),
+    api_service: FlijiApiService = Depends(get_api_service),
+):
+    # delete the view session
     await delete_view_session_by_socket_id(db, sid)
+
+    # save the view via api
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    try:
+        response_data = await api_service.save_video_view(
+            data.video_uuid, user_uuid=session.user_uuid, time=data.time
+        )
+    except ApiException as e:
+        await app.send_error_message(sid, f"Error saving video view: {e}")
+        return
+
+    if not response_data:
+        await app.send_error_message(sid, f"Error saving video view")
+        return
 
 
 @app.event("update_watch_time")
 async def update_watch_time(
     sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
 ):
-    logging.debug(f"received update watch time event for sid {sid}")
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(

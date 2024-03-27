@@ -46,6 +46,11 @@ class RequestRightToSpeakRequest(MyBaseModel):
     room_uuid: str
 
 
+class EndVideoWatchSessionRequest(MyBaseModel):
+    time: int
+    video_uuid: str
+
+
 class HandleRightToSpeakRequest(MyBaseModel):
     room_uuid: str
     user_uuid: str

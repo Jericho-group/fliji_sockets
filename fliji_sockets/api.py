@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import FastAPI, Depends
 from pymongo.database import Database
 
@@ -25,7 +23,7 @@ app = FastAPI()
 @app.get("/sessions/video/{video_uuid}")
 async def list_view_sessions_for_video(
     video_uuid: str, db: Database = Depends(get_db)
-) -> List[dict]:
+) -> list[dict]:
     view_sessions = await get_view_sessions_for_video(db, video_uuid)
     return view_sessions
 

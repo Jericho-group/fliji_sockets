@@ -314,7 +314,7 @@ async def video_play(sid, data: RoomActionRequest):
 
 
 @app.event("video_pause")
-async def video_play(sid, data: RoomActionRequest):
+async def video_pause(sid, data: RoomActionRequest):
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(

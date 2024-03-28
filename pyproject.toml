@@ -1,3 +1,5 @@
+[tool.pdm]
+distribution = false
 [tool.pdm.scripts]
 _.env_file = ".env"
 socketio = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --host 0.0.0.0 --port 8097 --reload'
@@ -6,6 +8,11 @@ socketio-prod = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --proxy-headers --h
 serve-prod = 'uvicorn fliji_sockets.api:app --proxy-headers --host 0.0.0.0 --port 80'
 serve = 'uvicorn fliji_sockets.api:app --host 0.0.0.0 --port 8098 --reload'
 
+[tool.pdm.dev-dependencies]
+dev = [
+    "sphinx>=7.2.6",
+    "autodoc-pydantic>=2.1.0",
+]
 [project]
 name = "fliji-sockets"
 version = "0.1.0"
@@ -26,5 +33,3 @@ readme = "README.md"
 license = { text = "Proprietary" }
 
 
-[tool.pdm]
-distribution = false

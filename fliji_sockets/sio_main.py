@@ -213,15 +213,17 @@ async def get_sessions_for_video(
     view_sessions_response = []
     for view_session in view_sessions:
         last_update_time = view_session.get("last_update_time")
-        view_sessions_response.append({
-            "user_uuid": view_session.get("user_uuid"),
-            "current_watch_time": view_session.get("current_watch_time"),
-            "last_update_time": last_update_time.isoformat() if last_update_time else None,
-        })
+        view_sessions_response.append(
+            {
+                "user_uuid": view_session.get("user_uuid"),
+                "current_watch_time": view_session.get("current_watch_time"),
+                "last_update_time": (
+                    last_update_time.isoformat() if last_update_time else None
+                ),
+            }
+        )
 
-    await app.emit(
-        "current_video_view_sessions", view_sessions_response, room=sid
-    )
+    await app.emit("current_video_view_sessions", view_sessions_response, room=sid)
 
 
 @app.event("join_room")

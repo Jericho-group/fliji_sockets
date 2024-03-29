@@ -1,6 +1,6 @@
+import inspect
 import os
 import sys
-from pydantic import BaseModel
 
 sys.path.insert(0, os.path.abspath("../../"))
 
@@ -39,8 +39,8 @@ autodoc_pydantic_model_show_config_summary = False
 # -- skip members without docstrings
 def skip_undocumented_members(app, what, name, obj, skip, options):
     if not skip:
-        # Include if the object is a Pydantic model
-        if isinstance(obj, type) and issubclass(obj, BaseModel):
+        # Include if the object is a class
+        if inspect.isclass(obj):
             return False
 
         # Determine if the object has a docstring

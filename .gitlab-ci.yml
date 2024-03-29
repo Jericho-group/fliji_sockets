@@ -7,6 +7,7 @@ build-docs:
   image: docker.io/sphinxdoc/sphinx
   stage: build-docs
   script:
+    - pip install autodoc_pydantic
     - sphinx-build -b html docs/source docs/_build
   artifacts:
     paths:

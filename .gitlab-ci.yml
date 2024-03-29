@@ -7,8 +7,9 @@ build-docs:
   image: docker.io/sphinxdoc/sphinx
   stage: build-docs
   script:
-    - pip install autodoc_pydantic
-    - sphinx-build -b html docs/source docs/_build
+    - pip install pdm
+    - pdm sync --dev
+    - pdm run docs
   artifacts:
     paths:
       - "docs/_build"

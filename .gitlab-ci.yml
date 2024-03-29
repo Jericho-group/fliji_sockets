@@ -1,6 +1,18 @@
 stages:
+  - build-docs
   - deploy-dev
   - deploy-prod
+
+build-docs:
+  image: docker.io/sphinxdoc/sphinx
+  stage: build-docs
+  script:
+    - sphinx-build -b html docs/source docs/_build
+  artifacts:
+    paths:
+      - "docs/_build"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 deploy-dev:
   stage: deploy-dev
@@ -14,6 +26,7 @@ deploy-dev:
     - echo 'StrictHostKeyChecking=accept-new' > ~/.ssh/config
 
   script:
+    - rsync -avz --delete docs/_build/ $DEV_SSH_HOST:caddy/socketdocs
     - ssh $DEV_SSH_HOST "bash deploy.sh newsocket"
 
   rules:

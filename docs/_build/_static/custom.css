@@ -1,0 +1,26 @@
+/** Functions **/
+dl.function .sig-prename {
+    display: none;
+}
+
+dl.function em.sig-param {
+    display: none;
+}
+
+dl.function em.property {
+    display: none;
+}
+
+
+/** Classes **/
+dl.pydantic_model .sig-prename {
+    display: none;
+}
+
+dl.pydantic_model > dt em {
+    display: none;
+}
+
+dl.pydantic_model dd > p:first-of-type {
+    display: none;
+}

@@ -68,9 +68,6 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 .pybuilder/
 target/
@@ -185,10 +182,3 @@ __pycache__
 /docker/dumps/
 /flagged/
 /google-credentials.json
-
-# Sphinx
-/_build/
-/build/
-/doc/_build/
-/docs/_build/
-/sphinx/build/

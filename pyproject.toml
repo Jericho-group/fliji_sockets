@@ -4,6 +4,7 @@ distribution = false
 _.env_file = ".env"
 socketio = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --host 0.0.0.0 --port 8097 --reload'
 socketio-prod = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --proxy-headers --host 0.0.0.0 --port 80'
+docs = "sphinx-build -b html docs/source docs/_build"
 
 serve-prod = 'uvicorn fliji_sockets.api:app --proxy-headers --host 0.0.0.0 --port 80'
 serve = 'uvicorn fliji_sockets.api:app --host 0.0.0.0 --port 8098 --reload'

@@ -33,6 +33,17 @@ class RoomActionRequest(MyBaseModel):
     room_uuid: str
 
 
+class VideoTimecodeRequest(MyBaseModel):
+    room_uuid: str
+    timecode: int
+
+
+class CurrentDurationRequest(MyBaseModel):
+    room_uuid: str
+    duration: int
+    is_played: bool
+
+
 class OnConnectRequest(MyBaseModel):
     auth_token: str
 

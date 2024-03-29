@@ -1,20 +1,6 @@
 stages:
-  - build-docs
   - deploy-dev
   - deploy-prod
-
-build-docs:
-  image: docker.io/sphinxdoc/sphinx
-  stage: build-docs
-  script:
-    - pip install pdm
-    - pdm sync --dev
-    - pdm run docs
-  artifacts:
-    paths:
-      - "docs/_build"
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 deploy-dev:
   stage: deploy-dev

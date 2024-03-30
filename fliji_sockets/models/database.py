@@ -10,10 +10,15 @@ class ViewSession(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     user_uuid: str
     sid: str
-    video_uuid: Optional[str] = None
-    start_time: Optional[datetime] = None
-    current_watch_time: Optional[int] = None
+    video_uuid: str | None = None
+    start_time: datetime | None = None
+    current_watch_time: int | None = None
     last_update_time: datetime
+    avatar: str | None = None
+    username: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    bio: str | None = None
 
     class Config:
         json_extra_schema = {

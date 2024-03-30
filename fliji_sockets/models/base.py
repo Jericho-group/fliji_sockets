@@ -28,3 +28,8 @@ class MyBaseModel(BaseModel):
 
 class UserSession(MyBaseModel):
     user_uuid: str
+    username: str | None = None
+    avatar: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    bio: str | None = None

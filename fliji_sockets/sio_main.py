@@ -32,6 +32,7 @@ from fliji_sockets.models.user_service_api import (
     TransferRoomOwnershipResponse,
     SendChatMessageResponse,
     HandleRightToSpeakResponse,
+    AuthUserResponse,
 )
 from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
@@ -75,27 +76,47 @@ async def startup(
     """
     logging.debug(f"validated request {data} for sid {sid}")
 
-    user_info = await api_service.authenticate_user(data.auth_token)
-    if not user_info:
+    try:
+        response = await api_service.authenticate_user(data.auth_token)
+        response_data = AuthUserResponse.model_validate(response)
+    except ApiException as e:
+        await app.send_fatal_error_message(sid, f"Could not authenticate user: {e}")
+        return
+    except ValidationError as e:
+        await app.send_fatal_error_message(
+            sid, f"Could not authenticate user: {e.errors()} {e.json()}"
+        )
+        return
+
+    if not response:
         await app.send_fatal_error_message(sid, "Could not authenticate user.")
         return
 
-    user_uuid = user_info.get("uuid")
     logging.debug(f"user_uuid found for sid {sid}")
-    if not user_uuid:
+    if not response_data.uuid:
         await app.send_fatal_error_message(sid, "Authentication service failed.")
         return
 
-    logging.debug(f"authenticated user {user_uuid} for sid {sid}")
+    logging.debug(f"authenticated user {response_data.uuid} for sid {sid}")
 
     # Set user online
     online_user = OnlineUser(
-        user_uuid=user_uuid, last_online_at=datetime.now(), sid=sid
+        user_uuid=response_data.uuid, last_online_at=datetime.now(), sid=sid
     )
     await upsert_online_user(db, online_user)
 
     # Also store user_uuid in the user's session for later use
-    await app.save_session(sid, UserSession(user_uuid=user_uuid))
+    await app.save_session(
+        sid,
+        UserSession(
+            user_uuid=response_data.uuid,
+            username=response_data.username,
+            avatar=response_data.image,
+            first_name=response_data.first_name,
+            last_name=response_data.last_name,
+            bio=response_data.bio,
+        ),
+    )
 
 
 @app.event("disconnect")
@@ -223,6 +244,11 @@ async def update_watch_time(
         current_watch_time=data.current_watch_time,
         video_uuid=data.video_uuid,
         user_uuid=session.user_uuid,
+        avatar=session.avatar,
+        username=session.username,
+        first_name=session.first_name,
+        last_name=session.last_name,
+        bio=session.bio,
     )
     await upsert_view_session(db, view_session)
 
@@ -246,7 +272,11 @@ async def get_sessions_for_video(
           {
             "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
             "current_watch_time": 15,
-            "last_update_time": "2021-08-01T12:00:00"
+            "last_update_time": "2021-08-01T12:00:00",
+            "avatar": "https://example.com/avatar.png",
+            "username": "username",
+            "first_name": "first_name",
+            "last_name": "last_name"
           }
         ]
 
@@ -271,6 +301,10 @@ async def get_sessions_for_video(
         view_sessions_response.append(
             {
                 "user_uuid": view_session.get("user_uuid"),
+                "avatar": view_session.get("avatar"),
+                "username": view_session.get("username"),
+                "first_name": view_session.get("first_name"),
+                "last_name": view_session.get("last_name"),
                 "current_watch_time": view_session.get("current_watch_time"),
                 "last_update_time": (
                     last_update_time.isoformat() if last_update_time else None

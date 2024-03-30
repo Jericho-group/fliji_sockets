@@ -27,8 +27,11 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_url}/users/my",
-                    headers={"Authorization": "Bearer " + token},
+                    f"{self.base_url}/socket/auth",
+                    headers={
+                        "Authorization": "Bearer " + token,
+                        "X-API-KEY": self.api_key,
+                    },
                     timeout=5,
                 )
                 if response.status_code == 200:
@@ -275,7 +278,9 @@ class FlijiApiService:
 
             raise ApiException(f"Failed to handle right to speak in {voice_uuid}")
 
-    async def save_video_view(self, video_uuid: str, user_uuid: str, time: int) -> dict or None:
+    async def save_video_view(
+        self, video_uuid: str, user_uuid: str, time: int
+    ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(

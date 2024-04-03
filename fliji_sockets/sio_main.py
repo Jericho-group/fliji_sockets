@@ -166,10 +166,10 @@ async def disconnect(
 
     # save the dangling view session
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
-    video_uuid = view_session.get("video_uuid")
-    current_watch_time = view_session.get("current_watch_time")
 
-    if video_uuid and current_watch_time:
+    if view_session and view_session.get("video_uuid") and view_session.get("current_watch_time"):
+        video_uuid = view_session.get("video_uuid")
+        current_watch_time = view_session.get("current_watch_time")
         try:
             await api_service.save_video_view(
                 video_uuid,

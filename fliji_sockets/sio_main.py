@@ -167,7 +167,11 @@ async def disconnect(
     # save the dangling view session
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
 
-    if view_session and view_session.get("video_uuid") and view_session.get("current_watch_time"):
+    if (
+        view_session
+        and view_session.get("video_uuid")
+        and view_session.get("current_watch_time")
+    ):
         video_uuid = view_session.get("video_uuid")
         current_watch_time = view_session.get("current_watch_time")
         try:
@@ -433,11 +437,22 @@ async def video_play(sid, data: RoomActionRequest):
     """
     Handles the playing of a video in a room.
 
+    The client should validate that the event is only emitted by the admin of the room.
+
     Request:
     :py:class:`fliji_sockets.models.socket.RoomActionRequest`
 
     Response (emitted to everybody in the room):
     `video_play` event
+
+    data
+
+    .. code-block:: json
+
+        {
+            "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+        }
+
     """
     session = await app.get_session(sid)
     if not session:
@@ -446,7 +461,11 @@ async def video_play(sid, data: RoomActionRequest):
         )
         return
 
-    await app.emit("video_play", None, room=get_room_name(data.room_uuid))
+    await app.emit(
+        "video_play",
+        {"from_uuid": session.user_uuid},
+        room=get_room_name(data.room_uuid),
+    )
 
 
 @app.event("video_pause")
@@ -454,11 +473,20 @@ async def video_pause(sid, data: RoomActionRequest):
     """
     Handles the pausing of a video in a room.
 
+    The client should validate that the event is only emitted by the admin of the room.
+
     Request:
     :py:class:`fliji_sockets.models.socket.RoomActionRequest`
 
     Response (emitted to everybody the room):
     `video_pause` event
+
+    data
+    .. code-block:: json
+
+        {
+            "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+        }
 
     """
     session = await app.get_session(sid)
@@ -468,13 +496,19 @@ async def video_pause(sid, data: RoomActionRequest):
         )
         return
 
-    await app.emit("video_pause", None, room=get_room_name(data.room_uuid))
+    await app.emit(
+        "video_pause",
+        {"from_uuid": session.user_uuid},
+        room=get_room_name(data.room_uuid),
+    )
 
 
 @app.event("video_timecode")
 async def video_timecode(sid, data: VideoTimecodeRequest):
     """
     Broadcasts the current timecode of the video in a room.
+
+    The client should validate that the event is only emitted by the admin of the room.
 
     Request:
     :py:class:`fliji_sockets.models.socket.RoomActionRequest`
@@ -487,7 +521,8 @@ async def video_timecode(sid, data: VideoTimecodeRequest):
     .. code-block:: json
 
             {
-                "timecode": 15
+                "timecode": 15,
+                "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
             }
 
     """
@@ -500,7 +535,7 @@ async def video_timecode(sid, data: VideoTimecodeRequest):
 
     await app.emit(
         "video_timecode",
-        {"timecode": data.timecode},
+        {"timecode": data.timecode, "from_uuid": session.user_uuid},
         room=get_room_name(data.room_uuid),
         skip_sid=sid,
     )

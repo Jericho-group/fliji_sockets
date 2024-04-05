@@ -482,12 +482,12 @@ async def video_pause(sid, data: RoomActionRequest):
     `video_pause` event
 
     data
+
     .. code-block:: json
 
         {
             "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
         }
-
     """
     session = await app.get_session(sid)
     if not session:

@@ -244,33 +244,49 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.video_pause">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><span class="pre">RoomActionRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_pause" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the pausing of a video in a room.</p>
+<p>The client should validate that the event is only emitted by the admin of the room.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
 <p>Response (emitted to everybody the room):
 <cite>video_pause</cite> event</p>
+<p>data</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.video_play">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><span class="pre">RoomActionRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_play" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the playing of a video in a room.</p>
+<p>The client should validate that the event is only emitted by the admin of the room.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
 <p>Response (emitted to everybody in the room):
 <cite>video_play</cite> event</p>
+<p>data</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.video_timecode">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_timecode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.VideoTimecodeRequest" title="fliji_sockets.models.socket.VideoTimecodeRequest"><span class="pre">VideoTimecodeRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_timecode" title="Link to this definition">¶</a></dt>
 <dd><p>Broadcasts the current timecode of the video in a room.</p>
+<p>The client should validate that the event is only emitted by the admin of the room.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
 <p>Response (emitted to everybody in the room except for the sender):
 <cite>video_timecode</cite> event</p>
 <p>Data:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
+<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>

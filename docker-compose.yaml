@@ -1,14 +1,12 @@
-version: "3"
 networks:
     fliji-db:
-        name: fliji-db
-        external: true
+      name: fliji-db
+      external: true
+
 services:
   fliji-sockets:
     container_name: fliji-sockets
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: harbor.fliji.xyz/fliji/sockets:main
     env_file: .env
     entrypoint: ./entrypoint-sockets.sh
     networks:
@@ -18,9 +16,7 @@ services:
 
   fliji-sockets-api:
     container_name: fliji-sockets-api
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: harbor.fliji.xyz/fliji/sockets:main
     entrypoint: ./entrypoint.sh
     env_file: .env
     networks:

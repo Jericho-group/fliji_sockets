@@ -1,6 +1,28 @@
 stages:
+  - build-dev
   - deploy-dev
   - deploy-prod
+
+variables:
+  CI_REGISTRY: harbor.fliji.xyz
+  CI_REGISTRY_IMAGE: $CI_REGISTRY/fliji/sockets
+
+build-dev:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  stage: build-dev
+  script:
+    - COMMIT_HASH_SHORT=$(echo $CI_COMMIT_SHA | cut -c 1-7)
+    - >
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --cache=true
+      --cache-ttl=168h
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 deploy-dev:
   stage: deploy-dev

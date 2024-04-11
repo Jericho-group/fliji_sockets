@@ -1,10 +1,16 @@
 import logging
+import random
+import string
 from datetime import datetime
 
 from pydantic import ValidationError
+from pymongo.database import Database
 
 from fliji_sockets.api_client import FlijiApiService, ApiException, ForbiddenException
+from fliji_sockets.dependencies import get_db, get_api_service
 from fliji_sockets.helpers import get_room_name, configure_logging
+from fliji_sockets.models.base import UserSession
+from fliji_sockets.models.database import ViewSession, OnlineUser
 from fliji_sockets.models.enums import RightToSpeakState
 from fliji_sockets.models.socket import (
     OnConnectRequest,
@@ -21,9 +27,6 @@ from fliji_sockets.models.socket import (
     VideoTimecodeRequest,
     CurrentDurationRequest,
 )
-from fliji_sockets.models.base import UserSession
-from fliji_sockets.models.database import ViewSession, OnlineUser
-from fliji_sockets.dependencies import get_db, get_api_service
 from fliji_sockets.models.user_service_api import (
     JoinRoomResponse,
     LeaveAllRoomsResponse,
@@ -36,8 +39,6 @@ from fliji_sockets.models.user_service_api import (
 )
 from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
-from pymongo.database import Database
-
 from fliji_sockets.store import (
     upsert_online_user,
     delete_view_session_by_socket_id,
@@ -59,10 +60,10 @@ configure_logging()
 
 @app.event("startup")
 async def startup(
-    sid,
-    data: OnConnectRequest,
-    db: Database = Depends(get_db),
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: OnConnectRequest,
+        db: Database = Depends(get_db),
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     This event should be called when a socket connects.
@@ -121,9 +122,9 @@ async def startup(
 
 @app.event("disconnect")
 async def disconnect(
-    sid,
-    db: Database = Depends(get_db),
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        db: Database = Depends(get_db),
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Not meant to be called manually.
@@ -168,9 +169,9 @@ async def disconnect(
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
 
     if (
-        view_session
-        and view_session.get("video_uuid")
-        and view_session.get("current_watch_time")
+            view_session
+            and view_session.get("video_uuid")
+            and view_session.get("current_watch_time")
     ):
         video_uuid = view_session.get("video_uuid")
         current_watch_time = view_session.get("current_watch_time")
@@ -190,10 +191,10 @@ async def disconnect(
 
 @app.event("end_video_watch_session")
 async def end_video_watch_session(
-    sid,
-    data: EndVideoWatchSessionRequest,
-    db: Database = Depends(get_db),
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: EndVideoWatchSessionRequest,
+        db: Database = Depends(get_db),
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the end of a video watch session.
@@ -227,7 +228,7 @@ async def end_video_watch_session(
 
 @app.event("update_watch_time")
 async def update_watch_time(
-    sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
+        sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
 ):
     """
     Handles the updating of the current watch time for a video.
@@ -259,7 +260,7 @@ async def update_watch_time(
 
 @app.event("get_sessions_for_video")
 async def get_sessions_for_video(
-    sid, data: GetViewSessionsForVideoRequest, db: Database = Depends(get_db)
+        sid, data: GetViewSessionsForVideoRequest, db: Database = Depends(get_db)
 ):
     """
     Handles the request for the view sessions for a video.
@@ -321,7 +322,7 @@ async def get_sessions_for_video(
 
 @app.event("join_room")
 async def join_room(
-    sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
+        sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
 ):
     """
     Handles the joining of a voice room.
@@ -575,9 +576,9 @@ async def current_duration(sid, data: CurrentDurationRequest):
 
 @app.event("get_status")
 async def get_status(
-    sid,
-    data: RoomActionRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: RoomActionRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the request for the voice status of a room.
@@ -620,9 +621,9 @@ async def get_status(
 
 @app.event("toggle_user_mic")
 async def toggle_user_mic(
-    sid,
-    data: ToggleVoiceUserMicRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: ToggleVoiceUserMicRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Toggles the mic of a user in a room.
@@ -679,9 +680,9 @@ async def toggle_user_mic(
 
 @app.event("transfer_room_ownership")
 async def transfer_room_ownership(
-    sid,
-    data: TransferRoomOwnershipRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: TransferRoomOwnershipRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the transfer of the ownership of a room.
@@ -730,9 +731,9 @@ async def transfer_room_ownership(
 
 @app.event("confirm_room_ownership_transfer")
 async def confirm_room_ownership_transfer(
-    sid,
-    data: ConfirmRoomOwnershipTransferRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: ConfirmRoomOwnershipTransferRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the confirmation of the ownership transfer of a room.
@@ -784,9 +785,9 @@ async def confirm_room_ownership_transfer(
 
 @app.event("send_chat_message")
 async def send_chat_message(
-    sid,
-    data: SendChatMessageRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: SendChatMessageRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the sending of a chat message in a room.
@@ -870,9 +871,9 @@ async def request_right_to_speak(sid, data: RoomActionRequest):
 
 @app.event("handle_right_to_speak")
 async def handle_right_to_speak(
-    sid,
-    data: HandleRightToSpeakRequest,
-    api_service: FlijiApiService = Depends(get_api_service),
+        sid,
+        data: HandleRightToSpeakRequest,
+        api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the handling of the right to speak request in a room.
@@ -944,5 +945,40 @@ if APP_ENV != "local":
     delete_all_online_users(database)
 
 
+def fill_mock_data():
+    """
+    Fill the database with mock data.
+    """
+    # the seed is a random string
+    # generate a random string seed
+    video_uuids = [
+        "213d9e98-4431-4f68-bf33-dd0111f948e5",
+        "9003ea4f-8ea4-4cbb-8fe8-243860f221ce",
+        "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
+        "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
+        "9003ea4f-8ea4-4cbb-8fe8-243860f221ce",
+        "63fd32c3-fbb2-43be-ab94-f0f74b5e7d55"
+    ]
+
+    random_avatar_seed = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+    db = get_database()
+    for video_uuid in video_uuids:
+        view_session = ViewSession(
+            sid="sid",
+            last_update_time=datetime.now(),
+            current_watch_time=15,
+            video_uuid=video_uuid,
+            user_uuid="user_uuid",
+            avatar="https://api.dicebear.com/avatars/avataaars/" + random_avatar_seed,
+            username="username",
+            first_name="first_name",
+            last_name="last_name",
+            bio="bio",
+        )
+        db.view_sessions.insert_one(view_session.model_dump(exclude_none=True))
+
+
+fill_mock_data()
 # Expose the sio_app for Uvicorn to run
 sio_asgi_app = app.get_asgi_app()

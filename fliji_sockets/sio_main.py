@@ -957,7 +957,14 @@ def fill_mock_data():
         "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
         "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
         "9003ea4f-8ea4-4cbb-8fe8-243860f221ce",
-        "63fd32c3-fbb2-43be-ab94-f0f74b5e7d55"
+        "63fd32c3-fbb2-43be-ab94-f0f74b5e7d55",
+        "f5a0531b-9eb8-4f9b-bf4c-875a6ee78a17",
+        "e6e392b2-846d-472b-abcc-f9992cb2b59a",
+        "7dfbbd1c-5456-47a7-bd9b-e98c23990c9f",
+        "d6496ac5-144e-423b-b421-14c13ed2c218",
+        "1d2a32da-435c-488d-8d42-3817a83d17ce",
+        "f9de0486-d1ab-46ba-b451-706d1473bd8b",
+        "a1d4c8d7-683f-4193-b2ff-aa226cb37574"
     ]
 
     random_avatar_seed = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
@@ -969,7 +976,7 @@ def fill_mock_data():
             last_update_time=datetime.now(),
             current_watch_time=15,
             video_uuid=video_uuid,
-            user_uuid="user_uuid",
+            user_uuid="0ebc493f-bf2c-46be-84f1-b6ffcd1ff161",
             avatar="https://api.dicebear.com/avatars/avataaars/" + random_avatar_seed,
             username="username",
             first_name="first_name",

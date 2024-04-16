@@ -21,13 +21,13 @@ class FlijiApiService:
 
     def __init__(self):
         self.api_key = USER_SERVICE_API_KEY
-        self.base_url = USER_SERVICE_URL + "/api/v1"
+        self.base_url = USER_SERVICE_URL + "/sockets-api/v1"
 
     async def authenticate_user(self, token) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_url}/socket/auth",
+                    f"{self.base_url}/auth",
                     headers={
                         "Authorization": "Bearer " + token,
                         "X-API-KEY": self.api_key,
@@ -44,7 +44,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/join/{voice_uuid}",
+                    f"{self.base_url}/voice/join/{voice_uuid}",
                     headers={"X-API-KEY": self.api_key},
                     data={"user_uuid": user_uuid},
                     timeout=5,
@@ -69,7 +69,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/leave-all",
+                    f"{self.base_url}/voice/leave-all",
                     headers={"X-API-KEY": self.api_key},
                     data={"user_uuid": user_uuid},
                     timeout=5,
@@ -94,7 +94,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_url}/socket/voice/status/{voice_uuid}",
+                    f"{self.base_url}/voice/status/{voice_uuid}",
                     headers={"X-API-KEY": self.api_key},
                     timeout=5,
                 )
@@ -120,7 +120,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/toggle-mic/{voice_uuid}",
+                    f"{self.base_url}/voice/toggle-mic/{voice_uuid}",
                     data={"user_uuid": user_uuid, "from_user_uuid": from_user_uuid},
                     headers={"X-API-KEY": self.api_key},
                     timeout=5,
@@ -150,7 +150,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/transfer-owner/{voice_uuid}",
+                    f"{self.base_url}/voice/transfer-owner/{voice_uuid}",
                     data={
                         "new_owner_uuid": new_owner_uuid,
                         "from_user_uuid": from_user_uuid,
@@ -183,7 +183,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/confirm-ownership-transfer/{voice_uuid}",
+                    f"{self.base_url}/voice/confirm-ownership-transfer/{voice_uuid}",
                     data={
                         "old_owner_uuid": old_owner_uuid,
                         "from_user_uuid": from_user_uuid,
@@ -216,7 +216,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/send-chat-message/{voice_uuid}",
+                    f"{self.base_url}/voice/send-chat-message/{voice_uuid}",
                     data={"user_uuid": user_uuid, "message": message},
                     headers={"X-API-KEY": self.api_key},
                     timeout=5,
@@ -250,7 +250,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/voice/handle-right-to-speak/{voice_uuid}",
+                    f"{self.base_url}/voice/handle-right-to-speak/{voice_uuid}",
                     data={
                         "user_uuid": user_uuid,
                         "from_user_uuid": from_user_uuid,
@@ -284,7 +284,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.post(
-                    f"{self.base_url}/socket/video/save-view/{video_uuid}",
+                    f"{self.base_url}/video/save-view/{video_uuid}",
                     data={"user_uuid": user_uuid, "time": time},
                     headers={"X-API-KEY": self.api_key},
                     timeout=5,

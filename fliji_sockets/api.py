@@ -39,7 +39,7 @@ async def get_view_sessions_count_for_video(
 @app.get("/sessions/user/{user_uuid}")
 async def user_current_session(
     user_uuid: str, db: Database = Depends(get_db)
-) -> dict:
+) -> dict | None:
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
     return view_session
 

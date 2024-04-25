@@ -7,6 +7,7 @@ stages:
 variables:
   CI_REGISTRY: harbor.fliji.xyz
   CI_REGISTRY_IMAGE: $CI_REGISTRY/fliji/sockets
+  CI_REGISTRY_IMAGE_DEV: $CI_REGISTRY/fliji/sockets-dev
 
 build-dev:
   image:
@@ -21,7 +22,7 @@ build-dev:
       --cache=true
       --cache-ttl=168h
       --dockerfile $CI_PROJECT_DIR/Dockerfile
-      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+      --destination $CI_REGISTRY_IMAGE_DEV:$CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 

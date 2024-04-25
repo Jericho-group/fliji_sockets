@@ -107,17 +107,22 @@ async def startup(
     await upsert_online_user(db, online_user)
 
     # Also store user_uuid in the user's session for later use
-    await app.save_session(
-        sid,
-        UserSession(
-            user_uuid=response_data.uuid,
-            username=response_data.username,
-            avatar=response_data.image,
-            first_name=response_data.first_name,
-            last_name=response_data.last_name,
-            bio=response_data.bio,
-        ),
-    )
+    try:
+        await app.save_session(
+            sid,
+            UserSession(
+                user_uuid=response_data.uuid,
+                username=response_data.username,
+                avatar=response_data.image,
+                first_name=response_data.first_name,
+                last_name=response_data.last_name,
+                bio=response_data.bio,
+            ),
+        )
+    except Exception as e:
+        logging.error(f"Could not save session: {e}")
+        await app.send_fatal_error_message(sid, f"Could not save session: {e}")
+        return
 
 
 @app.event("disconnect")

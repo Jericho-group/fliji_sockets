@@ -175,8 +175,8 @@ async def disconnect(
 
     if (
             view_session
-            and view_session.get("video_uuid")
-            and view_session.get("current_watch_time")
+            and (view_session.get("video_uuid") is not None)
+            and (view_session.get("current_watch_time") is not None)
     ):
         video_uuid = view_session.get("video_uuid")
         current_watch_time = view_session.get("current_watch_time")

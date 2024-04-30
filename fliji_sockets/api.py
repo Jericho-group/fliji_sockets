@@ -4,7 +4,7 @@ from pymongo.database import Database
 
 from fliji_sockets.models.database import ViewSession
 from fliji_sockets.dependencies import get_db
-from fliji_sockets.helpers import configure_logging
+from fliji_sockets.helpers import configure_logging, configure_sentry
 from fliji_sockets.store import (
     get_view_sessions_for_video,
     get_view_session_by_user_uuid,
@@ -16,6 +16,7 @@ from fliji_sockets.store import (
 )
 
 configure_logging()
+configure_sentry()
 
 
 app = FastAPI()

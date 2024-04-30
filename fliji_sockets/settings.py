@@ -6,6 +6,8 @@ LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
 # access dsn for sentry error reporting
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
+SENTRY_SAMPLE_RATE = float(os.environ.get("SENTRY_SAMPLE_RATE", "0.3"))
+SENTRY_PROFILING_SAMPLE_RATE = float(os.environ.get("SENTRY_PROFILING_SAMPLE_RATE", "0.0"))
 
 APP_ENV = os.environ.get("APP_ENV", default="prod")
 

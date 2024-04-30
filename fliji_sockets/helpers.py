@@ -2,7 +2,15 @@ import datetime
 import json
 import logging
 
-from fliji_sockets.settings import LOG_LEVEL
+import sentry_sdk
+
+from fliji_sockets.settings import (
+    LOG_LEVEL,
+    SENTRY_DSN,
+    APP_ENV,
+    SENTRY_SAMPLE_RATE,
+    SENTRY_PROFILING_SAMPLE_RATE,
+)
 
 
 def time_now():
@@ -12,6 +20,16 @@ def time_now():
 def configure_logging():
     loglevel = get_log_level()
     logging.basicConfig(format="%(asctime)s %(levelname)s:%(message)s", level=loglevel)
+
+
+def configure_sentry():
+    if SENTRY_DSN and APP_ENV != "local":
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            traces_sample_rate=SENTRY_SAMPLE_RATE,
+            profiles_sample_rate=SENTRY_PROFILING_SAMPLE_RATE,
+            environment=APP_ENV,
+        )
 
 
 def parse_data(data):

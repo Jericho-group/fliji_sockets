@@ -8,7 +8,7 @@ from pymongo.database import Database
 
 from fliji_sockets.api_client import FlijiApiService, ApiException, ForbiddenException
 from fliji_sockets.dependencies import get_db, get_api_service
-from fliji_sockets.helpers import get_room_name, configure_logging
+from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, OnlineUser
 from fliji_sockets.models.enums import RightToSpeakState
@@ -56,14 +56,15 @@ from fliji_sockets.store import (
 app = SocketioApplication()
 
 configure_logging()
+configure_sentry()
 
 
 @app.event("startup")
 async def startup(
-        sid,
-        data: OnConnectRequest,
-        db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: OnConnectRequest,
+    db: Database = Depends(get_db),
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     This event should be called when a socket connects.
@@ -127,9 +128,9 @@ async def startup(
 
 @app.event("disconnect")
 async def disconnect(
-        sid,
-        db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    db: Database = Depends(get_db),
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Not meant to be called manually.
@@ -174,9 +175,9 @@ async def disconnect(
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
 
     if (
-            view_session
-            and (view_session.get("video_uuid") is not None)
-            and (view_session.get("current_watch_time") is not None)
+        view_session
+        and (view_session.get("video_uuid") is not None)
+        and (view_session.get("current_watch_time") is not None)
     ):
         video_uuid = view_session.get("video_uuid")
         current_watch_time = view_session.get("current_watch_time")
@@ -196,10 +197,10 @@ async def disconnect(
 
 @app.event("end_video_watch_session")
 async def end_video_watch_session(
-        sid,
-        data: EndVideoWatchSessionRequest,
-        db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: EndVideoWatchSessionRequest,
+    db: Database = Depends(get_db),
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the end of a video watch session.
@@ -233,7 +234,7 @@ async def end_video_watch_session(
 
 @app.event("update_watch_time")
 async def update_watch_time(
-        sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
+    sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
 ):
     """
     Handles the updating of the current watch time for a video.
@@ -265,7 +266,7 @@ async def update_watch_time(
 
 @app.event("get_sessions_for_video")
 async def get_sessions_for_video(
-        sid, data: GetViewSessionsForVideoRequest, db: Database = Depends(get_db)
+    sid, data: GetViewSessionsForVideoRequest, db: Database = Depends(get_db)
 ):
     """
     Handles the request for the view sessions for a video.
@@ -327,7 +328,7 @@ async def get_sessions_for_video(
 
 @app.event("join_room")
 async def join_room(
-        sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
+    sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
 ):
     """
     Handles the joining of a voice room.
@@ -581,9 +582,9 @@ async def current_duration(sid, data: CurrentDurationRequest):
 
 @app.event("get_status")
 async def get_status(
-        sid,
-        data: RoomActionRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: RoomActionRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the request for the voice status of a room.
@@ -626,9 +627,9 @@ async def get_status(
 
 @app.event("toggle_user_mic")
 async def toggle_user_mic(
-        sid,
-        data: ToggleVoiceUserMicRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: ToggleVoiceUserMicRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Toggles the mic of a user in a room.
@@ -685,9 +686,9 @@ async def toggle_user_mic(
 
 @app.event("transfer_room_ownership")
 async def transfer_room_ownership(
-        sid,
-        data: TransferRoomOwnershipRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: TransferRoomOwnershipRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the transfer of the ownership of a room.
@@ -736,9 +737,9 @@ async def transfer_room_ownership(
 
 @app.event("confirm_room_ownership_transfer")
 async def confirm_room_ownership_transfer(
-        sid,
-        data: ConfirmRoomOwnershipTransferRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: ConfirmRoomOwnershipTransferRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the confirmation of the ownership transfer of a room.
@@ -790,9 +791,9 @@ async def confirm_room_ownership_transfer(
 
 @app.event("send_chat_message")
 async def send_chat_message(
-        sid,
-        data: SendChatMessageRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: SendChatMessageRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the sending of a chat message in a room.
@@ -876,9 +877,9 @@ async def request_right_to_speak(sid, data: RoomActionRequest):
 
 @app.event("handle_right_to_speak")
 async def handle_right_to_speak(
-        sid,
-        data: HandleRightToSpeakRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+    sid,
+    data: HandleRightToSpeakRequest,
+    api_service: FlijiApiService = Depends(get_api_service),
 ):
     """
     Handles the handling of the right to speak request in a room.
@@ -969,10 +970,12 @@ def fill_mock_data():
         "d6496ac5-144e-423b-b421-14c13ed2c218",
         "1d2a32da-435c-488d-8d42-3817a83d17ce",
         "f9de0486-d1ab-46ba-b451-706d1473bd8b",
-        "a1d4c8d7-683f-4193-b2ff-aa226cb37574"
+        "a1d4c8d7-683f-4193-b2ff-aa226cb37574",
     ]
 
-    random_avatar_seed = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    random_avatar_seed = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=8)
+    )
 
     db = get_database()
     for video_uuid in video_uuids:
@@ -992,5 +995,6 @@ def fill_mock_data():
 
 
 fill_mock_data()
+
 # Expose the sio_app for Uvicorn to run
 sio_asgi_app = app.get_asgi_app()

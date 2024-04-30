@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pymongo.database import Database
 
 from fliji_sockets.models.database import ViewSession
@@ -18,6 +19,14 @@ configure_logging()
 
 
 app = FastAPI()
+# noinspection PyTypeChecker
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/sessions/video/{video_uuid}")

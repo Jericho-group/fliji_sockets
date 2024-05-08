@@ -994,7 +994,7 @@ def fill_mock_data():
         db.view_sessions.insert_one(view_session.model_dump(exclude_none=True))
 
 
-fill_mock_data()
+#fill_mock_data()
 
 # Expose the sio_app for Uvicorn to run
 sio_asgi_app = app.get_asgi_app()

@@ -115,7 +115,7 @@ class FlijiApiService:
             raise ApiException(f"Failed to get voice status for {voice_uuid}")
 
     async def toggle_voice_user_mic(
-        self, voice_uuid: str, user_uuid: str, from_user_uuid: str
+            self, voice_uuid: str, user_uuid: str, from_user_uuid: str
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
@@ -145,7 +145,7 @@ class FlijiApiService:
             raise ApiException(f"Failed to toggle mic in {voice_uuid}")
 
     async def transfer_room_ownership(
-        self, voice_uuid: str, new_owner_uuid: str, from_user_uuid: str
+            self, voice_uuid: str, new_owner_uuid: str, from_user_uuid: str
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
@@ -177,8 +177,38 @@ class FlijiApiService:
 
             raise ApiException(f"Failed to transfer ownership in {voice_uuid}")
 
+    async def start_watching_video(self, video_uuid: str, user_uuid: str) -> dict or None:
+        async with httpx.AsyncClient() as httpx_client:
+            try:
+                response = await httpx_client.post(
+                    f"{self.base_url}/video/start-watching/{video_uuid}",
+                    data={
+                        "user_uuid": user_uuid,
+                    },
+                    headers={"X-API-KEY": self.api_key},
+                    timeout=5,
+                )
+                if response.status_code == 200:
+                    return response.json()
+            except httpx.TimeoutException:
+                logging.error("Voice room service timed out")
+                return None
+
+            if response.status_code == 404:
+                return None
+
+            if response.status_code == 403:
+                raise ForbiddenException()
+
+            logging.error(
+                f"Failed to start watching video {response.status_code}"
+            )
+            logging.error(response.text)
+
+            raise ApiException(f"Failed to start watching video {video_uuid}")
+
     async def confirm_room_ownership_transfer(
-        self, voice_uuid: str, old_owner_uuid: str, from_user_uuid: str
+            self, voice_uuid: str, old_owner_uuid: str, from_user_uuid: str
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
@@ -211,7 +241,7 @@ class FlijiApiService:
             raise ApiException(f"Failed to confirm ownership transfer in {voice_uuid}")
 
     async def send_chat_message(
-        self, voice_uuid: str, user_uuid: str, message: str
+            self, voice_uuid: str, user_uuid: str, message: str
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
@@ -241,11 +271,11 @@ class FlijiApiService:
             raise ApiException(f"Failed to send chat message in {voice_uuid}")
 
     async def handle_right_to_speak(
-        self,
-        voice_uuid: str,
-        from_user_uuid,
-        user_uuid: str,
-        right_to_speak: RightToSpeakState,
+            self,
+            voice_uuid: str,
+            from_user_uuid,
+            user_uuid: str,
+            right_to_speak: RightToSpeakState,
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:
@@ -279,7 +309,7 @@ class FlijiApiService:
             raise ApiException(f"Failed to handle right to speak in {voice_uuid}")
 
     async def save_video_view(
-        self, video_uuid: str, user_uuid: str, time: int
+            self, video_uuid: str, user_uuid: str, time: int
     ) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
             try:

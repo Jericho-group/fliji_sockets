@@ -234,7 +234,8 @@ async def end_video_watch_session(
 
 @app.event("update_watch_time")
 async def update_watch_time(
-        sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db)
+        sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db),
+        api_service: FlijiApiService = Depends(get_api_service)
 ):
     """
     Handles the updating of the current watch time for a video.
@@ -248,6 +249,15 @@ async def update_watch_time(
             sid, "Unauthorized: could not find user_uuid in socketio session"
         )
         return
+
+    session_already_exists = await get_view_session_by_user_uuid(db, session.user_uuid)
+    if not session_already_exists:
+        try:
+            print(f"Starting to watch video: {data.model_dump()}")
+            await api_service.start_watching_video(
+                data.video_uuid, session.user_uuid)
+        except ApiException as e:
+            logging.error(f"Error starting to watch video: {e}")
 
     view_session = ViewSession(
         sid=sid,

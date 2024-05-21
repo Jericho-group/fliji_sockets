@@ -20,7 +20,7 @@ class GetStatusVoiceUser(MyBaseModel):
     role: str
     mic: bool | None = None
     mic_ban: bool | None = None
-    right_to_speak: bool | None = None
+    right_to_speak: bool | str | None = None
 
 
 class GetStatusResponse(MyBaseModel):

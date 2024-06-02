@@ -28,14 +28,12 @@ class SocketioApplication:
         mgr = socketio.AsyncRedisManager(REDIS_CONNECTION_STRING)
         self.sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*",
                                         client_manager=mgr,
-                                        logger=True,
-                                        engineio_logger=True,
                                         )
         self.sio_app = socketio.ASGIApp(self.sio)
 
     @staticmethod
     def get_remote_emitter() -> socketio.AsyncRedisManager:
-        return socketio.AsyncRedisManager(REDIS_CONNECTION_STRING, write_only=True, logger=True)
+        return socketio.AsyncRedisManager(REDIS_CONNECTION_STRING, write_only=True)
 
     async def resolve_dependency(self, dep: dict[str, Any]):
         if dep["type"] == "dependency":

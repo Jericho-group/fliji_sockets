@@ -81,7 +81,7 @@ async def publish_room_ownership_changed(nc: Client, room_uuid: str, new_owner_u
     await nc.flush()
 
 
-async def publish_chat_message(nc: Client, chat_id: str, room_uuid: str, author_uuid: str,
+async def publish_chat_message(nc: Client, chat_id: int, room_uuid: str, author_uuid: str,
                                message: str):
     payload = {
         "chat_id": chat_id,

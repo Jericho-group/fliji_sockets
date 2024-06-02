@@ -56,7 +56,7 @@ class Room(MyBaseModel):
     permissions: int
     mode: str
     name: str
-    chat_id: str
+    chat_id: int
     created_at: datetime
     updated_at: datetime
     time_leave: datetime | None = None
@@ -68,7 +68,7 @@ class Chat(MyBaseModel):
 
 class ChatMessage(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
-    chat_id: str
+    chat_id: int
     room_uuid: str
     internal_chat_id: str
     user_uuid: str
@@ -83,7 +83,7 @@ class RoomUser(MyBaseModel):
     first_name: str | None = None
     last_name: str | None = None
     avatar_url: str | None = None
-    chat_id: str | None = None
+    chat_id: int | None = None
     internal_chat_id: str | None = None
     mic: bool
     role: str

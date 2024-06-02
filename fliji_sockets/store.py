@@ -95,7 +95,7 @@ async def insert_chat(db: Database, chat: Chat) -> str:
     return chat_id
 
 
-async def get_chat_by_id(db: Database, chat_id: str) -> dict:
+async def get_chat_by_id(db: Database, chat_id: int) -> dict:
     chat = db.chats.find_one({"_id": chat_id})
     return chat
 

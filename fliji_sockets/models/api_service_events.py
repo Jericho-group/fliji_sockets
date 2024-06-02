@@ -6,7 +6,7 @@ class RoomCreatedEvent(MyBaseModel):
     uuid: str
     author: str
     video_uuid: str
-    chat_id: str
+    chat_id: int
     permissions: RoomPermissions
     mode: RoomMode
     name: str
@@ -16,7 +16,7 @@ class RoomUpdatedEvent(MyBaseModel):
     uuid: str
     author: str
     video_uuid: str
-    chat_id: str
+    chat_id: int
     permissions: RoomPermissions
     mode: RoomMode
     name: str

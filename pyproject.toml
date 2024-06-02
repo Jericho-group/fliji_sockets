@@ -6,6 +6,7 @@ socketio = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --host 0.0.0.0 --port 80
 socketio-prod = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --proxy-headers --host 0.0.0.0 --port 80'
 docs = "sphinx-build -b html docs/source docs/_build"
 
+event-listener = {call = "fliji_sockets.api_event_listener:main"}
 serve-prod = 'uvicorn fliji_sockets.api:app --proxy-headers --host 0.0.0.0 --port 80'
 serve = 'uvicorn fliji_sockets.api:app --host 0.0.0.0 --port 8098 --reload'
 
@@ -28,6 +29,8 @@ dependencies = [
     "pymongo>=4.6.1",
     "sentry-sdk[fastapi]>=1.40.4",
     "httpx>=0.26.0",
+    "nats-py>=2.7.2",
+    "aioredis==1.3.1",
 ]
 requires-python = "==3.10.*"
 readme = "README.md"

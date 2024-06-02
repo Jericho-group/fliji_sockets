@@ -5,7 +5,21 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:8d02a733aeaf38fdcfb9c01465cbdc51c429261b87ab696e90bda2d3183cb4c1"
+content_hash = "sha256:839d0fcb7b98a9c4c3425a7d128fd3b74dadfd33c03442715ed3926b7381ab34"
+
+[[package]]
+name = "aioredis"
+version = "1.3.1"
+summary = "asyncio (PEP 3156) Redis support"
+groups = ["default"]
+dependencies = [
+    "async-timeout",
+    "hiredis",
+]
+files = [
+    {file = "aioredis-1.3.1-py3-none-any.whl", hash = "sha256:b61808d7e97b7cd5a92ed574937a079c9387fdadd22bfbfa7ad2fd319ecc26e3"},
+    {file = "aioredis-1.3.1.tar.gz", hash = "sha256:15f8af30b044c771aee6787e5ec24694c048184c7b9e54c3b60c750a4b93273a"},
+]
 
 [[package]]
 name = "alabaster"
@@ -44,6 +58,17 @@ dependencies = [
 files = [
     {file = "anyio-4.2.0-py3-none-any.whl", hash = "sha256:745843b39e829e108e518c489b31dc757de7d2131d53fac32bd8df268227bfee"},
     {file = "anyio-4.2.0.tar.gz", hash = "sha256:e1875bb4b4e2de1669f4bc7869b6d3f54231cdced71605e6e64c9be77e3be50f"},
+]
+
+[[package]]
+name = "async-timeout"
+version = "4.0.3"
+requires_python = ">=3.7"
+summary = "Timeout context manager for asyncio programs"
+groups = ["default"]
+files = [
+    {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
+    {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
 ]
 
 [[package]]
@@ -198,6 +223,51 @@ files = [
 ]
 
 [[package]]
+name = "hiredis"
+version = "2.3.2"
+requires_python = ">=3.7"
+summary = "Python wrapper for hiredis"
+groups = ["default"]
+files = [
+    {file = "hiredis-2.3.2-cp310-cp310-macosx_10_15_universal2.whl", hash = "sha256:742093f33d374098aa21c1696ac6e4874b52658c870513a297a89265a4d08fe5"},
+    {file = "hiredis-2.3.2-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:9e14fb70ca4f7efa924f508975199353bf653f452e4ef0a1e47549e208f943d7"},
+    {file = "hiredis-2.3.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:6d7302b4b17fcc1cc727ce84ded7f6be4655701e8d58744f73b09cb9ed2b13df"},
+    {file = "hiredis-2.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ed63e8b75c193c5e5a8288d9d7b011da076cc314fafc3bfd59ec1d8a750d48c8"},
+    {file = "hiredis-2.3.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:6b4edee59dc089bc3948f4f6fba309f51aa2ccce63902364900aa0a553a85e97"},
+    {file = "hiredis-2.3.2-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:a6481c3b7673a86276220140456c2a6fbfe8d1fb5c613b4728293c8634134824"},
+    {file = "hiredis-2.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:684840b014ce83541a087fcf2d48227196576f56ae3e944d4dfe14c0a3e0ccb7"},
+    {file = "hiredis-2.3.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1c4c0bcf786f0eac9593367b6279e9b89534e008edbf116dcd0de956524702c8"},
+    {file = "hiredis-2.3.2-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:66ab949424ac6504d823cba45c4c4854af5c59306a1531edb43b4dd22e17c102"},
+    {file = "hiredis-2.3.2-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:322c668ee1c12d6c5750a4b1057e6b4feee2a75b3d25d630922a463cfe5e7478"},
+    {file = "hiredis-2.3.2-cp310-cp310-musllinux_1_1_ppc64le.whl", hash = "sha256:bfa73e3f163c6e8b2ec26f22285d717a5f77ab2120c97a2605d8f48b26950dac"},
+    {file = "hiredis-2.3.2-cp310-cp310-musllinux_1_1_s390x.whl", hash = "sha256:7f39f28ffc65de577c3bc0c7615f149e35bc927802a0f56e612db9b530f316f9"},
+    {file = "hiredis-2.3.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:55ce31bf4711da879b96d511208efb65a6165da4ba91cb3a96d86d5a8d9d23e6"},
+    {file = "hiredis-2.3.2-cp310-cp310-win32.whl", hash = "sha256:3dd63d0bbbe75797b743f35d37a4cca7ca7ba35423a0de742ae2985752f20c6d"},
+    {file = "hiredis-2.3.2-cp310-cp310-win_amd64.whl", hash = "sha256:ea002656a8d974daaf6089863ab0a306962c8b715db6b10879f98b781a2a5bf5"},
+    {file = "hiredis-2.3.2-pp310-pypy310_pp73-macosx_10_15_x86_64.whl", hash = "sha256:7e8bf4444b09419b77ce671088db9f875b26720b5872d97778e2545cd87dba4a"},
+    {file = "hiredis-2.3.2-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5bd42d0d45ea47a2f96babd82a659fbc60612ab9423a68e4a8191e538b85542a"},
+    {file = "hiredis-2.3.2-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:80441b55edbef868e2563842f5030982b04349408396e5ac2b32025fb06b5212"},
+    {file = "hiredis-2.3.2-pp310-pypy310_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ec444ab8f27562a363672d6a7372bc0700a1bdc9764563c57c5f9efa0e592b5f"},
+    {file = "hiredis-2.3.2-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:f9f606e810858207d4b4287b4ef0dc622c2aa469548bf02b59dcc616f134f811"},
+    {file = "hiredis-2.3.2-pp37-pypy37_pp73-macosx_10_15_x86_64.whl", hash = "sha256:c3dde4ca00fe9eee3b76209711f1941bb86db42b8a75d7f2249ff9dfc026ab0e"},
+    {file = "hiredis-2.3.2-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d4dd676107a1d3c724a56a9d9db38166ad4cf44f924ee701414751bd18a784a0"},
+    {file = "hiredis-2.3.2-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ce42649e2676ad783186264d5ffc788a7612ecd7f9effb62d51c30d413a3eefe"},
+    {file = "hiredis-2.3.2-pp37-pypy37_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8e3f8b1733078ac663dad57e20060e16389a60ab542f18a97931f3a2a2dd64a4"},
+    {file = "hiredis-2.3.2-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:532a84a82156a82529ec401d1c25d677c6543c791e54a263aa139541c363995f"},
+    {file = "hiredis-2.3.2-pp38-pypy38_pp73-macosx_10_15_x86_64.whl", hash = "sha256:4d59f88c4daa36b8c38e59ac7bffed6f5d7f68eaccad471484bf587b28ccc478"},
+    {file = "hiredis-2.3.2-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a91a14dd95e24dc078204b18b0199226ee44644974c645dc54ee7b00c3157330"},
+    {file = "hiredis-2.3.2-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bb777a38797c8c7df0444533119570be18d1a4ce5478dffc00c875684df7bfcb"},
+    {file = "hiredis-2.3.2-pp38-pypy38_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d47c915897a99d0d34a39fad4be97b4b709ab3d0d3b779ebccf2b6024a8c681e"},
+    {file = "hiredis-2.3.2-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:333b5e04866758b11bda5f5315b4e671d15755fc6ed3b7969721bc6311d0ee36"},
+    {file = "hiredis-2.3.2-pp39-pypy39_pp73-macosx_10_15_x86_64.whl", hash = "sha256:c8937f1100435698c18e4da086968c4b5d70e86ea718376f833475ab3277c9aa"},
+    {file = "hiredis-2.3.2-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fa45f7d771094b8145af10db74704ab0f698adb682fbf3721d8090f90e42cc49"},
+    {file = "hiredis-2.3.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:33d5ebc93c39aed4b5bc769f8ce0819bc50e74bb95d57a35f838f1c4378978e0"},
+    {file = "hiredis-2.3.2-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a797d8c7df9944314d309b0d9e1b354e2fa4430a05bb7604da13b6ad291bf959"},
+    {file = "hiredis-2.3.2-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:e15a408f71a6c8c87b364f1f15a6cd9c1baca12bbc47a326ac8ab99ec7ad3c64"},
+    {file = "hiredis-2.3.2.tar.gz", hash = "sha256:733e2456b68f3f126ddaf2cd500a33b25146c3676b97ea843665717bda0c5d43"},
+]
+
+[[package]]
 name = "httpcore"
 version = "1.0.3"
 requires_python = ">=3.8"
@@ -301,6 +371,16 @@ files = [
     {file = "MarkupSafe-2.1.5-cp310-cp310-win32.whl", hash = "sha256:d9fad5155d72433c921b782e58892377c44bd6252b5af2f67f16b194987338a4"},
     {file = "MarkupSafe-2.1.5-cp310-cp310-win_amd64.whl", hash = "sha256:bf50cd79a75d181c9181df03572cdce0fbb75cc353bc350712073108cba98de5"},
     {file = "MarkupSafe-2.1.5.tar.gz", hash = "sha256:d283d37a890ba4c1ae73ffadf8046435c76e7bc2247bbb63c00bd1a709c6544b"},
+]
+
+[[package]]
+name = "nats-py"
+version = "2.7.2"
+requires_python = ">=3.7"
+summary = "NATS client for Python"
+groups = ["default"]
+files = [
+    {file = "nats-py-2.7.2.tar.gz", hash = "sha256:0c97b4a57bed0ef1ff9ae6c19bc115ec7ca8ede5ab3e001fd00a377056a547cf"},
 ]
 
 [[package]]

@@ -24,3 +24,12 @@ MONGO_PASSWORD = os.environ.get("MONGO_PASSWORD", "fliji_sockets")
 
 USER_SERVICE_URL = os.environ.get("USER_SERVICE_URL", "http://user-service:8000")
 USER_SERVICE_API_KEY = os.environ.get("USER_SERVICE_API_KEY")
+
+NATS_HOST = os.environ.get("NATS_HOST", "nats://localhost:4222")
+NATS_TOKEN = os.environ.get("NATS_TOKEN", "")
+
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", "6379"))
+REDIS_DB = int(os.environ.get("REDIS_DB", "5"))
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", "")
+REDIS_CONNECTION_STRING = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"

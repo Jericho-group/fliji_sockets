@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import Field
 
 from fliji_sockets.models.base import PyObjectId, MyBaseModel
+from fliji_sockets.models.enums import RoomUserRole
 
 
 class ViewSession(MyBaseModel):
@@ -46,3 +46,54 @@ class OnlineUser(MyBaseModel):
                 "sid": "1234567890",
             },
         }
+
+
+class Room(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    uuid: str
+    author: str
+    video_uuid: str
+    permissions: int
+    mode: str
+    name: str
+    chat_id: str
+    created_at: datetime
+    updated_at: datetime
+    time_leave: datetime | None = None
+
+
+class Chat(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+
+
+class ChatMessage(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    chat_id: str
+    room_uuid: str
+    internal_chat_id: str
+    user_uuid: str
+    message: str
+
+
+class RoomUser(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    room_uuid: str
+    user_uuid: str
+    username: str
+    first_name: str | None = None
+    last_name: str | None = None
+    avatar_url: str | None = None
+    chat_id: str | None = None
+    internal_chat_id: str | None = None
+    mic: bool
+    role: str
+    right_to_speak: bool
+    mic_ban: bool
+    created_at: datetime
+    updated_at: datetime
+
+    @classmethod
+    def from_mongo(cls, data) -> "RoomUser":
+        if "role" in data:
+            data["role"] = RoomUserRole(data["role"])  # convert string to enum
+        return cls(**data)

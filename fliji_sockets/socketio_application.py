@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from pydantic import BaseModel
 
 from fliji_sockets.models.base import UserSession
+from fliji_sockets.settings import REDIS_CONNECTION_STRING
 
 
 def Depends(dependency_callable: Callable):
@@ -17,15 +18,24 @@ def Depends(dependency_callable: Callable):
 
     # Marking this as an async dependency
     async def async_dependency_wrapper():
-        return dependency_callable()
+        return await dependency_callable()
 
     return {"type": "dependency", "callable": async_dependency_wrapper}
 
 
 class SocketioApplication:
     def __init__(self):
-        self.sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+        mgr = socketio.AsyncRedisManager(REDIS_CONNECTION_STRING)
+        self.sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*",
+                                        client_manager=mgr,
+                                        logger=True,
+                                        engineio_logger=True,
+                                        )
         self.sio_app = socketio.ASGIApp(self.sio)
+
+    @staticmethod
+    def get_remote_emitter() -> socketio.AsyncRedisManager:
+        return socketio.AsyncRedisManager(REDIS_CONNECTION_STRING, write_only=True, logger=True)
 
     async def resolve_dependency(self, dep: dict[str, Any]):
         if dep["type"] == "dependency":

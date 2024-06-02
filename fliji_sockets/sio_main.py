@@ -6,12 +6,17 @@ from datetime import datetime
 from pydantic import ValidationError
 from pymongo.database import Database
 
-from fliji_sockets.api_client import FlijiApiService, ApiException, ForbiddenException
-from fliji_sockets.dependencies import get_db, get_api_service
+from nats.aio.client import Client
+
+from fliji_sockets.api_client import FlijiApiService, ApiException
+from fliji_sockets.dependencies import get_db, get_api_service, get_nats_client
+from fliji_sockets.event_publisher import publish_user_watched_video, \
+    publish_user_started_watching_video, publish_user_joined_room, \
+    publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
-from fliji_sockets.models.database import ViewSession, OnlineUser
-from fliji_sockets.models.enums import RightToSpeakState
+from fliji_sockets.models.database import ViewSession, OnlineUser, RoomUser, Room, ChatMessage
+from fliji_sockets.models.enums import RightToSpeakState, RoomUserRole
 from fliji_sockets.models.socket import (
     OnConnectRequest,
     UpdateViewSessionRequest,
@@ -28,13 +33,6 @@ from fliji_sockets.models.socket import (
     CurrentDurationRequest,
 )
 from fliji_sockets.models.user_service_api import (
-    JoinRoomResponse,
-    LeaveAllRoomsResponse,
-    GetStatusResponse,
-    ToggleVoiceUserMicResponse,
-    TransferRoomOwnershipResponse,
-    SendChatMessageResponse,
-    HandleRightToSpeakResponse,
     AuthUserResponse,
 )
 from fliji_sockets.settings import APP_ENV
@@ -50,7 +48,10 @@ from fliji_sockets.store import (
     get_database,
     delete_all_online_users,
     delete_all_sessions,
-    get_view_session_by_user_uuid,
+    get_view_session_by_user_uuid, get_temp_room_user_by_user_uuid, upsert_room_user,
+    delete_temp_room_user_by_user_uuid, get_room_users_by_user_uuid, delete_room_users_by_user_uuid,
+    get_room_users_by_room_uuid, get_room_user, get_room_by_uuid, upsert_room,
+    insert_chat_message,
 )
 
 app = SocketioApplication()
@@ -130,7 +131,7 @@ async def startup(
 async def disconnect(
         sid,
         db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service),
+        nc=Depends(get_nats_client),
 ):
     """
     Not meant to be called manually.
@@ -149,27 +150,15 @@ async def disconnect(
         await delete_online_user_by_socket_id(db, sid)
         return
 
-    # leave room
     user_uuid = user_session.user_uuid
-    response_data = None
-    try:
-        response = await api_service.leave_all_rooms(user_uuid)
-        response_data = LeaveAllRoomsResponse.model_validate(response)
-    except ApiException as e:
-        logging.error(f"Error leaving voice rooms: {e}")
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error leaving the voice rooms: couldn't validate response: {e}"
+    room_users = await get_room_users_by_user_uuid(db, user_uuid)
+    for room_user in room_users:
+        await app.emit(
+            "leave_user",
+            {"uuid": user_uuid},
+            room=get_room_name(room_user.get("room_uuid")),
+            skip_sid=sid,
         )
-
-    if response_data:
-        for room_uuid in response_data.room_uuids:
-            await app.emit(
-                "leave_user",
-                {"uuid": user_uuid},
-                room=get_room_name(room_uuid),
-                skip_sid=sid,
-            )
 
     # save the dangling view session
     view_session = await get_view_session_by_user_uuid(db, user_uuid)
@@ -181,18 +170,15 @@ async def disconnect(
     ):
         video_uuid = view_session.get("video_uuid")
         current_watch_time = view_session.get("current_watch_time")
-        try:
-            await api_service.save_video_view(
-                video_uuid,
-                user_uuid=user_uuid,
-                time=current_watch_time,
-            )
-        except ApiException as e:
-            logging.error(f"Error saving video view: {e}")
+        await publish_user_watched_video(
+            nc, user_uuid, video_uuid, current_watch_time
+        )
 
-    # delete the view session
+    await delete_room_users_by_user_uuid(db, user_uuid)
     await delete_view_session_by_user_uuid(db, user_session.user_uuid)
     await delete_online_user_by_user_uuid(db, user_session.user_uuid)
+
+    await publish_user_disconnected(nc, user_uuid)
 
 
 @app.event("end_video_watch_session")
@@ -200,7 +186,7 @@ async def end_video_watch_session(
         sid,
         data: EndVideoWatchSessionRequest,
         db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service),
+        nc: Client = Depends(get_nats_client),
 ):
     """
     Handles the end of a video watch session.
@@ -219,23 +205,15 @@ async def end_video_watch_session(
         )
         return
 
-    try:
-        response_data = await api_service.save_video_view(
-            data.video_uuid, user_uuid=session.user_uuid, time=data.time
-        )
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error saving video view: {e}")
-        return
-
-    if not response_data:
-        await app.send_error_message(sid, f"Error saving video view")
-        return
+    await publish_user_watched_video(
+        nc, session.user_uuid, data.video_uuid, watch_time=data.time
+    )
 
 
 @app.event("update_watch_time")
 async def update_watch_time(
         sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db),
-        api_service: FlijiApiService = Depends(get_api_service)
+        nc: Client = Depends(get_nats_client),
 ):
     """
     Handles the updating of the current watch time for a video.
@@ -252,12 +230,7 @@ async def update_watch_time(
 
     session_already_exists = await get_view_session_by_user_uuid(db, session.user_uuid)
     if not session_already_exists:
-        try:
-            print(f"Starting to watch video: {data.model_dump()}")
-            await api_service.start_watching_video(
-                data.video_uuid, session.user_uuid)
-        except ApiException as e:
-            logging.error(f"Error starting to watch video: {e}")
+        await publish_user_started_watching_video(nc, session.user_uuid, data.video_uuid)
 
     view_session = ViewSession(
         sid=sid,
@@ -338,7 +311,8 @@ async def get_sessions_for_video(
 
 @app.event("join_room")
 async def join_room(
-        sid, data: JoinRoomRequest, api_service: FlijiApiService = Depends(get_api_service)
+        sid, data: JoinRoomRequest, db: Database = Depends(get_db),
+        nc: Client = Depends(get_nats_client)
 ):
     """
     Handles the joining of a voice room.
@@ -369,21 +343,19 @@ async def join_room(
         return
     user_uuid = session.user_uuid
 
+    room_user_data = get_temp_room_user_by_user_uuid(db, user_uuid)
     try:
-        response_data = await api_service.join_room(data.room_uuid, user_uuid)
-        response = JoinRoomResponse.model_validate(response_data)
-    except ApiException as e:
+        room_user = RoomUser.model_validate(room_user_data)
+    except ValidationError as e:
         await app.send_error_message(sid, f"Error joining the voice room: {e}")
         return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error joining the voice room: couldn't validate response: {e}"
-        )
+
+    if not room_user:
+        await app.send_error_message(sid, "User not found in the room.")
         return
 
-    if not response:
-        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
-        return
+    await upsert_room_user(db, room_user)
+    await delete_temp_room_user_by_user_uuid(db, user_uuid)
 
     # join socketio room
     app.enter_room(sid, get_room_name(data.room_uuid))
@@ -394,16 +366,22 @@ async def join_room(
         {
             "uuid": user_uuid,
             "status": "online",
-            "mic": response.mic,
-            "role": response.role,
+            "mic": room_user.mic,
+            "role": room_user.role,
         },
         room=get_room_name(data.room_uuid),
         skip_sid=sid,
     )
 
+    await publish_user_joined_room(nc, user_uuid, data.room_uuid)
+
 
 @app.event("leave_room")
-async def leave_room(sid, api_service: FlijiApiService = Depends(get_api_service)):
+async def leave_room(
+        sid,
+        db: Database = Depends(get_db),
+        nc: Client = Depends(get_nats_client),
+):
     """
     Handles the leaving of a voice room.
 
@@ -427,26 +405,17 @@ async def leave_room(sid, api_service: FlijiApiService = Depends(get_api_service
         return
     user_uuid = user_session.user_uuid
 
-    try:
-        response = await api_service.leave_all_rooms(user_uuid)
-        response_data = LeaveAllRoomsResponse.model_validate(response)
-    except ApiException as e:
-        logging.error(f"Error leaving voice rooms: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error leaving the voice rooms: couldn't validate response: {e}"
-        )
-        return
-
-    for room_uuid in response_data.room_uuids:
-        app.leave_room(sid, get_room_name(room_uuid))
+    room_users = await get_room_users_by_user_uuid(db, user_uuid)
+    for room_user in room_users:
         await app.emit(
             "leave_user",
             {"uuid": user_uuid},
-            room=get_room_name(room_uuid),
+            room=get_room_name(room_user.get("room_uuid")),
             skip_sid=sid,
         )
+
+    await delete_room_users_by_user_uuid(db, user_uuid)
+    await publish_user_left_all_rooms(nc, user_uuid)
 
 
 @app.event("video_play")
@@ -594,7 +563,7 @@ async def current_duration(sid, data: CurrentDurationRequest):
 async def get_status(
         sid,
         data: RoomActionRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
 ):
     """
     Handles the request for the voice status of a room.
@@ -616,30 +585,32 @@ async def get_status(
         )
         return
 
-    try:
-        response_data = await api_service.get_status(data.room_uuid)
-        response = GetStatusResponse.model_validate({"users": response_data})
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error getting the voice status: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error getting the voice status: couldn't validate response: {e}"
+    response = []
+    room_users = await get_room_users_by_room_uuid(db, data.room_uuid)
+    for room_user in room_users:
+        response.append(
+            {
+                "first_name": room_user.get("first_name"),
+                "last_name": room_user.get("last_name"),
+                "avatar_url": room_user.get("avatar_url"),
+                "username": room_user.get("username"),
+                "uuid": room_user.get("user_uuid"),
+                "status": "online",
+                "mic": room_user.get("mic"),
+                "mic_ban": room_user.get("mic_ban"),
+                "role": room_user.get("role"),
+                "right_to_speak": room_user.get("right_to_speak"),
+            }
         )
-        return
 
-    if not response:
-        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
-        return
-
-    await app.emit("status", response.model_dump(), room=sid)
+    await app.emit("status", response, room=sid)
 
 
 @app.event("toggle_user_mic")
 async def toggle_user_mic(
         sid,
         data: ToggleVoiceUserMicRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
 ):
     """
     Toggles the mic of a user in a room.
@@ -663,33 +634,40 @@ async def toggle_user_mic(
         return
     user_uuid = session.user_uuid
 
-    try:
-        response_data = await api_service.toggle_voice_user_mic(
-            data.room_uuid, data.user_uuid, from_user_uuid=user_uuid
-        )
-        response = ToggleVoiceUserMicResponse.model_validate(response_data)
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error toggling the user mic: {e}")
-        return
-    except ForbiddenException as e:
-        await app.send_error_message(sid, f"Error toggling the user mic: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error toggling the user mic: couldn't validate response: {e}"
-        )
+    admin_room_user = await get_room_user(db, data.room_uuid, user_uuid)
+    if admin_room_user.get("role") != RoomUserRole.ADMIN:
+        await app.send_error_message(sid, "Only the admin can toggle the mic of other users.")
         return
 
-    if not response:
+    room_user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
+    if not room_user_data:
         await app.send_error_message(
             sid,
             f"Voice with uuid {data.room_uuid} or user with uuid {data.user_uuid} not found",
         )
         return
 
+    try:
+        room_user = RoomUser.model_validate(room_user_data)
+    except ValidationError as e:
+        await app.send_error_message(sid, f"Error toggling the user mic: {e}")
+        return
+
+    if room_user.mic:
+        room_user.mic = False
+    else:
+        room_user.mic = True
+        room_user.right_to_speak = None
+
+    await upsert_room_user(db, room_user)
+
     await app.emit(
         "mic_user",
-        response.model_dump(),
+        {
+            "uuid": room_user.user_uuid,
+            "mic": room_user.mic,
+            "right_to_speak": room_user.right_to_speak,
+        },
         room=get_room_name(data.room_uuid),
     )
 
@@ -698,7 +676,7 @@ async def toggle_user_mic(
 async def transfer_room_ownership(
         sid,
         data: TransferRoomOwnershipRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
 ):
     """
     Handles the transfer of the ownership of a room.
@@ -720,27 +698,33 @@ async def transfer_room_ownership(
         return
     user_uuid = session.user_uuid
 
-    try:
-        response_data = await api_service.transfer_room_ownership(
-            data.room_uuid, new_owner_uuid=data.new_owner_uuid, from_user_uuid=user_uuid
-        )
-        response = TransferRoomOwnershipResponse.model_validate(response_data)
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error transferring room ownership: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error transferring room ownership: couldn't validate response: {e}"
-        )
-        return
-
-    if not response:
+    room_data = get_room_by_uuid(db, data.room_uuid)
+    if not room_data:
         await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
         return
 
+    room = Room.model_validate(room_data)
+    if room.author != user_uuid:
+        await app.send_error_message(sid, "Only the admin can transfer the room ownership.")
+        return
+
+    new_owner_data = get_room_user(db, data.room_uuid, data.new_owner_uuid)
+    if not new_owner_data:
+        await app.send_error_message(
+            sid,
+            f"Voice with uuid {data.room_uuid} or user with uuid {data.new_owner_uuid} not found"
+        )
+
+    new_owner = RoomUser.model_validate(new_owner_data)
+    new_owner.role = RoomUserRole.ADMIN
+    await upsert_room_user(db, new_owner)
+
     await app.emit(
         "role_updated",
-        response.model_dump(),
+        {
+            "user_uuid": new_owner.user_uuid,
+            "role": new_owner.role,
+        },
         room=get_room_name(data.room_uuid),
     )
 
@@ -749,7 +733,8 @@ async def transfer_room_ownership(
 async def confirm_room_ownership_transfer(
         sid,
         data: ConfirmRoomOwnershipTransferRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
+        nc: Client = Depends(get_nats_client),
 ):
     """
     Handles the confirmation of the ownership transfer of a room.
@@ -771,30 +756,48 @@ async def confirm_room_ownership_transfer(
         return
     user_uuid = session.user_uuid
 
-    try:
-        response_data = await api_service.confirm_room_ownership_transfer(
-            data.room_uuid, old_owner_uuid=data.old_owner_uuid, from_user_uuid=user_uuid
-        )
-        response = TransferRoomOwnershipResponse.model_validate(response_data)
-    except ApiException as e:
-        await app.send_error_message(
-            sid, f"Error confirming room ownership transfer: {e}"
-        )
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid,
-            f"Error confirming room ownership transfer: couldn't validate response: {e}",
-        )
-        return
-
-    if not response:
+    room_data = get_room_by_uuid(db, data.room_uuid)
+    if not room_data:
         await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
         return
 
+    room = Room.model_validate(room_data)
+    if room.author != user_uuid:
+        await app.send_error_message(sid, "Only the admin can confirm the room ownership transfer.")
+        return
+
+    old_owner_data = get_room_user(db, data.room_uuid, data.old_owner_uuid)
+    if not old_owner_data:
+        await app.send_error_message(
+            sid,
+            f"Voice with uuid {data.room_uuid} or user with uuid {data.old_owner_uuid} not found"
+        )
+
+    new_owner_data = get_room_user(db, data.room_uuid, data.new_owner_uuid)
+    if not new_owner_data:
+        await app.send_error_message(
+            sid,
+            f"Voice with uuid {data.room_uuid} or user with uuid {data.new_owner_uuid} not found"
+        )
+
+    new_owner = RoomUser.model_validate(new_owner_data)
+
+    new_owner.role = RoomUserRole.ADMIN
+    await upsert_room_user(db, new_owner)
+
+    old_owner = RoomUser.model_validate(old_owner_data)
+    old_owner.role = RoomUserRole.USER
+    await upsert_room_user(db, old_owner)
+
+    room.author = new_owner.user_uuid
+    await upsert_room(db, room)
+
     await app.emit(
         "role_updated",
-        response.model_dump(),
+        {
+            "user_uuid": old_owner.user_uuid,
+            "role": old_owner.role,
+        },
         room=get_room_name(data.room_uuid),
     )
 
@@ -803,7 +806,8 @@ async def confirm_room_ownership_transfer(
 async def send_chat_message(
         sid,
         data: SendChatMessageRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
+        nc: Client = Depends(get_nats_client),
 ):
     """
     Handles the sending of a chat message in a room.
@@ -825,27 +829,37 @@ async def send_chat_message(
         return
     user_uuid = session.user_uuid
 
-    try:
-        response_data = await api_service.send_chat_message(
-            data.room_uuid, user_uuid=user_uuid, message=data.message
-        )
-        response = SendChatMessageResponse.model_validate(response_data)
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error sending chat message: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error sending chat message: couldn't validate response: {e}"
-        )
+    room_data = await get_room_by_uuid(db, data.room_uuid)
+    if not room_data:
+        await app.send_error_message(sid, f"Room not found.")
         return
 
-    if not response:
-        await app.send_error_message(sid, f"Voice with uuid {data.room_uuid} not found")
+    room = Room.model_validate(room_data)
+
+    room_user_data = await get_room_user(db, data.room_uuid, user_uuid)
+    if not room_user_data:
+        await app.send_error_message(sid, f"User not found in the room.")
         return
+
+    message = ChatMessage(
+        room_uuid=data.room_uuid,
+        user_uuid=user_uuid,
+        message=data.message,
+        internal_chat_id=room.internal_chat_id,
+        chat_id=room.chat_id,
+    )
+    await insert_chat_message(db, message)
+
+    await publish_chat_message(nc, room.chat_id, data.room_uuid, user_uuid, data.message)
 
     await app.emit(
         "chat_message",
-        response.model_dump(),
+        {
+            "user_uuid": user_uuid,
+            "message": data.message,
+            "username": session.username,
+            "time": datetime.now().isoformat(),
+        },
         room=get_room_name(data.room_uuid),
     )
 
@@ -890,6 +904,7 @@ async def handle_right_to_speak(
         sid,
         data: HandleRightToSpeakRequest,
         api_service: FlijiApiService = Depends(get_api_service),
+        db: Database = Depends(get_db),
 ):
     """
     Handles the handling of the right to speak request in a room.
@@ -919,37 +934,35 @@ async def handle_right_to_speak(
     else:
         right_to_speak = RightToSpeakState.DECLINED
 
-    try:
-        response_data = await api_service.handle_right_to_speak(
-            data.room_uuid,
-            from_user_uuid=user_uuid,
-            user_uuid=data.user_uuid,
-            right_to_speak=right_to_speak,
-        )
-        response = HandleRightToSpeakResponse.model_validate(response_data)
-
-    except ApiException as e:
-        await app.send_error_message(sid, f"Error handling right to speak: {e}")
-        return
-    except ForbiddenException as e:
-        await app.send_error_message(sid, f"Error handling right to speak: {e}")
-        return
-    except ValidationError as e:
-        await app.send_error_message(
-            sid, f"Error handling right to speak: couldn't validate response: {e}"
-        )
+    admin_user_data = await get_room_user(db, data.room_uuid, user_uuid)
+    if not admin_user_data:
+        await app.send_error_message(sid, f"User not found in the room.")
         return
 
-    if not response:
-        await app.send_error_message(
-            sid,
-            f"Voice with uuid {data.room_uuid} or user with uuid {data.user_uuid} not found",
-        )
+    admin_user = RoomUser.model_validate(admin_user_data)
+    if admin_user.role != RoomUserRole.ADMIN:
+        await app.send_error_message(sid, "Only the admin can handle the right to speak request.")
         return
+
+    user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
+    if not user_data:
+        await app.send_error_message(sid, f"User not found in the room.")
+        return
+
+    user = RoomUser.model_validate(user_data)
+    if user.right_to_speak != RightToSpeakState.PENDING:
+        await app.send_error_message(sid, "User did not request the right to speak.")
+        return
+
+    user.right_to_speak = right_to_speak
+    await upsert_room_user(db, user)
 
     await app.emit(
         "right_to_speak_updated",
-        response.model_dump(),
+        {
+            "user_uuid": user.user_uuid,
+            "right_to_speak": user.right_to_speak,
+        },
         room=get_room_name(data.room_uuid),
     )
 

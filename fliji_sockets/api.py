@@ -12,7 +12,7 @@ from fliji_sockets.store import (
     get_most_watched_videos,
     get_most_watched_videos_by_user_uuids,
     get_online_users_by_uuids,
-    get_online_by_user_uuid,
+    get_online_user_by_uuid,
 )
 
 configure_logging()
@@ -79,7 +79,7 @@ async def most_watched_videos_by_user_uuids(
 
 @app.get("/online/user/{user_uuid}")
 async def is_user_online(user_uuid: str, db: Database = Depends(get_db)) -> dict:
-    online_user = await get_online_by_user_uuid(db, user_uuid)
+    online_user = await get_online_user_by_uuid(db, user_uuid)
     is_online = online_user is not None
     return {"is_online": is_online}
 

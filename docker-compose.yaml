@@ -11,8 +11,6 @@ services:
     entrypoint: ./entrypoint-sockets.sh
     networks:
         - fliji-db
-    # environment:
-    #   TZ: Europe/Moscow
 
   fliji-sockets-api:
     container_name: fliji-sockets-api
@@ -21,5 +19,11 @@ services:
     env_file: .env
     networks:
         - fliji-db
-    # environment:
-    #   TZ: Europe/Moscow
+
+  fliji-sockets-event-listener:
+    container_name: fliji-sockets-event-listener
+    image: ${FLIJI_SOCKETS_IMAGE:-harbor.fliji.xyz/fliji/sockets:main}
+    entrypoint: ./entrypoint-event-listener.sh
+    env_file: .env
+    networks:
+        - fliji-db

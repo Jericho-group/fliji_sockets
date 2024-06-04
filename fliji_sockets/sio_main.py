@@ -926,7 +926,6 @@ async def request_right_to_speak(sid, data: RoomActionRequest):
 async def handle_right_to_speak(
         sid,
         data: HandleRightToSpeakRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
         db: Database = Depends(get_db),
 ):
     """

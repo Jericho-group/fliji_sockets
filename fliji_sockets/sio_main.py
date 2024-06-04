@@ -13,7 +13,7 @@ from fliji_sockets.dependencies import get_db, get_api_service, get_nats_client
 from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_started_watching_video, publish_user_joined_room, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
-    publish_user_online, publish_user_offline
+    publish_user_online, publish_user_offline, publish_room_ownership_changed
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage
@@ -805,6 +805,8 @@ async def confirm_room_ownership_transfer(
 
     new_owner.role = RoomUserRole.ADMIN
     await upsert_room_user(db, new_owner)
+
+    await publish_room_ownership_changed(nc, data.room_uuid, new_owner.user_uuid)
 
     old_owner = RoomUser.model_validate(old_owner_data)
     old_owner.role = RoomUserRole.USER

@@ -33,21 +33,6 @@ class ViewSession(MyBaseModel):
         }
 
 
-class OnlineUser(MyBaseModel):
-    user_uuid: str
-    last_online_at: datetime
-    sid: str
-
-    class Config:
-        json_extra_schema = {
-            "example": {
-                "user_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",
-                "last_online_at": "2021-08-01 12:00:00",
-                "sid": "1234567890",
-            },
-        }
-
-
 class Room(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     uuid: str

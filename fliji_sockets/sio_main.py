@@ -12,10 +12,11 @@ from fliji_sockets.api_client import FlijiApiService, ApiException
 from fliji_sockets.dependencies import get_db, get_api_service, get_nats_client
 from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_started_watching_video, publish_user_joined_room, \
-    publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected
+    publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
+    publish_user_online, publish_user_offline
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
-from fliji_sockets.models.database import ViewSession, OnlineUser, RoomUser, Room, ChatMessage
+from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage
 from fliji_sockets.models.enums import RightToSpeakState, RoomUserRole
 from fliji_sockets.models.socket import (
     OnConnectRequest,
@@ -38,15 +39,11 @@ from fliji_sockets.models.user_service_api import (
 from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
-    upsert_online_user,
     delete_view_session_by_socket_id,
-    delete_online_user_by_socket_id,
     delete_view_session_by_user_uuid,
-    delete_online_user_by_user_uuid,
     upsert_view_session,
     get_view_sessions_for_video,
     get_database,
-    delete_all_online_users,
     delete_all_sessions,
     get_view_session_by_user_uuid, get_temp_room_user_by_user_uuid, upsert_room_user,
     delete_temp_room_user_by_user_uuid, get_room_users_by_user_uuid, delete_room_users_by_user_uuid,
@@ -64,8 +61,8 @@ configure_sentry()
 async def startup(
         sid,
         data: OnConnectRequest,
-        db: Database = Depends(get_db),
         api_service: FlijiApiService = Depends(get_api_service),
+        nc: Client = Depends(get_nats_client),
 ):
     """
     This event should be called when a socket connects.
@@ -102,11 +99,7 @@ async def startup(
 
     logging.debug(f"authenticated user {response_data.uuid} for sid {sid}")
 
-    # Set user online
-    online_user = OnlineUser(
-        user_uuid=response_data.uuid, last_online_at=datetime.now(), sid=sid
-    )
-    await upsert_online_user(db, online_user)
+    await publish_user_online(nc, response_data.uuid)
 
     # Also store user_uuid in the user's session for later use
     try:
@@ -125,6 +118,36 @@ async def startup(
         logging.error(f"Could not save session: {e}")
         await app.send_fatal_error_message(sid, f"Could not save session: {e}")
         return
+
+
+@app.event("go_online")
+async def go_online(
+        sid,
+        nc: Client = Depends(get_nats_client),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    await publish_user_online(nc, session.user_uuid)
+
+
+@app.event("go_offline")
+async def go_offline(
+        sid,
+        nc: Client = Depends(get_nats_client),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    await publish_user_offline(nc, session.user_uuid)
 
 
 @app.event("disconnect")
@@ -147,7 +170,6 @@ async def disconnect(
     # If the session data was corrupted somehow, delete whatever we can
     if not user_session:
         await delete_view_session_by_socket_id(db, sid)
-        await delete_online_user_by_socket_id(db, sid)
         return
 
     user_uuid = user_session.user_uuid
@@ -176,7 +198,6 @@ async def disconnect(
 
     await delete_room_users_by_user_uuid(db, user_uuid)
     await delete_view_session_by_user_uuid(db, user_session.user_uuid)
-    await delete_online_user_by_user_uuid(db, user_session.user_uuid)
 
     await publish_user_disconnected(nc, user_uuid)
 
@@ -971,7 +992,6 @@ if APP_ENV != "local":
     # remove all transient session data
     database = get_database()
     delete_all_sessions(database)
-    delete_all_online_users(database)
 
 
 def fill_mock_data():

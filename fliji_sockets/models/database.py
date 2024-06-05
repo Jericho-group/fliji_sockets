@@ -38,6 +38,7 @@ class Room(MyBaseModel):
     uuid: str
     author: str
     video_uuid: str
+    user_limit: int
     permissions: int
     mode: str
     name: str

@@ -1,6 +1,5 @@
 import logging
 
-from fliji_sockets.models.enums import RightToSpeakState
 from fliji_sockets.settings import USER_SERVICE_URL, USER_SERVICE_API_KEY
 import httpx
 

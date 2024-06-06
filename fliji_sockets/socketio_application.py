@@ -93,7 +93,11 @@ class SocketioApplication:
         return self.sio_app
 
     async def get_session(self, sid) -> UserSession | None:
-        session_dict = await self.sio.get_session(sid)
+        try:
+            session_dict = await self.sio.get_session(sid)
+        except KeyError:
+            return None
+
         try:
             return UserSession.model_validate(session_dict)
         except ValidationError as e:

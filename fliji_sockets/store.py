@@ -16,6 +16,11 @@ from fliji_sockets.settings import (
 def ensure_indexes(db: Database):
     db.view_sessions.create_index("sid")
     db.view_sessions.create_index("video_uuid")
+    db.view_sessions.create_index("user_uuid")
+    db.rooms.create_index("uuid")
+    db.temp_room_users.create_index("user_uuid")
+    db.room_users.create_index("user_uuid")
+    db.room_users.create_index("room_uuid")
 
     # create TTL index for temporary room users for 10 minutes
     db.temp_room_users.create_index("created_at", expireAfterSeconds=600)

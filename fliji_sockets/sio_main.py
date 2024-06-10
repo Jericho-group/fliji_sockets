@@ -364,7 +364,7 @@ async def join_room(
         return
     user_uuid = session.user_uuid
 
-    room_user_data = get_temp_room_user_by_user_uuid(db, user_uuid)
+    room_user_data = await get_temp_room_user_by_user_uuid(db, user_uuid)
     try:
         room_user = RoomUser.model_validate(room_user_data)
     except ValidationError as e:

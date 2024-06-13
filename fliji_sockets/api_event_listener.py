@@ -76,12 +76,14 @@ async def async_main():
         room = await get_room_by_uuid(db, event_data.room_uuid)
 
         if room:
+            room_uuid = room.get("uuid")
+
             await sio_app.emit("room_deleted", {
                 "room_uuid": room.uuid,
-            }, room=get_room_name(room.uuid))
-            await delete_chat_by_room_uuid(db, room.uuid)
-            await delete_room_by_uuid(db, room.uuid)
-            await delete_room_users_by_room_uuid(db, room.uuid)
+            }, room=get_room_name(room_uuid))
+            await delete_chat_by_room_uuid(db, room_uuid)
+            await delete_room_by_uuid(db, room_uuid)
+            await delete_room_users_by_room_uuid(db, room_uuid)
 
     async def user_joined_room(msg):
         subject = msg.subject

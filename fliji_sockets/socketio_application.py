@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from pydantic import BaseModel
 
 from fliji_sockets.models.base import UserSession
-from fliji_sockets.settings import REDIS_CONNECTION_STRING
+from fliji_sockets.settings import REDIS_CONNECTION_STRING, LOG_LEVEL
 
 
 def Depends(dependency_callable: Callable):
@@ -25,9 +25,15 @@ def Depends(dependency_callable: Callable):
 
 class SocketioApplication:
     def __init__(self):
+        if LOG_LEVEL == "DEBUG":
+            enable_socketio_logger = True
+        else:
+            enable_socketio_logger = False
+
         mgr = socketio.AsyncRedisManager(REDIS_CONNECTION_STRING)
         self.sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*",
-                                        client_manager=mgr,
+                                        client_manager=mgr, logger=enable_socketio_logger,
+                                        engineio_logger=enable_socketio_logger
                                         )
         self.sio_app = socketio.ASGIApp(self.sio)
 

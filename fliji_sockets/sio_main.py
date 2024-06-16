@@ -31,7 +31,7 @@ from fliji_sockets.models.socket import (
     HandleRightToSpeakRequest,
     EndVideoWatchSessionRequest,
     VideoTimecodeRequest,
-    CurrentDurationRequest,
+    CurrentDurationRequest, ChangeRoleRequest,
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -745,6 +745,68 @@ async def transfer_room_ownership(
         {
             "user_uuid": new_owner.user_uuid,
             "role": new_owner.role,
+        },
+        room=get_room_name(data.room_uuid),
+    )
+
+
+@app.event("change_role")
+async def change_role(
+        sid,
+        data: ChangeRoleRequest,
+        db: Database = Depends(get_db),
+):
+    """
+    Change user's role in a room. Only the admin of the room can change the role of other users.
+
+    Request:
+    :py:class:`fliji_sockets.models.socket.ChangeRoleRequest`
+
+    Response (emitted to the room):
+    `role_updated` event
+
+    Data:
+
+    .. code-block:: json
+
+                {
+                    "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+                    "role": "moderator"
+                }
+
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    admin_data = await get_room_user(db, data.room_uuid, user_uuid)
+    if not admin_data:
+        await app.send_error_message(sid, "User not found in the room.")
+        return
+
+    admin = RoomUser.model_validate(admin_data)
+    if admin.role != RoomUserRole.ADMIN:
+        await app.send_error_message(sid, "Only the admin can change the role of other users.")
+        return
+
+    user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
+    if not user_data:
+        await app.send_error_message(sid, "User not found in the room.")
+        return
+
+    user = RoomUser.model_validate(user_data)
+    user.role = data.new_role
+    await upsert_room_user(db, user)
+
+    await app.emit(
+        "role_updated",
+        {
+            "user_uuid": user.user_uuid,
+            "role": user.role,
         },
         room=get_room_name(data.room_uuid),
     )

@@ -21,3 +21,4 @@ class RoomMode(Enum):
 class RoomUserRole(Enum):
     USER = 'user'
     ADMIN = 'admin'
+    MODERATOR = 'moderator'

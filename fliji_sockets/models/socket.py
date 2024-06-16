@@ -1,4 +1,5 @@
 from fliji_sockets.models.base import MyBaseModel
+from fliji_sockets.models.enums import RoomUserRole
 
 
 class UpdateViewSessionRequest(MyBaseModel):
@@ -31,6 +32,12 @@ class JoinRoomRequest(MyBaseModel):
 
 class RoomActionRequest(MyBaseModel):
     room_uuid: str
+
+
+class ChangeRoleRequest(MyBaseModel):
+    user_uuid: str
+    room_uuid: str
+    new_role:  RoomUserRole
 
 
 class VideoTimecodeRequest(MyBaseModel):

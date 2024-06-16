@@ -253,6 +253,9 @@ async def update_watch_time(
     if not session_already_exists:
         await publish_user_started_watching_video(nc, session.user_uuid, data.video_uuid)
 
+    # delete the old view session
+    await delete_view_session_by_user_uuid(db, session.user_uuid)
+
     view_session = ViewSession(
         sid=sid,
         last_update_time=datetime.now(),

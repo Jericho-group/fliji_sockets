@@ -656,8 +656,8 @@ async def toggle_user_mic(
     user_uuid = session.user_uuid
 
     admin_room_user = await get_room_user(db, data.room_uuid, user_uuid)
-    if admin_room_user.get("role") != RoomUserRole.ADMIN:
-        await app.send_error_message(sid, "Only the admin can toggle the mic of other users.")
+    if admin_room_user.get("role") not in [RoomUserRole.ADMIN, RoomUserRole.MODERATOR]:
+        await app.send_error_message(sid, "You do not have the permission to toggle the user mic.")
         return
 
     room_user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
@@ -1024,8 +1024,8 @@ async def handle_right_to_speak(
         return
 
     admin_user = RoomUser.model_validate(admin_user_data)
-    if admin_user.role != RoomUserRole.ADMIN:
-        await app.send_error_message(sid, "Only the admin can handle the right to speak request.")
+    if admin_user.role not in [RoomUserRole.ADMIN, RoomUserRole.MODERATOR]:
+        await app.send_error_message(sid, "You do not have the right to handle the right to speak request.")
         return
 
     user_data = await get_room_user(db, data.room_uuid, data.user_uuid)

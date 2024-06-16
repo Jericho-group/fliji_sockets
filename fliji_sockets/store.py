@@ -150,7 +150,7 @@ async def get_temp_room_user_by_user_uuid(db: Database, user_uuid: str) -> dict:
 
 async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
     view_session_id = db.view_sessions.update_one(
-        {"sid": view_session.sid},
+        {"user_uuid": view_session.user_uuid, "video_uuid": view_session.video_uuid},
         {"$set": view_session.model_dump(exclude_none=True)},
         upsert=True,
     )

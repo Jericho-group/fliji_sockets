@@ -35,6 +35,23 @@
   <section id="module-fliji_sockets.sio_main">
 <span id="events"></span><h1>Events<a class="headerlink" href="#module-fliji_sockets.sio_main" title="Link to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.change_role">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">change_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.ChangeRoleRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.change_role" title="Link to this definition">¶</a></dt>
+<dd><p>Change user’s role in a room. Only the admin of the room can change the role of other users.</p>
+<p>Request:
+<a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest" title="fliji_sockets.models.socket.ChangeRoleRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.ChangeRoleRequest</span></code></a></p>
+<p>Response (emitted to the room):
+<cite>role_updated</cite> event</p>
+<p>Data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;moderator&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.confirm_room_ownership_transfer">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">confirm_room_ownership_transfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.confirm_room_ownership_transfer" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the confirmation of the ownership transfer of a room.</p>
@@ -43,7 +60,7 @@
 <p>Response (emitted to the room):
 <cite>role_updated</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse" title="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -122,12 +139,12 @@ Also saves the video view session to the db if it was not saved before.</p>
 <p>Response (emitted to the client):
 <cite>status</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusResponse" title="fliji_sockets.models.user_service_api.GetStatusResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.GetStatusResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.GetStatusResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.handle_right_to_speak">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">handle_right_to_speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.HandleRightToSpeakRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_service:</span> <span class="pre">~fliji_sockets.api_client.FlijiApiService</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.handle_right_to_speak" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">handle_right_to_speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.HandleRightToSpeakRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.handle_right_to_speak" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the handling of the right to speak request in a room.
 Only the admin of the room can handle the right to speak request.</p>
 <p>Request:
@@ -135,7 +152,7 @@ Only the admin of the room can handle the right to speak request.</p>
 <p>Response (emitted to the room):
 <cite>right_to_speak_updated</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse" title="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.HandleRightToSpeakResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.HandleRightToSpeakResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -196,7 +213,7 @@ Only the admin of the room can handle the right to speak request.</p>
 <p>Response (emitted to the room):
 <cite>chat_message</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse" title="fliji_sockets.models.user_service_api.SendChatMessageResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.SendChatMessageResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.SendChatMessageResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -223,7 +240,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <p>Response (emitted to everybody in the room):
 <cite>mic_user</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse" title="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -235,7 +252,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <p>Response (emitted to the room):
 <cite>role_updated</cite> event</p>
 <p>Data:
-<a class="reference internal" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse" title="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse</span></code></a></p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -286,7 +303,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dd><p>Broadcasts the current timecode of the video in a room.</p>
 <p>The client should validate that the event is only emitted by the admin of the room.</p>
 <p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
+<a class="reference internal" href="#fliji_sockets.models.socket.VideoTimecodeRequest" title="fliji_sockets.models.socket.VideoTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.VideoTimecodeRequest</span></code></a></p>
 <p>Response (emitted to everybody in the room except for the sender):
 <cite>video_timecode</cite> event</p>
 <p>Data:</p>
@@ -299,6 +316,36 @@ Only the admin of the room can toggle the mic of other users.</p>
 </dd></dl>
 
 <dl class="py class pydantic_model" id="module-fliji_sockets.models.socket">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.ChangeRoleRequest">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">ChangeRoleRequest</span></span><a class="headerlink" href="#fliji_sockets.models.socket.ChangeRoleRequest" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest.new_role" title="fliji_sockets.models.socket.ChangeRoleRequest.new_role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new_role</span> <span class="pre">(fliji_sockets.models.enums.RoomUserRole)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest.room_uuid" title="fliji_sockets.models.socket.ChangeRoleRequest.room_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">room_uuid</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest.user_uuid" title="fliji_sockets.models.socket.ChangeRoleRequest.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.ChangeRoleRequest.new_role">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">RoomUserRole</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.ChangeRoleRequest.new_role" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.ChangeRoleRequest.room_uuid">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.ChangeRoleRequest.room_uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.ChangeRoleRequest.user_uuid">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.ChangeRoleRequest.user_uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">ConfirmRoomOwnershipTransferRequest</span></span><a class="headerlink" href="#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
@@ -699,276 +746,6 @@ Only the admin of the room can toggle the mic of other users.</p>
 
 </dd></dl>
 
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">ConfirmRoomOwnershipTransferResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.role" title="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">role</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.user_uuid" title="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.role">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.role" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.user_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.user_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">GetStatusResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusResponse.users" title="fliji_sockets.models.user_service_api.GetStatusResponse.users"><code class="xref py py-obj docutils literal notranslate"><span class="pre">users</span> <span class="pre">(list[fliji_sockets.models.user_service_api.GetStatusVoiceUser])</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusResponse.users">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">users</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser"><span class="pre">GetStatusVoiceUser</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusResponse.users" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">GetStatusVoiceUser</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic_ban" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic_ban"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic_ban</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.right_to_speak" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.right_to_speak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">right_to_speak</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.role" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">role</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.status" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.username" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.username"><code class="xref py py-obj docutils literal notranslate"><span class="pre">username</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.uuid" title="fliji_sockets.models.user_service_api.GetStatusVoiceUser.uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic_ban">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic_ban</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic_ban" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.right_to_speak">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">right_to_speak</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.right_to_speak" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.role">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.role" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.status">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.status" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.username">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.username" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.GetStatusVoiceUser.uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser.uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">HandleRightToSpeakResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.right_to_speak" title="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.right_to_speak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">right_to_speak</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.user_uuid" title="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.right_to_speak">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">right_to_speak</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.right_to_speak" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.user_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.user_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">JoinRoomResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.admin_socket_id" title="fliji_sockets.models.user_service_api.JoinRoomResponse.admin_socket_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">admin_socket_id</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.mic" title="fliji_sockets.models.user_service_api.JoinRoomResponse.mic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.role" title="fliji_sockets.models.user_service_api.JoinRoomResponse.role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">role</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.status" title="fliji_sockets.models.user_service_api.JoinRoomResponse.status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.uuid" title="fliji_sockets.models.user_service_api.JoinRoomResponse.uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse.admin_socket_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">admin_socket_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.admin_socket_id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse.mic">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.mic" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse.role">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.role" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse.status">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.status" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.JoinRoomResponse.uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.JoinRoomResponse.uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.LeaveAllRoomsResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">LeaveAllRoomsResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.LeaveAllRoomsResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.LeaveAllRoomsResponse.room_uuids" title="fliji_sockets.models.user_service_api.LeaveAllRoomsResponse.room_uuids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">room_uuids</span> <span class="pre">(list[str])</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.LeaveAllRoomsResponse.room_uuids">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room_uuids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.LeaveAllRoomsResponse.room_uuids" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.SendChatMessageResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">SendChatMessageResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.message" title="fliji_sockets.models.user_service_api.SendChatMessageResponse.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.time" title="fliji_sockets.models.user_service_api.SendChatMessageResponse.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.user_uuid" title="fliji_sockets.models.user_service_api.SendChatMessageResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.username" title="fliji_sockets.models.user_service_api.SendChatMessageResponse.username"><code class="xref py py-obj docutils literal notranslate"><span class="pre">username</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.SendChatMessageResponse.message">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.message" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.SendChatMessageResponse.time">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.time" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.SendChatMessageResponse.user_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.user_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.SendChatMessageResponse.username">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse.username" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">ToggleVoiceUserMicResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.mic" title="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.mic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.right_to_speak" title="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.right_to_speak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">right_to_speak</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.user_uuid" title="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.mic">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.mic" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.right_to_speak">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">right_to_speak</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.right_to_speak" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.user_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.user_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.user_service_api.</span></span><span class="sig-name descname"><span class="pre">TransferRoomOwnershipResponse</span></span><a class="headerlink" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.role" title="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.role"><code class="xref py py-obj docutils literal notranslate"><span class="pre">role</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.user_uuid" title="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.role">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.role" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.user_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.user_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 
 
@@ -991,6 +768,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.change_role"><code class="docutils literal notranslate"><span class="pre">change_role()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.confirm_room_ownership_transfer"><code class="docutils literal notranslate"><span class="pre">confirm_room_ownership_transfer()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.current_duration"><code class="docutils literal notranslate"><span class="pre">current_duration()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.disconnect"><code class="docutils literal notranslate"><span class="pre">disconnect()</span></code></a></li>
@@ -1010,6 +788,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_pause"><code class="docutils literal notranslate"><span class="pre">video_pause()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_play"><code class="docutils literal notranslate"><span class="pre">video_play()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_timecode"><code class="docutils literal notranslate"><span class="pre">video_timecode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest"><code class="docutils literal notranslate"><span class="pre">ChangeRoleRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest"><code class="docutils literal notranslate"><span class="pre">ConfirmRoomOwnershipTransferRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.CurrentDurationRequest"><code class="docutils literal notranslate"><span class="pre">CurrentDurationRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.EndVideoWatchSessionRequest"><code class="docutils literal notranslate"><span class="pre">EndVideoWatchSessionRequest</span></code></a></li>
@@ -1026,15 +805,6 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.UpdateViewSessionRequest"><code class="docutils literal notranslate"><span class="pre">UpdateViewSessionRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.VideoTimecodeRequest"><code class="docutils literal notranslate"><span class="pre">VideoTimecodeRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.AuthUserResponse"><code class="docutils literal notranslate"><span class="pre">AuthUserResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse"><code class="docutils literal notranslate"><span class="pre">ConfirmRoomOwnershipTransferResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusResponse"><code class="docutils literal notranslate"><span class="pre">GetStatusResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.GetStatusVoiceUser"><code class="docutils literal notranslate"><span class="pre">GetStatusVoiceUser</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse"><code class="docutils literal notranslate"><span class="pre">HandleRightToSpeakResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.JoinRoomResponse"><code class="docutils literal notranslate"><span class="pre">JoinRoomResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.LeaveAllRoomsResponse"><code class="docutils literal notranslate"><span class="pre">LeaveAllRoomsResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.SendChatMessageResponse"><code class="docutils literal notranslate"><span class="pre">SendChatMessageResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse"><code class="docutils literal notranslate"><span class="pre">ToggleVoiceUserMicResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse"><code class="docutils literal notranslate"><span class="pre">TransferRoomOwnershipResponse</span></code></a></li>
 </ul>
 </li>
 </ul>

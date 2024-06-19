@@ -59,10 +59,6 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.JoinRoomResponse.admin_socket_id">admin_socket_id (fliji_sockets.models.user_service_api.JoinRoomResponse attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.OnConnectRequest.auth_token">auth_token (fliji_sockets.models.socket.OnConnectRequest attribute)</a>
 </li>
   </ul></td>
@@ -79,6 +75,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="events.html#fliji_sockets.sio_main.change_role">change_role() (in module fliji_sockets.sio_main)</a>
+</li>
       <li><a href="events.html#fliji_sockets.sio_main.confirm_room_ownership_transfer">confirm_room_ownership_transfer() (in module fliji_sockets.sio_main)</a>
 </li>
   </ul></td>
@@ -203,22 +201,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.SendChatMessageRequest.message">message (fliji_sockets.models.socket.SendChatMessageRequest attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.SendChatMessageResponse.message">(fliji_sockets.models.user_service_api.SendChatMessageResponse attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic">mic (fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.JoinRoomResponse.mic">(fliji_sockets.models.user_service_api.JoinRoomResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.mic">(fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse attribute)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.mic_ban">mic_ban (fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
 </li>
       <li>
     module
@@ -231,6 +213,8 @@
         <li><a href="events.html#module-fliji_sockets.sio_main">fliji_sockets.sio_main</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.MostWatchedVideosResponse.Config">MostWatchedVideosResponse.Config (class in fliji_sockets.models.socket)</a>
 </li>
   </ul></td>
@@ -240,6 +224,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.TransferRoomOwnershipRequest.new_owner_uuid">new_owner_uuid (fliji_sockets.models.socket.TransferRoomOwnershipRequest attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.new_role">new_role (fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -258,28 +246,12 @@
       <li><a href="events.html#fliji_sockets.sio_main.request_right_to_speak">request_right_to_speak() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.right_to_speak">right_to_speak (fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
+</li>
+      <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.room_uuid">room_uuid (fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.right_to_speak">(fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest.room_uuid">(fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.right_to_speak">(fliji_sockets.models.user_service_api.HandleRightToSpeakResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.right_to_speak">(fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.role">role (fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.role">(fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.JoinRoomResponse.role">(fliji_sockets.models.user_service_api.JoinRoomResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.role">(fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest.room_uuid">room_uuid (fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest attribute)</a>
-
-      <ul>
         <li><a href="events.html#fliji_sockets.models.socket.CurrentDurationRequest.room_uuid">(fliji_sockets.models.socket.CurrentDurationRequest attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.room_uuid">(fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
@@ -300,10 +272,6 @@
 </li>
       </ul></li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.LeaveAllRoomsResponse.room_uuids">room_uuids (fliji_sockets.models.user_service_api.LeaveAllRoomsResponse attribute)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
@@ -311,16 +279,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.send_chat_message">send_chat_message() (in module fliji_sockets.sio_main)</a>
 </li>
-      <li><a href="events.html#fliji_sockets.sio_main.startup">startup() (in module fliji_sockets.sio_main)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.status">status (fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.JoinRoomResponse.status">(fliji_sockets.models.user_service_api.JoinRoomResponse attribute)</a>
+      <li><a href="events.html#fliji_sockets.sio_main.startup">startup() (in module fliji_sockets.sio_main)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -328,15 +290,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.EndVideoWatchSessionRequest.time">time (fliji_sockets.models.socket.EndVideoWatchSessionRequest attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.SendChatMessageResponse.time">(fliji_sockets.models.user_service_api.SendChatMessageResponse attribute)</a>
 </li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.VideoTimecodeRequest.timecode">timecode (fliji_sockets.models.socket.VideoTimecodeRequest attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.toggle_user_mic">toggle_user_mic() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.transfer_room_ownership">transfer_room_ownership() (in module fliji_sockets.sio_main)</a>
@@ -349,42 +307,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.update_watch_time">update_watch_time() (in module fliji_sockets.sio_main)</a>
 </li>
-      <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.user_uuid">user_uuid (fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.user_uuid">user_uuid (fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
 
       <ul>
+        <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.user_uuid">(fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
+</li>
         <li><a href="events.html#fliji_sockets.models.socket.ToggleVoiceUserMicRequest.user_uuid">(fliji_sockets.models.socket.ToggleVoiceUserMicRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse.user_uuid">(fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.HandleRightToSpeakResponse.user_uuid">(fliji_sockets.models.user_service_api.HandleRightToSpeakResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.SendChatMessageResponse.user_uuid">(fliji_sockets.models.user_service_api.SendChatMessageResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse.user_uuid">(fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse.user_uuid">(fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.username">username (fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.username">(fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.SendChatMessageResponse.username">(fliji_sockets.models.user_service_api.SendChatMessageResponse attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusResponse.users">users (fliji_sockets.models.user_service_api.GetStatusResponse attribute)</a>
 </li>
       <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.uuid">uuid (fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.GetStatusVoiceUser.uuid">(fliji_sockets.models.user_service_api.GetStatusVoiceUser attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.JoinRoomResponse.uuid">(fliji_sockets.models.user_service_api.JoinRoomResponse attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 

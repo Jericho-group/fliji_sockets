@@ -521,7 +521,7 @@ async def video_timecode(sid, data: VideoTimecodeRequest):
     The client should validate that the event is only emitted by the admin of the room.
 
     Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
+    :py:class:`fliji_sockets.models.socket.VideoTimecodeRequest`
 
     Response (emitted to everybody in the room except for the sender):
     `video_timecode` event

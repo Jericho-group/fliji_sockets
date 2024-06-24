@@ -37,7 +37,12 @@ class RoomActionRequest(MyBaseModel):
 class ChangeRoleRequest(MyBaseModel):
     user_uuid: str
     room_uuid: str
-    new_role:  RoomUserRole
+    new_role: RoomUserRole
+
+
+class KickUserRequest(MyBaseModel):
+    user_uuid: str
+    room_uuid: str
 
 
 class VideoTimecodeRequest(MyBaseModel):

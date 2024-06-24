@@ -31,7 +31,7 @@ from fliji_sockets.models.socket import (
     HandleRightToSpeakRequest,
     EndVideoWatchSessionRequest,
     VideoTimecodeRequest,
-    CurrentDurationRequest, ChangeRoleRequest,
+    CurrentDurationRequest, ChangeRoleRequest, KickUserRequest,
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -753,6 +753,68 @@ async def transfer_room_ownership(
     )
 
 
+@app.event("kick_user")
+async def kick_user(
+        sid,
+        data: KickUserRequest,
+        db: Database = Depends(get_db),
+        nc: Client = Depends(get_nats_client),
+):
+    """
+    Change user's role in a room. Only the admin of the room can change the role of other users.
+
+    Request:
+    :py:class:`fliji_sockets.models.socket.KickUserRequest`
+
+    Response (emitted to the room):
+    `leave_user` event
+
+    Data:
+
+    .. code-block:: json
+
+                {
+                    "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+                }
+
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    admin_data = await get_room_user(db, data.room_uuid, user_uuid)
+    if not admin_data:
+        await app.send_error_message(sid, "User not found in the room.")
+        return
+
+    admin = RoomUser.model_validate(admin_data)
+    if admin.role not in [RoomUserRole.ADMIN, RoomUserRole.MODERATOR]:
+        await app.send_error_message(sid, "Only the admin can kick users.")
+        return
+
+    user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
+    if not user_data:
+        await app.send_error_message(sid, "User not found in the room.")
+        return
+
+    user = RoomUser.model_validate(user_data)
+    await delete_room_users_by_user_uuid(db, user.user_uuid)
+
+    await app.emit(
+        "leave_user",
+        {
+            "uuid": user.user_uuid,
+        },
+        room=get_room_name(data.room_uuid),
+    )
+
+    await publish_user_disconnected(nc, user_uuid)
+
+
 @app.event("change_role")
 async def change_role(
         sid,
@@ -1028,7 +1090,8 @@ async def handle_right_to_speak(
 
     admin_user = RoomUser.model_validate(admin_user_data)
     if admin_user.role not in [RoomUserRole.ADMIN, RoomUserRole.MODERATOR]:
-        await app.send_error_message(sid, "You do not have the right to handle the right to speak request.")
+        await app.send_error_message(sid,
+                                     "You do not have the right to handle the right to speak request.")
         return
 
     user_data = await get_room_user(db, data.room_uuid, data.user_uuid)

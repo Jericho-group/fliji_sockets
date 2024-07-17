@@ -3,7 +3,9 @@ import json
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from fliji_sockets.models.database import ViewSession, Room, Chat, RoomUser, ChatMessage
+from fliji_sockets.models.database import ViewSession, Room, Chat, RoomUser, ChatMessage, \
+    TimelineWatchSession, TimelineGroup
+from fliji_sockets.models.socket import TimelineStatusResponse
 from fliji_sockets.settings import (
     MONGO_PORT,
     MONGO_HOST,
@@ -17,8 +19,15 @@ def ensure_indexes(db: Database):
     db.view_sessions.create_index("sid")
     db.view_sessions.create_index("video_uuid")
     db.view_sessions.create_index("user_uuid")
+
+    db.timeline_watch_sessions.create_index("sid")
+    db.timeline_watch_sessions.create_index("video_uuid")
+    db.timeline_watch_sessions.create_index("user_uuid")
+
     db.rooms.create_index("uuid")
+
     db.temp_room_users.create_index("user_uuid")
+
     db.room_users.create_index("user_uuid")
     db.room_users.create_index("room_uuid")
 
@@ -155,6 +164,62 @@ async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
         upsert=True,
     )
     return view_session_id
+
+
+async def upsert_timeline_watch_session(db: Database, watch_session: TimelineWatchSession) -> int:
+    watch_session_id = db.timeline_watch_sessions.update_one(
+        {"user_uuid": watch_session.user_uuid, "video_uuid": watch_session.video_uuid},
+        {"$set": watch_session.model_dump(exclude_none=True)},
+        upsert=True,
+    )
+    return watch_session_id
+
+
+async def delete_timeline_watch_session_by_user_uuid(db: Database, user_uuid: str) -> int:
+    result = db.timeline_watch_sessions.delete_one({"user_uuid": user_uuid})
+    return result.deleted_count
+
+
+async def get_timeline_watch_session_by_user_uuid(db: Database, user_uuid: str) -> dict:
+    view_session = db.timeline_watch_sessions.find_one({"user_uuid": user_uuid})
+    return view_session
+
+
+async def get_timeline_group_by_uuid(db: Database, group_uuid: str):
+    group = db.timeline_groups.find_one({"group_uuid": group_uuid})
+    return group
+
+
+async def upsert_timeline_group(db: Database, group: TimelineGroup) -> int:
+    result = db.timeline_groups.update_one(
+        {"group_uuid": group.group_uuid},
+        {"$set": group.model_dump(exclude_none=True)},
+        upsert=True,
+    )
+    return result
+
+
+async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:
+    groups = db.timeline_groups.find({"video_uuid": video_uuid})
+    users = db.timeline_watch_sessions.find({"video_uuid": video_uuid})
+
+    groups_data = []
+    for group in groups:
+        group_data = group
+        group_data["users"] = []
+        for user in users:
+            if user.group_uuid == group.group_uuid:
+                group_data["users"].append(user)
+                users.remove(user)
+
+        groups_data.append(group_data)
+
+    response = TimelineStatusResponse(
+        video_uuid=video_uuid,
+        groups=groups_data,
+        users=users,
+    )
+    return response
 
 
 async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:

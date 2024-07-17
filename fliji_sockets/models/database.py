@@ -33,6 +33,29 @@ class ViewSession(MyBaseModel):
         }
 
 
+class TimelineWatchSession(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    user_uuid: str
+    sid: str
+    video_uuid: str | None = None
+    group_uuid: str | None = None
+    current_watch_time: int | None = None
+    last_update_time: datetime
+    avatar: str | None = None
+    username: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    bio: str | None = None
+
+
+class TimelineGroup(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    group_uuid: str
+    host_user_uuid: str
+    users_count: int
+    watch_time: int | None = None
+
+
 class Room(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     uuid: str

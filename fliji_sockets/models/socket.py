@@ -80,6 +80,34 @@ class HandleRightToSpeakRequest(MyBaseModel):
     right_to_speak: bool
 
 
+class TimelineConnectRequest(MyBaseModel):
+    video_uuid: str
+
+
+class TimelineJoinGroupRequest(MyBaseModel):
+    group_uuid: str
+
+
+class TimelineSendTimecodeToGroupRequest(MyBaseModel):
+    group_uuid: str
+    timecode: int
+    server_timestamp: int
+
+
+class TimelineJoinUserRequest(MyBaseModel):
+    user_uuid: str
+
+
+class TimelineSendChatMessageRequest(MyBaseModel):
+    message: str
+    video_uuid: str
+
+
+class TimelineChatMessageResponse(MyBaseModel):
+    message: str
+    video_uuid: str
+
+
 class MostWatchedVideosResponse(MyBaseModel):
     # loads from _id to video_uuid
     video_uuid: str
@@ -92,3 +120,27 @@ class MostWatchedVideosResponse(MyBaseModel):
                 "watch_count": 100,
             },
         }
+
+
+class TimelineUserDataResponse(MyBaseModel):
+    user_uuid: str
+    username: str
+    first_name: str
+    last_name: str
+    avatar_url: str
+    bio: str
+    watch_time: int | None = None
+
+
+class TimelineGroupDataResponse(MyBaseModel):
+    group_uuid: str
+    host_user_uuid: str
+    users_count: int
+    watch_time: int | None = None
+    users: list[TimelineUserDataResponse]
+
+
+class TimelineStatusResponse(MyBaseModel):
+    video_uuid: str
+    groups: list[TimelineGroupDataResponse]
+    users: list[TimelineUserDataResponse]

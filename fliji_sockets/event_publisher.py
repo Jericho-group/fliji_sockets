@@ -52,6 +52,58 @@ async def publish_user_started_watching_video(nc: Client, user_uuid: str, video_
     await nc.flush()
 
 
+async def publish_user_connected_to_timeline(nc: Client, user_uuid: str, video_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+        "video_uuid": video_uuid,
+    }
+
+    await nc.publish("timeline.user_connected", json.dumps(payload).encode())
+    await nc.flush()
+
+
+async def publish_user_joined_timeline_group(nc: Client, user_uuid: str, group_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+        "group_uuid": group_uuid,
+    }
+
+    await nc.publish("timeline.user_joined_group", json.dumps(payload).encode())
+    await nc.flush()
+
+
+async def publish_user_left_timeline_group(nc: Client, user_uuid: str, group_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+        "group_uuid": group_uuid,
+    }
+
+    await nc.publish("timeline.user_left_group", json.dumps(payload).encode())
+    await nc.flush()
+
+
+async def publish_user_left_timeline(nc: Client, user_uuid: str, video_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+        "video_uuid": video_uuid,
+    }
+
+    await nc.flush()
+    await nc.publish("timeline.user_left", json.dumps(payload).encode())
+
+
+async def publish_timeline_chat_message(nc: Client, video_uuid: str, author_uuid: str,
+                                        message: str):
+    payload = {
+        "video_uuid": video_uuid,
+        "author_uuid": author_uuid,
+        "message": message,
+    }
+
+    await nc.publish("timeline.sent_message", json.dumps(payload).encode())
+    await nc.flush()
+
+
 async def publish_user_joined_room(nc: Client, user_uuid: str, room_uuid: str):
     payload = {
         "user_uuid": user_uuid,

@@ -57,6 +57,7 @@ from fliji_sockets.store import (
     insert_chat_message, upsert_timeline_watch_session, delete_timeline_watch_session_by_user_uuid,
     get_timeline_watch_session_by_user_uuid, get_timeline_group_by_uuid, upsert_timeline_group,
     get_timeline_status, delete_all_timeline_groups, delete_all_timeline_watch_sessions,
+    get_timeline_group_users,
 )
 
 app = SocketioApplication()
@@ -207,7 +208,49 @@ async def disconnect(
     await delete_room_users_by_user_uuid(db, user_uuid)
     await delete_view_session_by_user_uuid(db, user_session.user_uuid)
 
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    await handle_user_timeline_leave(db, timeline_watch_session, user_uuid)
+
     await publish_user_disconnected(nc, user_uuid)
+
+
+async def handle_user_timeline_leave(db: Database, timeline_watch_session: dict, user_uuid: str):
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+    app.leave_room(watch_session.sid, get_room_name(watch_session.video_uuid))
+
+    if watch_session.group_uuid:
+        group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
+
+        group = None
+        try:
+            group = TimelineGroup.model_validate(group_data)
+        except ValidationError as e:
+            logging.error(f"Error validating timeline group: {e}")
+
+        if group:
+            app.leave_room(watch_session.sid, get_room_name(group.group_uuid))
+            group.users_count -= 1
+
+            # if next to last user left the group, delete the group
+            if group.users_count == 1:
+                await delete_timeline_watch_session_by_user_uuid(db, user_uuid)
+                group = None
+            else:
+                await upsert_timeline_group(db, group)
+
+        # if host left the group, change the host
+        if group and group.host_uuid == user_uuid:
+            group_users = await get_timeline_group_users(db, group.group_uuid)
+            if group_users:
+                last_user = None
+
+                for group_user in group_users:
+                    if group_user.get("user_uuid") != user_uuid:
+                        last_user = group_user.get("user_uuid")
+                        break
+
+                group.host_user_uuid = last_user.get("user_uuid")
+                await upsert_timeline_group(db, group)
 
 
 @app.event("end_video_watch_session")
@@ -1243,8 +1286,12 @@ async def timeline_join_user(
     await upsert_timeline_group(db, group)
 
     # update the watch sessions
+    watch_session.last_update_time = datetime.now()
     watch_session.group_uuid = group.group_uuid
+
+    host_watch_session.last_update_time = datetime.now()
     host_watch_session.group_uuid = group.group_uuid
+
     await upsert_timeline_watch_session(db, watch_session)
     await upsert_timeline_watch_session(db, host_watch_session)
 
@@ -1439,15 +1486,7 @@ async def timeline_leave(
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
 
-    if watch_session.group_uuid:
-        timeline_group = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
-        group = TimelineGroup.model_validate(timeline_group)
-        group.users_count -= 1
-        await upsert_timeline_group(db, group)
-        app.leave_room(sid, get_room_name(group.group_uuid))
-
-    # leave socketio room
-    app.leave_room(sid, get_room_name(watch_session.video_uuid))
+    await handle_user_timeline_leave(db, timeline_watch_session, user_uuid)
 
     # emit the global status event
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)

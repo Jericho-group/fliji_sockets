@@ -190,6 +190,14 @@ async def get_timeline_group_by_uuid(db: Database, group_uuid: str):
     return group
 
 
+async def get_timeline_group_users(db: Database, group_uuid: str):
+    # order by last_update_time
+    users = db.timeline_watch_sessions.find({"group_uuid": group_uuid}).sort(
+        "last_update_time"
+    )
+    return users
+
+
 async def upsert_timeline_group(db: Database, group: TimelineGroup) -> int:
     result = db.timeline_groups.update_one(
         {"group_uuid": group.group_uuid},
@@ -197,6 +205,11 @@ async def upsert_timeline_group(db: Database, group: TimelineGroup) -> int:
         upsert=True,
     )
     return result
+
+
+async def delete_timeline_group_by_uuid(db: Database, group_uuid: str) -> int:
+    result = db.timeline_groups.delete_one({"group_uuid": group_uuid})
+    return result.deleted_count
 
 
 async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:

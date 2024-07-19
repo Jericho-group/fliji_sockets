@@ -86,6 +86,7 @@ async def publish_user_left_timeline(nc: Client, user_uuid: str, video_uuid: str
     payload = {
         "user_uuid": user_uuid,
         "video_uuid": video_uuid,
+        "watch_time": 0,
     }
 
     await nc.flush()

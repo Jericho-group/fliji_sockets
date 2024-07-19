@@ -232,7 +232,7 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
     for user in users:
         user_in_group = False
         for group in groups_data:
-            if user.get("group_uuid") == group.get("group_uuid"):
+            if (user.get("group_uuid") is not None) and (user.get("group_uuid") == group.get("group_uuid")):
                 user_in_group = True
                 break
 

@@ -17,7 +17,7 @@ from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
     publish_user_online, publish_user_offline, publish_room_ownership_changed, \
     publish_user_connected_to_timeline, publish_user_joined_timeline_group, \
-    publish_user_left_timeline_group
+    publish_user_left_timeline_group, publish_timeline_chat_message
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage, \
@@ -37,13 +37,12 @@ from fliji_sockets.models.socket import (
     EndVideoWatchSessionRequest,
     VideoTimecodeRequest,
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
-    TimelineJoinGroupRequest, TimelineJoinUserRequest, TimelineSendTimecodeToGroupRequest,
-    TimelineSendChatMessageRequest,
+    TimelineJoinGroupRequest, TimelineSendTimecodeToGroupRequest,
+    TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
 )
-from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
     delete_view_session_by_socket_id,
@@ -57,7 +56,7 @@ from fliji_sockets.store import (
     get_room_users_by_room_uuid, get_room_user, get_room_by_uuid, upsert_room,
     insert_chat_message, upsert_timeline_watch_session, delete_timeline_watch_session_by_user_uuid,
     get_timeline_watch_session_by_user_uuid, get_timeline_group_by_uuid, upsert_timeline_group,
-    get_timeline_status,
+    get_timeline_status, delete_all_timeline_groups, delete_all_timeline_watch_sessions,
 )
 
 app = SocketioApplication()
@@ -1100,7 +1099,8 @@ async def handle_right_to_speak(
     admin_user = RoomUser.model_validate(admin_user_data)
     if admin_user.role not in [RoomUserRole.ADMIN, RoomUserRole.MODERATOR]:
         await app.send_error_message(sid,
-                                     "You do not have the right to handle the right to speak request.")
+                                     "You do not have the right" +
+                                     " to handle the right to speak request.")
         return
 
     user_data = await get_room_user(db, data.room_uuid, data.user_uuid)
@@ -1161,7 +1161,7 @@ async def timeline_connect(
     watch_session = TimelineWatchSession(
         sid=sid,
         last_update_time=datetime.now(),
-        current_watch_time=data.current_watch_time,
+        watch_time=0,
         video_uuid=data.video_uuid,
         user_uuid=user_uuid,
         avatar=session.avatar,
@@ -1182,7 +1182,7 @@ async def timeline_connect(
     timeline_status_data = await get_timeline_status(db, data.video_uuid)
     await app.emit(
         "timeline_status",
-        timeline_status_data,
+        timeline_status_data.model_dump(),
         room=sio_room_identifier,
     )
 
@@ -1198,11 +1198,22 @@ async def timeline_join_user(
     Join a single user on the timeline of a video.
 
     Request:
-    :py:class:`fliji_sockets.models.socket.TimelineJoinGroupRequest`
+    :py:class:`fliji_sockets.models.socket.TimelineJoinUserRequest`
 
     Response
     Event `timeline_status` is emitted to everybody globally:
     :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
+
+    Also emits `timeline_group_user_joined` event to the host.
+    This can be used to show a notification to the host.
+
+    Data:
+
+    .. code-block:: json
+
+        {
+            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+        }
     """
     session = await app.get_session(sid)
     if not session:
@@ -1213,36 +1224,80 @@ async def timeline_join_user(
     user_uuid = session.user_uuid
 
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
-
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    host_timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, data.user_uuid)
+    host_watch_session = TimelineWatchSession.model_validate(host_timeline_watch_session)
+
+    if host_watch_session.group_uuid is not None:
+        await app.send_error_message(sid, "User is already in a group.")
+        return
 
     # create a new group
     group = TimelineGroup(
-        group_uuid=uuid.uuid4(),
+        group_uuid=str(uuid.uuid4()),
         video_uuid=watch_session.video_uuid,
         host_user_uuid=data.user_uuid,
+        users_count=2,
     )
+    await upsert_timeline_group(db, group)
+
+    # update the watch sessions
+    watch_session.group_uuid = group.group_uuid
+    host_watch_session.group_uuid = group.group_uuid
+    await upsert_timeline_watch_session(db, watch_session)
+    await upsert_timeline_watch_session(db, host_watch_session)
 
     sio_room_identifier = get_room_name(group.group_uuid)
 
-    watch_session.group_uuid = group.uuid
-    group.users_count += 1
-
-    await upsert_timeline_watch_session(db, watch_session)
-    await upsert_timeline_group(db, group)
-
     # join socketio room for the group
     app.enter_room(sid, sio_room_identifier)
+    app.enter_room(host_watch_session.sid, sio_room_identifier)
 
     # emit the global status event
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
     await app.emit(
         "timeline_status",
-        timeline_status_data,
+        timeline_status_data.model_dump(),
         room=sio_room_identifier,
     )
 
+    await app.emit(
+        "timeline_group_user_joined",
+        {
+            "user_uuid": user_uuid,
+        },
+        room=sio_room_identifier,
+        skip_sid=sid,
+    )
+
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)
+
+
+@app.event("timeline_update_timecode")
+async def timeline_update_timecode(
+        sid,
+        data: TimelineUpdateTimecodeRequest,
+        db: Database = Depends(get_db),
+):
+    """
+    Update the timecode for a single user on the timeline.
+
+    Request:
+    :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+    watch_session.watch_time = data.timecode
+    await upsert_timeline_watch_session(db, watch_session)
 
 
 @app.event("timeline_join_group")
@@ -1291,7 +1346,7 @@ async def timeline_join_group(
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
     await app.emit(
         "timeline_status",
-        timeline_status_data,
+        timeline_status_data.model_dump(),
         room=sio_room_identifier,
     )
 
@@ -1353,7 +1408,7 @@ async def timeline_leave_group(
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
     await app.emit(
         "timeline_status",
-        timeline_status_data,
+        timeline_status_data.model_dump(),
         room=sio_room_identifier,
     )
 
@@ -1398,7 +1453,7 @@ async def timeline_leave(
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
     await app.emit(
         "timeline_status",
-        timeline_status_data,
+        timeline_status_data.model_dump(),
         room=get_room_name(watch_session.video_uuid),
     )
 
@@ -1469,6 +1524,7 @@ async def timeline_send_timecode_to_group(
 
     timeline_group = await get_timeline_group_by_uuid(db, data.group_uuid)
     group = TimelineGroup.model_validate(timeline_group)
+    group.watch_time = data.timecode
 
     if group.host_user_uuid != user_uuid:
         await app.send_error_message(sid,
@@ -1492,7 +1548,6 @@ async def timeline_send_timecode_to_group(
 async def timeline_send_chat_message(
         sid,
         data: TimelineSendChatMessageRequest,
-        db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
     """
@@ -1512,7 +1567,7 @@ async def timeline_send_chat_message(
         return
     user_uuid = session.user_uuid
 
-    await publish_chat_message(nc, room.chat_id, data.room_uuid, user_uuid, data.message)
+    await publish_timeline_chat_message(nc, data.video_uuid, user_uuid, data.message)
 
     await app.emit(
         "timeline_chat_message",
@@ -1526,10 +1581,17 @@ async def timeline_send_chat_message(
     )
 
 
-if APP_ENV != "local":
+def clear_data_on_startup():
     # remove all transient session data
     database = get_database()
     delete_all_sessions(database)
+
+    # timeline groups and watch sessions
+    delete_all_timeline_groups(database)
+    delete_all_timeline_watch_sessions(database)
+
+
+clear_data_on_startup()
 
 
 def fill_mock_data():

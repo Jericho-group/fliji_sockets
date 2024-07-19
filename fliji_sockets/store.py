@@ -207,12 +207,24 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
     for group in groups:
         group_data = group
         group_data["users"] = []
+
         for user in users:
-            if user.group_uuid == group.group_uuid:
+            if user.get("group_uuid") == group.get("group_uuid"):
                 group_data["users"].append(user)
-                users.remove(user)
 
         groups_data.append(group_data)
+
+    # remove users that are already in groups
+    users_data = []
+    for user in users:
+        user_in_group = False
+        for group in groups_data:
+            if user.get("group_uuid") == group.get("group_uuid"):
+                user_in_group = True
+                break
+
+        if not user_in_group:
+            users_data.append(user)
 
     response = TimelineStatusResponse(
         video_uuid=video_uuid,
@@ -220,6 +232,16 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
         users=users,
     )
     return response
+
+
+def delete_all_timeline_watch_sessions(db: Database) -> int:
+    result = db.timeline_watch_sessions.delete_many({})
+    return result.deleted_count
+
+
+def delete_all_timeline_groups(db: Database) -> int:
+    result = db.timeline_groups.delete_many({})
+    return result.deleted_count
 
 
 async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:

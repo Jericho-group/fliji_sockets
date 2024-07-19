@@ -88,14 +88,19 @@ class TimelineJoinGroupRequest(MyBaseModel):
     group_uuid: str
 
 
+class TimelineJoinUserRequest(MyBaseModel):
+    user_uuid: str
+    video_uuid: str
+
+
 class TimelineSendTimecodeToGroupRequest(MyBaseModel):
     group_uuid: str
     timecode: int
     server_timestamp: int
 
 
-class TimelineJoinUserRequest(MyBaseModel):
-    user_uuid: str
+class TimelineUpdateTimecodeRequest(MyBaseModel):
+    timecode: int
 
 
 class TimelineSendChatMessageRequest(MyBaseModel):
@@ -125,10 +130,10 @@ class MostWatchedVideosResponse(MyBaseModel):
 class TimelineUserDataResponse(MyBaseModel):
     user_uuid: str
     username: str
-    first_name: str
-    last_name: str
-    avatar_url: str
-    bio: str
+    first_name: str | None = None
+    last_name: str | None = None
+    avatar_url: str | None = None
+    bio: str | None = None
     watch_time: int | None = None
 
 

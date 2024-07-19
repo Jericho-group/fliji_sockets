@@ -39,7 +39,7 @@ class TimelineWatchSession(MyBaseModel):
     sid: str
     video_uuid: str | None = None
     group_uuid: str | None = None
-    current_watch_time: int | None = None
+    watch_time: int | None = None
     last_update_time: datetime
     avatar: str | None = None
     username: str | None = None
@@ -51,6 +51,7 @@ class TimelineWatchSession(MyBaseModel):
 class TimelineGroup(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     group_uuid: str
+    video_uuid: str
     host_user_uuid: str
     users_count: int
     watch_time: int | None = None

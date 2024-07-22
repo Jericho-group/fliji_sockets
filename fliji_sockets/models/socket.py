@@ -93,6 +93,10 @@ class TimelineJoinUserRequest(MyBaseModel):
     video_uuid: str
 
 
+class TimelineSetMicEnabled(MyBaseModel):
+    mic_enabled: bool
+
+
 class TimelineSendTimecodeToGroupRequest(MyBaseModel):
     group_uuid: str
     timecode: int

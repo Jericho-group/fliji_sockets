@@ -39,6 +39,7 @@ from fliji_sockets.models.socket import (
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
     TimelineJoinGroupRequest, TimelineSendTimecodeToGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
+    TimelineSetMicEnabled,
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -1207,6 +1208,7 @@ async def timeline_connect(
         watch_time=0,
         video_uuid=data.video_uuid,
         user_uuid=user_uuid,
+        mic_enabled=False,
         avatar=session.avatar,
         username=session.username,
         first_name=session.first_name,
@@ -1319,6 +1321,58 @@ async def timeline_join_user(
     )
 
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)
+
+
+@app.event("timeline_set_mic_enabled")
+async def timeline_set_mic_enabled(
+        sid,
+        data: TimelineSetMicEnabled,
+        nc: Client = Depends(get_nats_client),
+        db: Database = Depends(get_db),
+):
+    """
+    Set the mic enabled status for a user on the timeline.
+
+    Request:
+    :py:class:`fliji_sockets.models.socket.TimelineSetMicEnabled`
+
+    Response
+    Event `timeline_status` is emitted to everybody globally:
+    :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
+    Data:
+
+    .. code-block:: json
+
+        {
+            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+        }
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    await upsert_timeline_watch_session(db, watch_session)
+
+    sio_room_identifier = get_room_name(watch_session.group_uuid)
+
+    if sio_room_identifier is None:
+        await app.send_error_message(sid, "User is not in a group.")
+        return
+
+    # emit the global status event
+    timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
+    await app.emit(
+        "timeline_status",
+        timeline_status_data.model_dump(),
+        room=sio_room_identifier,
+    )
 
 
 @app.event("timeline_update_timecode")

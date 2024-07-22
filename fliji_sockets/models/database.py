@@ -41,6 +41,7 @@ class TimelineWatchSession(MyBaseModel):
     group_uuid: str | None = None
     watch_time: int | None = None
     last_update_time: datetime
+    mic_enabled: bool
     avatar: str | None = None
     username: str | None = None
     first_name: str | None = None

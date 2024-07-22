@@ -238,6 +238,13 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
         if not user_in_group:
             users_data.append(user)
 
+    # make the host user first
+    for group in groups_data:
+        for user in group["users"]:
+            if user.get("user_uuid") == group.get("host_user_uuid"):
+                group["users"].remove(user)
+                group["users"].insert(0, user)
+
     response = TimelineStatusResponse(
         video_uuid=video_uuid,
         groups=groups_data,

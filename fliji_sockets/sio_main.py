@@ -1659,7 +1659,7 @@ async def timeline_send_chat_message(
             "username": session.username,
             "time": datetime.now().isoformat(),
         },
-        room=get_room_name(data.room_uuid),
+        room=get_room_name(data.video_uuid),
     )
 
 

@@ -1717,7 +1717,16 @@ async def timeline_send_chat_message(
 
     await app.emit(
         "timeline_chat_message",
-        chat_message.model_dump(),
+        {
+            "id": str(chat_message.id),
+            "user_uuid": chat_message.user_uuid,
+            "message": chat_message.message,
+            "username": chat_message.username,
+            "user_avatar": chat_message.user_avatar,
+            "first_name": chat_message.first_name,
+            "last_name": chat_message.last_name,
+            "created_at": chat_message.created_at.isoformat(),
+        },
         room=get_room_name(watch_session.video_uuid),
     )
 

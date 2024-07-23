@@ -1,3 +1,7 @@
+from datetime import datetime
+from typing import Annotated
+from pydantic import BeforeValidator
+
 from fliji_sockets.models.base import MyBaseModel
 from fliji_sockets.models.enums import RoomUserRole
 
@@ -97,6 +101,10 @@ class TimelineSetMicEnabled(MyBaseModel):
     mic_enabled: bool
 
 
+class TimelineFetchChatMessages(MyBaseModel):
+    mic_enabled: bool
+
+
 class TimelineSendTimecodeToGroupRequest(MyBaseModel):
     group_uuid: str
     timecode: int
@@ -109,12 +117,6 @@ class TimelineUpdateTimecodeRequest(MyBaseModel):
 
 class TimelineSendChatMessageRequest(MyBaseModel):
     message: str
-    video_uuid: str
-
-
-class TimelineChatMessageResponse(MyBaseModel):
-    message: str
-    video_uuid: str
 
 
 class MostWatchedVideosResponse(MyBaseModel):

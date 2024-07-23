@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from pymongo.database import Database
 
 from fliji_sockets.models.database import ViewSession, Room, Chat, RoomUser, ChatMessage, \
-    TimelineWatchSession, TimelineGroup
+    TimelineWatchSession, TimelineGroup, TimelineChatMessage
 from fliji_sockets.models.socket import TimelineStatusResponse
 from fliji_sockets.settings import (
     MONGO_PORT,
@@ -232,7 +232,8 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
     for user in users:
         user_in_group = False
         for group in groups_data:
-            if (user.get("group_uuid") is not None) and (user.get("group_uuid") == group.get("group_uuid")):
+            if (user.get("group_uuid") is not None) and (
+                    user.get("group_uuid") == group.get("group_uuid")):
                 user_in_group = True
 
         if not user_in_group:
@@ -261,6 +262,21 @@ def delete_all_timeline_watch_sessions(db: Database) -> int:
 def delete_all_timeline_groups(db: Database) -> int:
     result = db.timeline_groups.delete_many({})
     return result.deleted_count
+
+
+def delete_all_timeline_chat_messages(db: Database) -> int:
+    result = db.timeline_chat_messages.delete_many({})
+    return result.deleted_count
+
+
+async def insert_timeline_chat_message(db: Database, chat_message: TimelineChatMessage) -> int:
+    result = db.timeline_chat_messages.insert_one(chat_message.model_dump(exclude_none=True))
+    return result
+
+
+async def get_timeline_chat_messages_by_video_uuid(db: Database, video_uuid: str) -> list[dict]:
+    messages = db.timeline_chat_messages.find({"video_uuid": video_uuid})
+    return messages
 
 
 async def get_view_session_by_socket_id(db: Database, sid: str) -> ViewSession:

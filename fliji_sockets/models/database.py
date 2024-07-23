@@ -86,6 +86,18 @@ class ChatMessage(MyBaseModel):
     message: str
 
 
+class TimelineChatMessage(MyBaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
+    video_uuid: str
+    user_uuid: str
+    username: str
+    user_avatar: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    message: str
+    created_at: datetime
+
+
 class RoomUser(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     room_uuid: str

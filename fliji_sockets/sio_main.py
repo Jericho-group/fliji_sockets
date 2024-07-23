@@ -5,10 +5,9 @@ import time
 import uuid
 from datetime import datetime
 
+from nats.aio.client import Client
 from pydantic import ValidationError
 from pymongo.database import Database
-
-from nats.aio.client import Client
 
 from fliji_sockets.api_client import FlijiApiService, ApiException
 from fliji_sockets.dependencies import get_db, get_api_service, get_nats_client
@@ -17,11 +16,11 @@ from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
     publish_user_online, publish_user_offline, publish_room_ownership_changed, \
     publish_user_connected_to_timeline, publish_user_joined_timeline_group, \
-    publish_user_left_timeline_group, publish_timeline_chat_message
+    publish_user_left_timeline_group
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage, \
-    TimelineWatchSession, TimelineGroup
+    TimelineWatchSession, TimelineGroup, TimelineChatMessage
 from fliji_sockets.models.enums import RightToSpeakState, RoomUserRole
 from fliji_sockets.models.socket import (
     OnConnectRequest,
@@ -39,7 +38,7 @@ from fliji_sockets.models.socket import (
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
     TimelineJoinGroupRequest, TimelineSendTimecodeToGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
-    TimelineSetMicEnabled,
+    TimelineSetMicEnabled
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -58,8 +57,8 @@ from fliji_sockets.store import (
     insert_chat_message, upsert_timeline_watch_session, delete_timeline_watch_session_by_user_uuid,
     get_timeline_watch_session_by_user_uuid, get_timeline_group_by_uuid, upsert_timeline_group,
     get_timeline_status, delete_all_timeline_groups, delete_all_timeline_watch_sessions,
-    get_timeline_group_users,
-)
+    get_timeline_group_users, insert_timeline_chat_message,
+    get_timeline_chat_messages_by_video_uuid, )
 
 app = SocketioApplication()
 
@@ -1364,6 +1363,55 @@ async def timeline_set_mic_enabled(
         )
 
 
+@app.event("timeline_fetch_chat_history")
+async def timeline_fetch_chat_history(
+        sid,
+        db: Database = Depends(get_db),
+):
+    """
+    Fetches the last 50 chat messages for the timeline.
+
+    Response
+    Event `timeline_chat_history` is emitted to the user:
+
+    Response is an array of:
+    :py:class:`fliji_sockets.models.database.TimelineChatMessage`
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    chat_messages = await get_timeline_chat_messages_by_video_uuid(db, watch_session.video_uuid)
+    response_data = []
+    for chat_message in chat_messages:
+        msg = TimelineChatMessage.model_validate(chat_message)
+        response_data.append(
+            {
+                "id": str(msg.id),
+                "user_uuid": msg.user_uuid,
+                "message": msg.message,
+                "username": msg.username,
+                "user_avatar": msg.user_avatar,
+                "first_name": msg.first_name,
+                "last_name": msg.last_name,
+                "created_at": msg.created_at.isoformat(),
+            }
+        )
+
+    await app.emit(
+        "timeline_chat_history",
+        response_data,
+        room=sid,
+    )
+
+
 @app.event("timeline_update_timecode")
 async def timeline_update_timecode(
         sid,
@@ -1630,7 +1678,7 @@ async def timeline_send_timecode_to_group(
 async def timeline_send_chat_message(
         sid,
         data: TimelineSendChatMessageRequest,
-        nc: Client = Depends(get_nats_client),
+        db: Database = Depends(get_db),
 ):
     """
     Sends the chats message on the timeline of a video globally.
@@ -1640,6 +1688,8 @@ async def timeline_send_chat_message(
 
     Response (emitted to the room):
     `timeline_chat_message` event
+
+    :py:class:`fliji_sockets.models.database.TimelineChatMessage`
     """
     session = await app.get_session(sid)
     if not session:
@@ -1649,17 +1699,26 @@ async def timeline_send_chat_message(
         return
     user_uuid = session.user_uuid
 
-    await publish_timeline_chat_message(nc, data.video_uuid, user_uuid, data.message)
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    chat_message = TimelineChatMessage(
+        user_uuid=user_uuid,
+        message=data.message,
+        user_avatar=watch_session.avatar,
+        username=watch_session.username,
+        first_name=watch_session.first_name,
+        last_name=watch_session.last_name,
+        video_uuid=watch_session.video_uuid,
+        created_at=datetime.now().isoformat(),
+    )
+
+    await insert_timeline_chat_message(db, chat_message)
 
     await app.emit(
         "timeline_chat_message",
-        {
-            "user_uuid": user_uuid,
-            "message": data.message,
-            "username": session.username,
-            "time": datetime.now().isoformat(),
-        },
-        room=get_room_name(data.video_uuid),
+        chat_message.model_dump(),
+        room=get_room_name(watch_session.video_uuid),
     )
 
 
@@ -1671,6 +1730,7 @@ def clear_data_on_startup():
     # timeline groups and watch sessions
     delete_all_timeline_groups(database)
     delete_all_timeline_watch_sessions(database)
+    # delete_all_timeline_chat_messages(database)
 
 
 clear_data_on_startup()

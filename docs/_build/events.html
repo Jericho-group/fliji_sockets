@@ -258,6 +258,16 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_fetch_chat_history">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_fetch_chat_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_fetch_chat_history" title="Link to this definition">¶</a></dt>
+<dd><p>Fetches the last 50 chat messages for the timeline.</p>
+<p>Response
+Event <cite>timeline_chat_history</cite> is emitted to the user:</p>
+<p>Response is an array of:
+<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.database.TimelineChatMessage</span></code></p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_get_server_timestamp">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_get_server_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_get_server_timestamp" title="Link to this definition">¶</a></dt>
 <dd><p>Get the server unix timestamp.</p>
@@ -321,12 +331,13 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_send_chat_message">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_send_chat_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSendChatMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_send_chat_message" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_send_chat_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSendChatMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_send_chat_message" title="Link to this definition">¶</a></dt>
 <dd><p>Sends the chats message on the timeline of a video globally.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest" title="fliji_sockets.models.socket.TimelineSendChatMessageRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineSendChatMessageRequest</span></code></a></p>
 <p>Response (emitted to the room):
 <cite>timeline_chat_message</cite> event</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.database.TimelineChatMessage</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -343,6 +354,17 @@ Event <cite>timeline_group_host_timecode</cite> is emitted to the user:
 <span class="p">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_set_mic_enabled">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_set_mic_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSetMicEnabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_set_mic_enabled" title="Link to this definition">¶</a></dt>
+<dd><p>Set the mic enabled status for a user on the timeline.</p>
+<p>Request:
+<a class="reference internal" href="#fliji_sockets.models.socket.TimelineSetMicEnabled" title="fliji_sockets.models.socket.TimelineSetMicEnabled"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineSetMicEnabled</span></code></a></p>
+<p>Response
+Event <cite>timeline_status</cite> is emitted to everybody globally:
+<a class="reference internal" href="#fliji_sockets.models.socket.TimelineStatusResponse" title="fliji_sockets.models.socket.TimelineStatusResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineStatusResponse</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
@@ -750,30 +772,6 @@ Only the admin of the room can toggle the mic of other users.</p>
 </dd></dl>
 
 <dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineChatMessageResponse">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">TimelineChatMessageResponse</span></span><a class="headerlink" href="#fliji_sockets.models.socket.TimelineChatMessageResponse" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineChatMessageResponse.message" title="fliji_sockets.models.socket.TimelineChatMessageResponse.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineChatMessageResponse.video_uuid" title="fliji_sockets.models.socket.TimelineChatMessageResponse.video_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineChatMessageResponse.message">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineChatMessageResponse.message" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineChatMessageResponse.video_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineChatMessageResponse.video_uuid" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineConnectRequest">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">TimelineConnectRequest</span></span><a class="headerlink" href="#fliji_sockets.models.socket.TimelineConnectRequest" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
@@ -787,6 +785,24 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineConnectRequest.video_uuid">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineConnectRequest.video_uuid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineFetchChatMessages">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">TimelineFetchChatMessages</span></span><a class="headerlink" href="#fliji_sockets.models.socket.TimelineFetchChatMessages" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineFetchChatMessages.mic_enabled" title="fliji_sockets.models.socket.TimelineFetchChatMessages.mic_enabled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic_enabled</span> <span class="pre">(bool)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineFetchChatMessages.mic_enabled">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineFetchChatMessages.mic_enabled" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -883,18 +899,12 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dt class="field-odd">Fields<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest.message" title="fliji_sockets.models.socket.TimelineSendChatMessageRequest.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest.video_uuid" title="fliji_sockets.models.socket.TimelineSendChatMessageRequest.video_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_uuid</span> <span class="pre">(str)</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineSendChatMessageRequest.message">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest.message" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineSendChatMessageRequest.video_uuid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest.video_uuid" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -925,6 +935,24 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest.timecode">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timecode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest.timecode" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineSetMicEnabled">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">TimelineSetMicEnabled</span></span><a class="headerlink" href="#fliji_sockets.models.socket.TimelineSetMicEnabled" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSetMicEnabled.mic_enabled" title="fliji_sockets.models.socket.TimelineSetMicEnabled.mic_enabled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic_enabled</span> <span class="pre">(bool)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineSetMicEnabled.mic_enabled">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mic_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineSetMicEnabled.mic_enabled" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1213,6 +1241,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.send_chat_message"><code class="docutils literal notranslate"><span class="pre">send_chat_message()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.startup"><code class="docutils literal notranslate"><span class="pre">startup()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_connect"><code class="docutils literal notranslate"><span class="pre">timeline_connect()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_fetch_chat_history"><code class="docutils literal notranslate"><span class="pre">timeline_fetch_chat_history()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_get_server_timestamp"><code class="docutils literal notranslate"><span class="pre">timeline_get_server_timestamp()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_join_group"><code class="docutils literal notranslate"><span class="pre">timeline_join_group()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_join_user"><code class="docutils literal notranslate"><span class="pre">timeline_join_user()</span></code></a></li>
@@ -1220,6 +1249,7 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_leave_group"><code class="docutils literal notranslate"><span class="pre">timeline_leave_group()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_chat_message"><code class="docutils literal notranslate"><span class="pre">timeline_send_chat_message()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_timecode_to_group"><code class="docutils literal notranslate"><span class="pre">timeline_send_timecode_to_group()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_mic_enabled"><code class="docutils literal notranslate"><span class="pre">timeline_set_mic_enabled()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_update_timecode"><code class="docutils literal notranslate"><span class="pre">timeline_update_timecode()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.toggle_user_mic"><code class="docutils literal notranslate"><span class="pre">toggle_user_mic()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.transfer_room_ownership"><code class="docutils literal notranslate"><span class="pre">transfer_room_ownership()</span></code></a></li>
@@ -1240,13 +1270,14 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.RequestRightToSpeakRequest"><code class="docutils literal notranslate"><span class="pre">RequestRightToSpeakRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest"><code class="docutils literal notranslate"><span class="pre">RoomActionRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.SendChatMessageRequest"><code class="docutils literal notranslate"><span class="pre">SendChatMessageRequest</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineChatMessageResponse"><code class="docutils literal notranslate"><span class="pre">TimelineChatMessageResponse</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineConnectRequest"><code class="docutils literal notranslate"><span class="pre">TimelineConnectRequest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineFetchChatMessages"><code class="docutils literal notranslate"><span class="pre">TimelineFetchChatMessages</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse"><code class="docutils literal notranslate"><span class="pre">TimelineGroupDataResponse</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineJoinGroupRequest"><code class="docutils literal notranslate"><span class="pre">TimelineJoinGroupRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineJoinUserRequest"><code class="docutils literal notranslate"><span class="pre">TimelineJoinUserRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest"><code class="docutils literal notranslate"><span class="pre">TimelineSendChatMessageRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest"><code class="docutils literal notranslate"><span class="pre">TimelineSendTimecodeToGroupRequest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineSetMicEnabled"><code class="docutils literal notranslate"><span class="pre">TimelineSetMicEnabled</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineStatusResponse"><code class="docutils literal notranslate"><span class="pre">TimelineStatusResponse</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest"><code class="docutils literal notranslate"><span class="pre">TimelineUpdateTimecodeRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse"><code class="docutils literal notranslate"><span class="pre">TimelineUserDataResponse</span></code></a></li>

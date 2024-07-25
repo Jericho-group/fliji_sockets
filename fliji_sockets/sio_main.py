@@ -1419,10 +1419,23 @@ async def timeline_update_timecode(
         db: Database = Depends(get_db),
 ):
     """
-    Update the timecode for a single user on the timeline.
+    Update the timecode for a user on the timeline. If the user is in the group and is the host,
+    the timecode is updated for the group and an event is emitted to all users in the group.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
+
+    Response
+    Event `timeline_timecode` is emitted to users in the group:
+
+    Data:
+
+    .. code-block:: json
+
+        {
+            "timecode": 15,
+            "server_timestamp": "1934023948234"
+        }
     """
     session = await app.get_session(sid)
     if not session:
@@ -1434,8 +1447,36 @@ async def timeline_update_timecode(
 
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
-    watch_session.watch_time = data.timecode
-    await upsert_timeline_watch_session(db, watch_session)
+
+    user_in_group = watch_session.group_uuid is not None
+
+    if not user_in_group:
+        watch_session.watch_time = data.timecode
+        await upsert_timeline_watch_session(db, watch_session)
+        return
+
+    group = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
+    group = TimelineGroup.model_validate(group)
+
+    if group.host_user_uuid != user_uuid:
+        await app.send_error_message(sid,
+                                     "You are not the host of the group." +
+                                     " You can't send the timecode.")
+
+    group.watch_time = data.timecode
+
+    await upsert_timeline_group(db, group)
+
+    sio_room_identifier = get_room_name(watch_session.group_uuid)
+
+    await app.emit(
+        "timeline_timecode",
+        {
+            "timecode": data.timecode,
+            "server_timestamp": data.server_timestamp,
+        },
+        room=sio_room_identifier,
+    )
 
 
 @app.event("timeline_join_group")
@@ -1620,59 +1661,6 @@ async def timeline_get_server_timestamp(
         {"timestamp": int(time.time())},
         room=sid,
     )
-
-
-@app.event("timeline_send_timecode_to_group")
-async def timeline_send_timecode_to_group(
-        sid,
-        data: TimelineSendTimecodeToGroupRequest,
-        db: Database = Depends(get_db),
-):
-    """
-    Sends the current timecode of the video to the group.
-
-    Response
-    Event `timeline_group_host_timecode` is emitted to the user:
-    (timecode is in seconds since the beginning of the video)
-
-    Data:
-
-    .. code-block:: json
-
-            {
-                "timecode": 15
-                "server_timestamp": 1617000000
-            }
-    """
-    session = await app.get_session(sid)
-    if not session:
-        await app.send_fatal_error_message(
-            sid, "Unauthorized: could not find user_uuid in socketio session"
-        )
-        return
-    user_uuid = session.user_uuid
-
-    timeline_group = await get_timeline_group_by_uuid(db, data.group_uuid)
-    group = TimelineGroup.model_validate(timeline_group)
-    group.watch_time = data.timecode
-
-    if group.host_user_uuid != user_uuid:
-        await app.send_error_message(sid,
-                                     "You are not the host of the group." +
-                                     " You can't send the timecode.")
-        return
-
-    sio_room_identifier = get_room_name(group.group_uuid)
-
-    await app.emit(
-        "timeline_server_timestamp",
-        {
-            "timecode": data.timecode,
-            "server_timestamp": data.server_timestamp,
-        },
-        room=sio_room_identifier,
-    )
-
 
 @app.event("timeline_send_chat_message")
 async def timeline_send_chat_message(

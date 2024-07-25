@@ -341,22 +341,6 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_send_timecode_to_group">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_send_timecode_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_send_timecode_to_group" title="Link to this definition">¶</a></dt>
-<dd><p>Sends the current timecode of the video to the group.</p>
-<p>Response
-Event <cite>timeline_group_host_timecode</cite> is emitted to the user:
-(timecode is in seconds since the beginning of the video)</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
-<span class="w">    </span><span class="nt">&quot;server_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1617000000</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_set_mic_enabled">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_set_mic_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSetMicEnabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_set_mic_enabled" title="Link to this definition">¶</a></dt>
 <dd><p>Set the mic enabled status for a user on the timeline.</p>
@@ -370,9 +354,19 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_update_timecode">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_update_timecode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_update_timecode" title="Link to this definition">¶</a></dt>
-<dd><p>Update the timecode for a single user on the timeline.</p>
+<dd><p>Update the timecode for a user on the timeline. If the user is in the group and is the host,
+the timecode is updated for the group and an event is emitted to all users in the group.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></code></a></p>
+<p>Response
+Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
+<p>Data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;server_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1934023948234&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1799,7 +1793,6 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_leave"><code class="docutils literal notranslate"><span class="pre">timeline_leave()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_leave_group"><code class="docutils literal notranslate"><span class="pre">timeline_leave_group()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_chat_message"><code class="docutils literal notranslate"><span class="pre">timeline_send_chat_message()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_timecode_to_group"><code class="docutils literal notranslate"><span class="pre">timeline_send_timecode_to_group()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_mic_enabled"><code class="docutils literal notranslate"><span class="pre">timeline_set_mic_enabled()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_update_timecode"><code class="docutils literal notranslate"><span class="pre">timeline_update_timecode()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.toggle_user_mic"><code class="docutils literal notranslate"><span class="pre">toggle_user_mic()</span></code></a></li>

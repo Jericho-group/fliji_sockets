@@ -1316,7 +1316,6 @@ async def timeline_join_user(
             "user_uuid": user_uuid,
         },
         room=sio_room_identifier,
-        skip_sid=sid,
     )
 
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)

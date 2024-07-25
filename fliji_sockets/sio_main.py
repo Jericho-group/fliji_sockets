@@ -1462,6 +1462,7 @@ async def timeline_update_timecode(
         await app.send_error_message(sid,
                                      "You are not the host of the group." +
                                      " You can't send the timecode.")
+        return
 
     group.watch_time = data.timecode
 
@@ -1661,6 +1662,7 @@ async def timeline_get_server_timestamp(
         {"timestamp": int(time.time())},
         room=sid,
     )
+
 
 @app.event("timeline_send_chat_message")
 async def timeline_send_chat_message(

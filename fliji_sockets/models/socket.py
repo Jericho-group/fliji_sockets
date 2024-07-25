@@ -1,7 +1,3 @@
-from datetime import datetime
-from typing import Annotated
-from pydantic import BeforeValidator
-
 from fliji_sockets.models.base import MyBaseModel
 from fliji_sockets.models.enums import RoomUserRole
 
@@ -113,6 +109,7 @@ class TimelineSendTimecodeToGroupRequest(MyBaseModel):
 
 class TimelineUpdateTimecodeRequest(MyBaseModel):
     timecode: int
+    server_timestamp: int
 
 
 class TimelineSendChatMessageRequest(MyBaseModel):

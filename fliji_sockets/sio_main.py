@@ -205,6 +205,17 @@ async def disconnect(
             nc, user_uuid, video_uuid, current_watch_time
         )
 
+        if view_session.get("group_uuid") is not None:
+            # emit the global status event to all the users in the group that the user left
+            timeline_status_data = await get_timeline_status(db, video_uuid)
+
+            sio_room_identifier = get_room_name(video_uuid)
+            await app.emit(
+                "timeline_status",
+                timeline_status_data.model_dump(),
+                room=sio_room_identifier,
+            )
+
     await delete_room_users_by_user_uuid(db, user_uuid)
     await delete_view_session_by_user_uuid(db, user_session.user_uuid)
 
@@ -1510,6 +1521,8 @@ async def timeline_join_group(
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
     group = TimelineGroup.model_validate(timeline_group)
 
+    previous_group_uuid = watch_session.group_uuid
+
     watch_session.group_uuid = group.uuid
     group.users_count += 1
 
@@ -1521,7 +1534,7 @@ async def timeline_join_group(
     # join socketio room
     app.enter_room(sid, sio_room_identifier)
 
-    # emit the global status event
+    # emit the global status event that the user joined the group
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
     await app.emit(
         "timeline_status",
@@ -1530,6 +1543,15 @@ async def timeline_join_group(
     )
 
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)
+
+    # emit the global status event that the user left the previous group
+    if previous_group_uuid:
+        left_timeline_data = await get_timeline_status(db, previous_group_uuid)
+        await app.emit(
+            "timeline_status",
+            left_timeline_data.model_dump(),
+            room=sio_room_identifier,
+        )
 
 
 @app.event("timeline_leave_group")

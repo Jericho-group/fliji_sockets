@@ -1,6 +1,5 @@
 import logging
 import random
-import string
 import time
 import uuid
 from datetime import datetime
@@ -36,7 +35,7 @@ from fliji_sockets.models.socket import (
     EndVideoWatchSessionRequest,
     VideoTimecodeRequest,
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
-    TimelineJoinGroupRequest, TimelineSendTimecodeToGroupRequest,
+    TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
     TimelineSetMicEnabled
 )

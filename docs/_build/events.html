@@ -255,6 +255,16 @@ It validates the user’s auth token and stores the user’s UUID in the session
 <p>Response
 Event <cite>timeline_status</cite> is emitted to everybody globally:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineStatusResponse" title="fliji_sockets.models.socket.TimelineStatusResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineStatusResponse</span></code></a></p>
+<p>Event <cite>timeline_server_timestamp</cite> is emitted to the user:</p>
+<p>Data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1617000000</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Event <cite>timeline_chat_history</cite> is emitted to the user:</p>
+<p>Response is an array of:
+<a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage" title="fliji_sockets.models.database.TimelineChatMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.database.TimelineChatMessage</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
@@ -988,10 +998,16 @@ Only the admin of the room can toggle the mic of other users.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Fields<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">server_timestamp</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timecode</span> <span class="pre">(int)</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">server_timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timecode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode" title="Link to this definition">¶</a></dt>

@@ -216,35 +216,28 @@ async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusRe
     groups = db.timeline_groups.find({"video_uuid": video_uuid})
     users = db.timeline_watch_sessions.find({"video_uuid": video_uuid})
 
-    groups_data = []
+    groups_dict = {}
     for group in groups:
-        group_data = group
-        group_data["users"] = []
-
-        for user in users:
-            if user.get("group_uuid") == group.get("group_uuid"):
-                group_data["users"].append(user)
-
-        groups_data.append(group_data)
+        group["users"] = []
+        groups_dict[group["group_uuid"]] = group
 
     # remove users that are already in groups
     users_data = []
     for user in users:
-        user_in_group = False
-        for group in groups_data:
-            if (user.get("group_uuid") is not None) and (
-                    user.get("group_uuid") == group.get("group_uuid")):
-                user_in_group = True
-
-        if not user_in_group:
+        if user.get("group_uuid") is not None and user.get("group_uuid") in groups_dict.keys():
+            # if user is the host, add to the beginning of the list
+            is_host = groups_dict[user["group_uuid"]].get("host_uuid") == user.get("user_uuid")
+            if is_host:
+                groups_dict[user["group_uuid"]]["users"].insert(0, user)
+            else:
+                groups_dict[user["group_uuid"]]["users"].append(user)
+        else:
             users_data.append(user)
 
-    # make the host user first
-    for group in groups_data:
-        for user in group["users"]:
-            if user.get("user_uuid") == group.get("host_user_uuid"):
-                group["users"].remove(user)
-                group["users"].insert(0, user)
+    # transform groups_dict to list
+    groups_data = []
+    for group in groups_dict.values():
+        groups_data.append(group)
 
     response = TimelineStatusResponse(
         video_uuid=video_uuid,

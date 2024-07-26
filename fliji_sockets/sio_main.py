@@ -43,6 +43,7 @@ from fliji_sockets.models.socket import (
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
 )
+from fliji_sockets.settings import APP_ENV
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
     delete_view_session_by_socket_id,
@@ -1196,6 +1197,21 @@ async def timeline_connect(
     Response
     Event `timeline_status` is emitted to everybody globally:
     :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
+
+    Event `timeline_server_timestamp` is emitted to the user:
+
+    Data:
+
+    .. code-block:: json
+
+            {
+                "timestamp": 1617000000
+            }
+
+    Event `timeline_chat_history` is emitted to the user:
+
+    Response is an array of:
+    :py:class:`fliji_sockets.models.database.TimelineChatMessage`
     """
     session = await app.get_session(sid)
     if not session:
@@ -1234,11 +1250,40 @@ async def timeline_connect(
     app.enter_room(sid, sio_room_identifier)
 
     # emit the global status event
-    timeline_status_data = await get_timeline_status(db, data.video_uuid)
+    timeline_status_data = (await get_timeline_status(db, data.video_uuid)).model_dump()
     await app.emit(
         "timeline_status",
-        timeline_status_data.model_dump(),
+        timeline_status_data,
         room=sio_room_identifier,
+    )
+
+    await app.emit(
+        "timeline_server_timestamp",
+        {"timestamp": int(time.time())},
+        room=sid,
+    )
+
+    chat_messages = await get_timeline_chat_messages_by_video_uuid(db, watch_session.video_uuid)
+    chat_messages_response_data = []
+    for chat_message in chat_messages:
+        msg = TimelineChatMessage.model_validate(chat_message)
+        chat_messages_response_data.append(
+            {
+                "id": str(msg.id),
+                "user_uuid": msg.user_uuid,
+                "message": msg.message,
+                "username": msg.username,
+                "user_avatar": msg.user_avatar,
+                "first_name": msg.first_name,
+                "last_name": msg.last_name,
+                "created_at": msg.created_at.isoformat(),
+            }
+        )
+
+    await app.emit(
+        "timeline_chat_history",
+        chat_messages_response_data,
+        room=sid,
     )
 
 
@@ -1760,46 +1805,124 @@ def fill_mock_data():
     """
     Fill the database with mock data.
     """
-    # the seed is a random string
-    # generate a random string seed
-    video_uuids = [
-        "213d9e98-4431-4f68-bf33-dd0111f948e5",
-        "9003ea4f-8ea4-4cbb-8fe8-243860f221ce",
-        "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
-        "1364a011-c7ba-4bea-9297-ad3ec6cb3872",
-        "9003ea4f-8ea4-4cbb-8fe8-243860f221ce",
-        "63fd32c3-fbb2-43be-ab94-f0f74b5e7d55",
-        "f5a0531b-9eb8-4f9b-bf4c-875a6ee78a17",
-        "e6e392b2-846d-472b-abcc-f9992cb2b59a",
-        "7dfbbd1c-5456-47a7-bd9b-e98c23990c9f",
-        "d6496ac5-144e-423b-b421-14c13ed2c218",
-        "1d2a32da-435c-488d-8d42-3817a83d17ce",
-        "f9de0486-d1ab-46ba-b451-706d1473bd8b",
-        "a1d4c8d7-683f-4193-b2ff-aa226cb37574",
+    db = get_database()
+
+    user_uuids = [
+        "cfece5a4-3c73-42b3-bcf3-8ebec14b6325",
+        "20765a99-ca3c-44b4-97e4-795b403bb7b7",
+        "fbd607fc-6b98-4010-872c-e18d19617ec5",
+        "47cb7ac1-bd4a-4595-8775-38b5ed8c7162",
     ]
 
-    random_avatar_seed = "".join(
-        random.choices(string.ascii_uppercase + string.digits, k=8)
-    )
-
-    db = get_database()
-    for video_uuid in video_uuids:
-        view_session = ViewSession(
+    video_uuid = "c6412a8f-5b81-4089-9658-b7d7924e7500"
+    group_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"
+    timeline_users = [
+        TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            current_watch_time=15,
+            watch_time=250,
             video_uuid=video_uuid,
-            user_uuid="0ebc493f-bf2c-46be-84f1-b6ffcd1ff161",
-            avatar="https://api.dicebear.com/avatars/avataaars/" + random_avatar_seed,
+            user_uuid=user_uuids.pop(),
+            avatar="https://api.dicebear.com/avatars/avataaars/robot",
+            username="username",
+            first_name="One",
+            last_name="Two",
+            bio="bio",
+            mic_enabled=True,
+        ),
+        TimelineWatchSession(
+            sid="sid",
+            last_update_time=datetime.now(),
+            watch_time=650,
+            video_uuid=video_uuid,
+            user_uuid=user_uuids.pop(),
+            avatar="https://api.dicebear.com/avatars/avataaars/robot",
+            username="username",
+            first_name="Will",
+            last_name="Smith",
+            bio="bio",
+            mic_enabled=False,
+        ),
+        TimelineWatchSession(
+            sid="sid",
+            last_update_time=datetime.now(),
+            watch_time=950,
+            video_uuid=video_uuid,
+            group_uuid=group_uuid,
+            user_uuid=user_uuids.pop(),
+            avatar="https://api.dicebear.com/avatars/avataaars/robot",
+            username="username",
+            first_name="Alice",
+            last_name="Alice",
+            bio="bio",
+            mic_enabled=True,
+        ),
+        TimelineWatchSession(
+            sid="sid",
+            last_update_time=datetime.now(),
+            watch_time=950,
+            video_uuid=video_uuid,
+            group_uuid=group_uuid,
+            user_uuid=user_uuids.pop(),
+            avatar="https://api.dicebear.com/avatars/avataaars/robot",
+            username="username",
+            first_name="JoHn",
+            last_name="Muir",
+            bio="bio",
+            mic_enabled=True,
+        ),
+    ]
+    group = TimelineGroup(
+        group_uuid=group_uuid,
+        video_uuid=video_uuid,
+        host_user_uuid=timeline_users[2].user_uuid,
+        users_count=2,
+    )
+
+    db.timeline_groups.update_one(
+        {"group_uuid": group.group_uuid},
+        {"$set": group.model_dump(exclude_none=True)},
+        upsert=True,
+    )
+
+    for user in timeline_users:
+        db.timeline_watch_sessions.update_one(
+            {"user_uuid": user.user_uuid},
+            {"$set": user.model_dump(exclude_none=True)},
+            upsert=True,
+        )
+
+    chat_messages = [
+        "Hey everybody!",
+        "How are you?",
+        "I am good.",
+        "How are you?",
+        "I am good.",
+    ]
+
+    for chat_message in chat_messages:
+        # get random user uuid from timeline_users
+        user_uuid = random.choice(timeline_users).user_uuid
+        msg = TimelineChatMessage(
+            user_uuid=user_uuid,
+            message=chat_message,
             username="username",
             first_name="first_name",
             last_name="last_name",
-            bio="bio",
+            video_uuid=video_uuid,
+            created_at=datetime.now().isoformat(),
         )
-        db.view_sessions.insert_one(view_session.model_dump(exclude_none=True))
+
+        # upsert the message by user_uuid and video_uuid and message
+        db.timeline_chat_messages.update_one(
+            {"user_uuid": msg.user_uuid, "video_uuid": msg.video_uuid, "message": msg.message},
+            {"$set": msg.model_dump(exclude_none=True)},
+            upsert=True,
+        )
 
 
-# fill_mock_data()
+if APP_ENV == "dev" or APP_ENV == "local":
+    fill_mock_data()
 
 # Expose the sio_app for Uvicorn to run
 sio_asgi_app = app.get_asgi_app()

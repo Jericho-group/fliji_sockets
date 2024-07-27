@@ -1813,7 +1813,7 @@ def fill_mock_data():
         "47cb7ac1-bd4a-4595-8775-38b5ed8c7162",
     ]
 
-    video_uuid = "c6412a8f-5b81-4089-9658-b7d7924e7500"
+    video_uuid = "9d2b6a97-d054-4c68-96ed-af0cb82b97db"
     group_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"
     timeline_users = [
         TimelineWatchSession(

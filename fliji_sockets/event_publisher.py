@@ -12,6 +12,24 @@ async def publish_user_online(nc: Client, user_uuid: str):
     await nc.flush()
 
 
+async def publish_enable_fliji_mode(nc: Client, user_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+    }
+
+    await nc.publish("user.fliji_mode_enabled", json.dumps(payload).encode())
+    await nc.flush()
+
+
+async def publish_disable_fliji_mode(nc: Client, user_uuid: str):
+    payload = {
+        "user_uuid": user_uuid,
+    }
+
+    await nc.publish("user.fliji_mode_disabled", json.dumps(payload).encode())
+    await nc.flush()
+
+
 async def publish_user_offline(nc: Client, user_uuid: str):
     payload = {
         "user_uuid": user_uuid,

@@ -15,7 +15,8 @@ from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
     publish_user_online, publish_user_offline, publish_room_ownership_changed, \
     publish_user_connected_to_timeline, publish_user_joined_timeline_group, \
-    publish_user_left_timeline_group, publish_user_left_timeline
+    publish_user_left_timeline_group, publish_user_left_timeline, publish_enable_fliji_mode, \
+    publish_disable_fliji_mode
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage, \
@@ -157,6 +158,36 @@ async def go_offline(
         return
 
     await publish_user_offline(nc, session.user_uuid)
+
+
+@app.event("enable_fliji_mode")
+async def enable_fliji_mode(
+        sid,
+        nc: Client = Depends(get_nats_client),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    await publish_enable_fliji_mode(nc, session.user_uuid)
+
+
+@app.event("disable_fliji_mode")
+async def disable_fliji_mode(
+        sid,
+        nc: Client = Depends(get_nats_client),
+):
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    await publish_disable_fliji_mode(nc, session.user_uuid)
 
 
 @app.event("disconnect")

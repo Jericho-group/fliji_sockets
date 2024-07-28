@@ -15,7 +15,7 @@ from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
     publish_user_online, publish_user_offline, publish_room_ownership_changed, \
     publish_user_connected_to_timeline, publish_user_joined_timeline_group, \
-    publish_user_left_timeline_group
+    publish_user_left_timeline_group, publish_user_left_timeline
 from fliji_sockets.helpers import get_room_name, configure_logging, configure_sentry
 from fliji_sockets.models.base import UserSession
 from fliji_sockets.models.database import ViewSession, RoomUser, Room, ChatMessage, \
@@ -220,15 +220,17 @@ async def disconnect(
     await delete_view_session_by_user_uuid(db, user_session.user_uuid)
 
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
-    await handle_user_timeline_leave(db, timeline_watch_session, user_uuid)
+    await handle_user_timeline_leave(db, nc, timeline_watch_session, user_uuid)
 
     await publish_user_disconnected(nc, user_uuid)
 
 
-async def handle_user_timeline_leave(db: Database, timeline_watch_session: dict, user_uuid: str):
+async def handle_user_timeline_leave(db: Database, nc: Client, timeline_watch_session: dict,
+                                     user_uuid: str):
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
     app.leave_room(watch_session.sid, get_room_name(watch_session.video_uuid))
 
+    await publish_user_left_timeline(nc, user_uuid, watch_session.video_uuid)
     if watch_session.group_uuid:
         group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
 
@@ -1684,7 +1686,7 @@ async def timeline_leave(
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
 
-    await handle_user_timeline_leave(db, timeline_watch_session, user_uuid)
+    await handle_user_timeline_leave(db, nc, timeline_watch_session, user_uuid)
 
     # emit the global status event
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)

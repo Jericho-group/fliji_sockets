@@ -228,6 +228,7 @@ async def disconnect(
 async def handle_user_timeline_leave(db: Database, nc: Client, timeline_watch_session: dict,
                                      user_uuid: str):
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+    await delete_timeline_watch_session_by_user_uuid(db, user_uuid)
     app.leave_room(watch_session.sid, get_room_name(watch_session.video_uuid))
 
     await publish_user_left_timeline(nc, user_uuid, watch_session.video_uuid)

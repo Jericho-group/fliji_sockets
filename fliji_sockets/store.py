@@ -169,7 +169,7 @@ async def upsert_view_session(db: Database, view_session: ViewSession) -> int:
 async def upsert_timeline_watch_session(db: Database, watch_session: TimelineWatchSession) -> int:
     watch_session_id = db.timeline_watch_sessions.update_one(
         {"user_uuid": watch_session.user_uuid, "video_uuid": watch_session.video_uuid},
-        {"$set": watch_session.model_dump(exclude_none=True)},
+        {"$set": watch_session.model_dump()},
         upsert=True,
     )
     return watch_session_id

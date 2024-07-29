@@ -35,208 +35,51 @@
   <section id="module-fliji_sockets.sio_main">
 <span id="events"></span><h1>Events<a class="headerlink" href="#module-fliji_sockets.sio_main" title="Link to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.change_role">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">change_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.ChangeRoleRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.change_role" title="Link to this definition">¶</a></dt>
-<dd><p>Change user’s role in a room. Only the admin of the room can change the role of other users.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest" title="fliji_sockets.models.socket.ChangeRoleRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.ChangeRoleRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>role_updated</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;moderator&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.confirm_room_ownership_transfer">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">confirm_room_ownership_transfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.confirm_room_ownership_transfer" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the confirmation of the ownership transfer of a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest" title="fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>role_updated</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.current_duration">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">current_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.CurrentDurationRequest" title="fliji_sockets.models.socket.CurrentDurationRequest"><span class="pre">CurrentDurationRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.current_duration" title="Link to this definition">¶</a></dt>
-<dd><p>Broadcasts the current duration of the video in a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
-<p>Response (emitted to everybody in the room except for the sender):
-<cite>current_duration</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;is_played&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-<span class="p">}</span>
-</pre></div>
-</div>
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.disable_fliji_mode">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">disable_fliji_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.disable_fliji_mode" title="Link to this definition">¶</a></dt>
+<dd><p>Выключает режим флиджи для пользователя.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.disconnect">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc={'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.disconnect" title="Link to this definition">¶</a></dt>
-<dd><p>Not meant to be called manually.</p>
-<p>This event is automatically called when a socket disconnects.
-Handles both manual disconnection and automatic disconnection due to network issues.</p>
-<p>Deletes the user’s video view session and online user status.
-Also saves the video view session to the db if it was not saved before.</p>
+<dd><p>Этот ивент отвечает за отключение пользователя от сокета.</p>
+<p>Можно не вызывать вручную, так как он вызывается автоматически при отключении пользователя.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.end_video_watch_session">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">end_video_watch_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.EndVideoWatchSessionRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.end_video_watch_session" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the end of a video watch session.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.EndVideoWatchSessionRequest" title="fliji_sockets.models.socket.EndVideoWatchSessionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.EndVideoWatchSessionRequest</span></code></a></p>
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.enable_fliji_mode">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">enable_fliji_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.enable_fliji_mode" title="Link to this definition">¶</a></dt>
+<dd><p>Включает режим флиджи для пользователя.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.fill_mock_data">
-<span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">fill_mock_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.fill_mock_data" title="Link to this definition">¶</a></dt>
-<dd><p>Fill the database with mock data.</p>
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.go_offline">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">go_offline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.go_offline" title="Link to this definition">¶</a></dt>
+<dd><p>Этот ивент меняет статус пользователя на офлайн.
+Для принципа работы см. <cite>go_online</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.get_sessions_for_video">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">get_sessions_for_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.GetViewSessionsForVideoRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.get_sessions_for_video" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the request for the view sessions for a video.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.GetViewSessionsForVideoRequest" title="fliji_sockets.models.socket.GetViewSessionsForVideoRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.GetViewSessionsForVideoRequest</span></code></a></p>
-<p>Response (emitted to the client):
-<cite>current_video_view_sessions</cite> event</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;current_watch_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;last_update_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2021-08-01T12:00:00&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;avatar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/avatar.png&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;username&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;first_name&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;last_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;last_name&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<p>Where:</p>
-<p>current_watch_time is in seconds</p>
-<p>last_update_time is an ISO formatted string</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.get_status">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.RoomActionRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.get_status" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the request for the voice status of a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
-<p>Response (emitted to the client):
-<cite>status</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.GetStatusResponse</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.handle_right_to_speak">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">handle_right_to_speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.HandleRightToSpeakRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.handle_right_to_speak" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the handling of the right to speak request in a room.
-Only the admin of the room can handle the right to speak request.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.HandleRightToSpeakRequest" title="fliji_sockets.models.socket.HandleRightToSpeakRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.HandleRightToSpeakRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>right_to_speak_updated</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.HandleRightToSpeakResponse</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.join_room">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">join_room</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.JoinRoomRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.join_room" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the joining of a voice room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.JoinRoomRequest" title="fliji_sockets.models.socket.JoinRoomRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.JoinRoomRequest</span></code></a></p>
-<p>Response (emitted to everybody in the room except for the sender):
-<cite>new_user</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;online&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mic&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;owner&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.kick_user">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">kick_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.KickUserRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.kick_user" title="Link to this definition">¶</a></dt>
-<dd><p>Change user’s role in a room. Only the admin of the room can change the role of other users.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.KickUserRequest" title="fliji_sockets.models.socket.KickUserRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.KickUserRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>leave_user</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.leave_room">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">leave_room</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.leave_room" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the leaving of a voice room.</p>
-<p>Response (emitted to everybody in the room except for the sender):
-<cite>leave_user</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.request_right_to_speak">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">request_right_to_speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><span class="pre">RoomActionRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.request_right_to_speak" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the request for the right to speak in a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>right_to_speak_reqeust</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.send_chat_message">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">send_chat_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.SendChatMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.send_chat_message" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the sending of a chat message in a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.SendChatMessageRequest" title="fliji_sockets.models.socket.SendChatMessageRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.SendChatMessageRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>chat_message</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.SendChatMessageResponse</span></code></p>
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.go_online">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">go_online</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.go_online" title="Link to this definition">¶</a></dt>
+<dd><p>Этот ивент меняет статус пользователя на онлайн.
+После <cite>startup</cite> ивента пользователь и так считается онлайн.</p>
+<p>Этот ивент нужен для того, чтобы можно было ставить статус офлайн если пользователь
+не пользуется приложением (idle), но при этом не отключился.</p>
+<dl class="simple">
+<dt>Для этого есть ивент <cite>go_offline</cite>. После того как пользователь проявил активность,</dt><dd><p>нужно вызвать <cite>go_online</cite>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.startup">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">startup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.OnConnectRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_service:</span> <span class="pre">~fliji_sockets.api_client.FlijiApiService</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.startup" title="Link to this definition">¶</a></dt>
-<dd><p>This event should be called when a socket connects.
-It validates the user’s auth token and stores the user’s UUID in the session.</p>
+<dd><p>Этот ивент должен быть вызван когда сокет подключается.</p>
+<p>В этом ивенте происходит авторизация пользователя и сохранение его данных в сессии.</p>
+<p>После <cite>startup</cite> можно вызывать другие ивенты.
+Пользователь считается онлайн после вызова этого ивента.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.OnConnectRequest" title="fliji_sockets.models.socket.OnConnectRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.OnConnectRequest</span></code></a></p>
 <dl class="field-list simple">
@@ -249,7 +92,7 @@ It validates the user’s auth token and stores the user’s UUID in the session
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_connect">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineConnectRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_connect" title="Link to this definition">¶</a></dt>
-<dd><p>Connects the user to the timeline of a video.</p>
+<dd><p>Подключение к таймлайну видео.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineConnectRequest" title="fliji_sockets.models.socket.TimelineConnectRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineConnectRequest</span></code></a></p>
 <p>Response
@@ -270,7 +113,8 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_fetch_chat_history">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_fetch_chat_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_fetch_chat_history" title="Link to this definition">¶</a></dt>
-<dd><p>Fetches the last 50 chat messages for the timeline.</p>
+<dd><p>Оставлено для совместимости. При <cite>timeline_connect</cite> уже отправляется история чата.</p>
+<p>Получить историю чата на таймлайне видео.</p>
 <p>Response
 Event <cite>timeline_chat_history</cite> is emitted to the user:</p>
 <p>Response is an array of:
@@ -280,7 +124,8 @@ Event <cite>timeline_chat_history</cite> is emitted to the user:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_get_server_timestamp">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_get_server_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_get_server_timestamp" title="Link to this definition">¶</a></dt>
-<dd><p>Get the server unix timestamp.</p>
+<dd><p>Оставлено для совместимости. При <cite>timeline_connect</cite> уже отправляется серверное время.</p>
+<p>Получить timestamp серверного времени.</p>
 <p>Response
 Event <cite>timeline_server_timestamp</cite> is emitted to the user:</p>
 <p>Data:</p>
@@ -294,7 +139,7 @@ Event <cite>timeline_server_timestamp</cite> is emitted to the user:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_join_group">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_join_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineJoinGroupRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_join_group" title="Link to this definition">¶</a></dt>
-<dd><p>Join a group of users on the timeline of a video.</p>
+<dd><p>Присоединиться к группе пользователей на таймлайне видео.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineJoinGroupRequest" title="fliji_sockets.models.socket.TimelineJoinGroupRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineJoinGroupRequest</span></code></a></p>
 <p>Response
@@ -305,7 +150,7 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_join_user">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_join_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineJoinUserRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_join_user" title="Link to this definition">¶</a></dt>
-<dd><p>Join a single user on the timeline of a video.</p>
+<dd><p>Присоединиться к одиночному пользователю на таймлайне видео.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineJoinUserRequest" title="fliji_sockets.models.socket.TimelineJoinUserRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineJoinUserRequest</span></code></a></p>
 <p>Response
@@ -324,7 +169,7 @@ This can be used to show a notification to the host.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_leave">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_leave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_leave" title="Link to this definition">¶</a></dt>
-<dd><p>Leave the timeline of a video.</p>
+<dd><p>Отключиться от таймлайна видео.</p>
 <p>Response
 Event <cite>timeline_status</cite> is emitted to everybody globally:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineStatusResponse" title="fliji_sockets.models.socket.TimelineStatusResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineStatusResponse</span></code></a></p>
@@ -333,7 +178,12 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_leave_group">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_leave_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_leave_group" title="Link to this definition">¶</a></dt>
-<dd><p>Leave a group of users on the timeline of a video.</p>
+<dd><p>Оставлено для совместимости. При <cite>timeline_leave</cite> пользователь покидает группу автоматически.</p>
+<dl class="simple">
+<dt>При <cite>timeline_join_group</cite> пользователь присоединяется к группе и</dt><dd><p>покидает предыдущую автоматически.</p>
+</dd>
+</dl>
+<p>Покинуть группу пользователей на таймлайне видео.</p>
 <p>Response
 Event <cite>timeline_status</cite> is emitted to everybody globally:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineStatusResponse" title="fliji_sockets.models.socket.TimelineStatusResponse"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineStatusResponse</span></code></a></p>
@@ -342,7 +192,8 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_send_chat_message">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_send_chat_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSendChatMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_send_chat_message" title="Link to this definition">¶</a></dt>
-<dd><p>Sends the chats message on the timeline of a video globally.</p>
+<dd><p>Отправить сообщение в чат на таймлайне видео.</p>
+<p>Ивент о новом сообщении отправляется всем пользователям на таймлайне.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineSendChatMessageRequest" title="fliji_sockets.models.socket.TimelineSendChatMessageRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineSendChatMessageRequest</span></code></a></p>
 <p>Response (emitted to the room):
@@ -353,7 +204,7 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_set_mic_enabled">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_set_mic_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineSetMicEnabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_set_mic_enabled" title="Link to this definition">¶</a></dt>
-<dd><p>Set the mic enabled status for a user on the timeline.</p>
+<dd><p>Включить или выключить микрофон на таймлайне видео.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineSetMicEnabled" title="fliji_sockets.models.socket.TimelineSetMicEnabled"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineSetMicEnabled</span></code></a></p>
 <p>Response
@@ -364,8 +215,11 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_update_timecode">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_update_timecode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_update_timecode" title="Link to this definition">¶</a></dt>
-<dd><p>Update the timecode for a user on the timeline. If the user is in the group and is the host,
-the timecode is updated for the group and an event is emitted to all users in the group.</p>
+<dd><p>Обновить таймкод для пользователя на таймлайне.
+Если пользователь находится в группе и является хостом,
+таймкод обновляется для группы и отправляется событие всем пользователям
+в группе.</p>
+<p>Если пользователь не находится в группе, таймкод обновляется для пользователя.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></code></a></p>
 <p>Response
@@ -374,91 +228,6 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;server_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1934023948234&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.toggle_user_mic">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">toggle_user_mic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.ToggleVoiceUserMicRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.toggle_user_mic" title="Link to this definition">¶</a></dt>
-<dd><p>Toggles the mic of a user in a room.
-Only the admin of the room can toggle the mic of other users.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.ToggleVoiceUserMicRequest" title="fliji_sockets.models.socket.ToggleVoiceUserMicRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.ToggleVoiceUserMicRequest</span></code></a></p>
-<p>Response (emitted to everybody in the room):
-<cite>mic_user</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.transfer_room_ownership">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">transfer_room_ownership</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TransferRoomOwnershipRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.transfer_room_ownership" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the transfer of the ownership of a room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.TransferRoomOwnershipRequest" title="fliji_sockets.models.socket.TransferRoomOwnershipRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TransferRoomOwnershipRequest</span></code></a></p>
-<p>Response (emitted to the room):
-<cite>role_updated</cite> event</p>
-<p>Data:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.update_watch_time">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">update_watch_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.UpdateViewSessionRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.update_watch_time" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the updating of the current watch time for a video.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.UpdateViewSessionRequest" title="fliji_sockets.models.socket.UpdateViewSessionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.UpdateViewSessionRequest</span></code></a></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.video_pause">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><span class="pre">RoomActionRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_pause" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the pausing of a video in a room.</p>
-<p>The client should validate that the event is only emitted by the admin of the room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
-<p>Response (emitted to everybody the room):
-<cite>video_pause</cite> event</p>
-<p>data</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.video_play">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><span class="pre">RoomActionRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_play" title="Link to this definition">¶</a></dt>
-<dd><p>Handles the playing of a video in a room.</p>
-<p>The client should validate that the event is only emitted by the admin of the room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest" title="fliji_sockets.models.socket.RoomActionRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.RoomActionRequest</span></code></a></p>
-<p>Response (emitted to everybody in the room):
-<cite>video_play</cite> event</p>
-<p>data</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fliji_sockets.sio_main.video_timecode">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">video_timecode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fliji_sockets.models.socket.VideoTimecodeRequest" title="fliji_sockets.models.socket.VideoTimecodeRequest"><span class="pre">VideoTimecodeRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.video_timecode" title="Link to this definition">¶</a></dt>
-<dd><p>Broadcasts the current timecode of the video in a room.</p>
-<p>The client should validate that the event is only emitted by the admin of the room.</p>
-<p>Request:
-<a class="reference internal" href="#fliji_sockets.models.socket.VideoTimecodeRequest" title="fliji_sockets.models.socket.VideoTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.VideoTimecodeRequest</span></code></a></p>
-<p>Response (emitted to everybody in the room except for the sender):
-<cite>video_timecode</cite> event</p>
-<p>Data:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;from_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1786,20 +1555,11 @@ Only the admin of the room can toggle the mic of other users.</p>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.change_role"><code class="docutils literal notranslate"><span class="pre">change_role()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.confirm_room_ownership_transfer"><code class="docutils literal notranslate"><span class="pre">confirm_room_ownership_transfer()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.current_duration"><code class="docutils literal notranslate"><span class="pre">current_duration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.disable_fliji_mode"><code class="docutils literal notranslate"><span class="pre">disable_fliji_mode()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.disconnect"><code class="docutils literal notranslate"><span class="pre">disconnect()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.end_video_watch_session"><code class="docutils literal notranslate"><span class="pre">end_video_watch_session()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.fill_mock_data"><code class="docutils literal notranslate"><span class="pre">fill_mock_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.get_sessions_for_video"><code class="docutils literal notranslate"><span class="pre">get_sessions_for_video()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.get_status"><code class="docutils literal notranslate"><span class="pre">get_status()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.handle_right_to_speak"><code class="docutils literal notranslate"><span class="pre">handle_right_to_speak()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.join_room"><code class="docutils literal notranslate"><span class="pre">join_room()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.kick_user"><code class="docutils literal notranslate"><span class="pre">kick_user()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.leave_room"><code class="docutils literal notranslate"><span class="pre">leave_room()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.request_right_to_speak"><code class="docutils literal notranslate"><span class="pre">request_right_to_speak()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.send_chat_message"><code class="docutils literal notranslate"><span class="pre">send_chat_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.enable_fliji_mode"><code class="docutils literal notranslate"><span class="pre">enable_fliji_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.go_offline"><code class="docutils literal notranslate"><span class="pre">go_offline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.go_online"><code class="docutils literal notranslate"><span class="pre">go_online()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.startup"><code class="docutils literal notranslate"><span class="pre">startup()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_connect"><code class="docutils literal notranslate"><span class="pre">timeline_connect()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_fetch_chat_history"><code class="docutils literal notranslate"><span class="pre">timeline_fetch_chat_history()</span></code></a></li>
@@ -1811,12 +1571,6 @@ Only the admin of the room can toggle the mic of other users.</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_chat_message"><code class="docutils literal notranslate"><span class="pre">timeline_send_chat_message()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_mic_enabled"><code class="docutils literal notranslate"><span class="pre">timeline_set_mic_enabled()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_update_timecode"><code class="docutils literal notranslate"><span class="pre">timeline_update_timecode()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.toggle_user_mic"><code class="docutils literal notranslate"><span class="pre">toggle_user_mic()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.transfer_room_ownership"><code class="docutils literal notranslate"><span class="pre">transfer_room_ownership()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.update_watch_time"><code class="docutils literal notranslate"><span class="pre">update_watch_time()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_pause"><code class="docutils literal notranslate"><span class="pre">video_pause()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_play"><code class="docutils literal notranslate"><span class="pre">video_play()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.video_timecode"><code class="docutils literal notranslate"><span class="pre">video_timecode()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest"><code class="docutils literal notranslate"><span class="pre">ChangeRoleRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest"><code class="docutils literal notranslate"><span class="pre">ConfirmRoomOwnershipTransferRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.CurrentDurationRequest"><code class="docutils literal notranslate"><span class="pre">CurrentDurationRequest</span></code></a></li>

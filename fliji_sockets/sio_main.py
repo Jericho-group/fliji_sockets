@@ -75,8 +75,13 @@ async def startup(
         nc: Client = Depends(get_nats_client),
 ):
     """
-    This event should be called when a socket connects.
-    It validates the user's auth token and stores the user's UUID in the session.
+    Этот ивент должен быть вызван когда сокет подключается.
+
+    В этом ивенте происходит авторизация пользователя и сохранение его данных в сессии.
+
+    После `startup` можно вызывать другие ивенты.
+    Пользователь считается онлайн после вызова этого ивента.
+
 
     Request:
     :py:class:`fliji_sockets.models.socket.OnConnectRequest`
@@ -135,6 +140,17 @@ async def go_online(
         sid,
         nc: Client = Depends(get_nats_client),
 ):
+    """
+    Этот ивент меняет статус пользователя на онлайн.
+    После `startup` ивента пользователь и так считается онлайн.
+
+    Этот ивент нужен для того, чтобы можно было ставить статус офлайн если пользователь
+    не пользуется приложением (idle), но при этом не отключился.
+
+
+    Для этого есть ивент `go_offline`. После того как пользователь проявил активность,
+     нужно вызвать `go_online`.
+    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -150,6 +166,10 @@ async def go_offline(
         sid,
         nc: Client = Depends(get_nats_client),
 ):
+    """
+    Этот ивент меняет статус пользователя на офлайн.
+    Для принципа работы см. `go_online`.
+    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -165,6 +185,9 @@ async def enable_fliji_mode(
         sid,
         nc: Client = Depends(get_nats_client),
 ):
+    """
+    Включает режим флиджи для пользователя.
+    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -180,6 +203,9 @@ async def disable_fliji_mode(
         sid,
         nc: Client = Depends(get_nats_client),
 ):
+    """
+    Выключает режим флиджи для пользователя.
+    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -197,13 +223,9 @@ async def disconnect(
         nc=Depends(get_nats_client),
 ):
     """
-    Not meant to be called manually.
+    Этот ивент отвечает за отключение пользователя от сокета.
 
-    This event is automatically called when a socket disconnects.
-    Handles both manual disconnection and automatic disconnection due to network issues.
-
-    Deletes the user's video view session and online user status.
-    Also saves the video view session to the db if it was not saved before.
+    Можно не вызывать вручную, так как он вызывается автоматически при отключении пользователя.
     """
     user_session = await app.get_session(sid)
 
@@ -305,12 +327,6 @@ async def end_video_watch_session(
         db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Handles the end of a video watch session.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.EndVideoWatchSessionRequest`
-    """
     # delete the view session
     await delete_view_session_by_socket_id(db, sid)
 
@@ -332,12 +348,6 @@ async def update_watch_time(
         sid, data: UpdateViewSessionRequest, db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Handles the updating of the current watch time for a video.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.UpdateViewSessionRequest`
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -371,35 +381,6 @@ async def update_watch_time(
 async def get_sessions_for_video(
         sid, data: GetViewSessionsForVideoRequest, db: Database = Depends(get_db)
 ):
-    """
-    Handles the request for the view sessions for a video.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.GetViewSessionsForVideoRequest`
-
-    Response (emitted to the client):
-    `current_video_view_sessions` event
-
-    .. code-block:: json
-
-        [
-          {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-            "current_watch_time": 15,
-            "last_update_time": "2021-08-01T12:00:00",
-            "avatar": "https://example.com/avatar.png",
-            "username": "username",
-            "first_name": "first_name",
-            "last_name": "last_name"
-          }
-        ]
-
-    Where:
-
-    current_watch_time is in seconds
-
-    last_update_time is an ISO formatted string
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -434,27 +415,6 @@ async def join_room(
         sid, data: JoinRoomRequest, db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client)
 ):
-    """
-    Handles the joining of a voice room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.JoinRoomRequest`
-
-    Response (emitted to everybody in the room except for the sender):
-    `new_user` event
-
-    Data:
-
-    .. code-block:: json
-
-            {
-                "uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-                "status": "online",
-                "mic": true,
-                "role": "owner"
-            }
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -502,21 +462,6 @@ async def leave_room(
         db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Handles the leaving of a voice room.
-
-    Response (emitted to everybody in the room except for the sender):
-    `leave_user` event
-
-    Data:
-
-    .. code-block:: json
-
-            {
-                "uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
-            }
-
-    """
     user_session = await app.get_session(sid)
     if not user_session:
         await app.send_fatal_error_message(
@@ -540,26 +485,6 @@ async def leave_room(
 
 @app.event("video_play")
 async def video_play(sid, data: RoomActionRequest):
-    """
-    Handles the playing of a video in a room.
-
-    The client should validate that the event is only emitted by the admin of the room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
-
-    Response (emitted to everybody in the room):
-    `video_play` event
-
-    data
-
-    .. code-block:: json
-
-        {
-            "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
-        }
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -576,25 +501,6 @@ async def video_play(sid, data: RoomActionRequest):
 
 @app.event("video_pause")
 async def video_pause(sid, data: RoomActionRequest):
-    """
-    Handles the pausing of a video in a room.
-
-    The client should validate that the event is only emitted by the admin of the room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
-
-    Response (emitted to everybody the room):
-    `video_pause` event
-
-    data
-
-    .. code-block:: json
-
-        {
-            "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
-        }
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -611,27 +517,6 @@ async def video_pause(sid, data: RoomActionRequest):
 
 @app.event("video_timecode")
 async def video_timecode(sid, data: VideoTimecodeRequest):
-    """
-    Broadcasts the current timecode of the video in a room.
-
-    The client should validate that the event is only emitted by the admin of the room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.VideoTimecodeRequest`
-
-    Response (emitted to everybody in the room except for the sender):
-    `video_timecode` event
-
-    Data:
-
-    .. code-block:: json
-
-            {
-                "timecode": 15,
-                "from_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
-            }
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -649,25 +534,6 @@ async def video_timecode(sid, data: VideoTimecodeRequest):
 
 @app.event("current_duration")
 async def current_duration(sid, data: CurrentDurationRequest):
-    """
-    Broadcasts the current duration of the video in a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
-
-    Response (emitted to everybody in the room except for the sender):
-    `current_duration` event
-
-    Data:
-
-    .. code-block:: json
-
-                {
-                    "duration": 15,
-                    "is_played": true
-                }
-
-    """
     await app.emit(
         "current_duration",
         {
@@ -685,19 +551,6 @@ async def get_status(
         data: RoomActionRequest,
         db: Database = Depends(get_db),
 ):
-    """
-    Handles the request for the voice status of a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
-
-    Response (emitted to the client):
-    `status` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.GetStatusResponse`
-
-    """
     user_session = await app.get_session(sid)
     if not user_session:
         await app.send_fatal_error_message(
@@ -732,20 +585,6 @@ async def toggle_user_mic(
         data: ToggleVoiceUserMicRequest,
         db: Database = Depends(get_db),
 ):
-    """
-    Toggles the mic of a user in a room.
-    Only the admin of the room can toggle the mic of other users.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.ToggleVoiceUserMicRequest`
-
-    Response (emitted to everybody in the room):
-    `mic_user` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.ToggleVoiceUserMicResponse`
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -798,18 +637,6 @@ async def transfer_room_ownership(
         data: TransferRoomOwnershipRequest,
         db: Database = Depends(get_db),
 ):
-    """
-    Handles the transfer of the ownership of a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.TransferRoomOwnershipRequest`
-
-    Response (emitted to the room):
-    `role_updated` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.TransferRoomOwnershipResponse`
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -856,24 +683,6 @@ async def kick_user(
         db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Change user's role in a room. Only the admin of the room can change the role of other users.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.KickUserRequest`
-
-    Response (emitted to the room):
-    `leave_user` event
-
-    Data:
-
-    .. code-block:: json
-
-                {
-                    "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-                }
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -917,25 +726,6 @@ async def change_role(
         data: ChangeRoleRequest,
         db: Database = Depends(get_db),
 ):
-    """
-    Change user's role in a room. Only the admin of the room can change the role of other users.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.ChangeRoleRequest`
-
-    Response (emitted to the room):
-    `role_updated` event
-
-    Data:
-
-    .. code-block:: json
-
-                {
-                    "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-                    "role": "moderator"
-                }
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -980,18 +770,6 @@ async def confirm_room_ownership_transfer(
         db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Handles the confirmation of the ownership transfer of a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest`
-
-    Response (emitted to the room):
-    `role_updated` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.ConfirmRoomOwnershipTransferResponse`
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -1055,18 +833,6 @@ async def send_chat_message(
         db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
-    """
-    Handles the sending of a chat message in a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.SendChatMessageRequest`
-
-    Response (emitted to the room):
-    `chat_message` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.SendChatMessageResponse`
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -1112,23 +878,6 @@ async def send_chat_message(
 
 @app.event("request_right_to_speak")
 async def request_right_to_speak(sid, data: RoomActionRequest):
-    """
-    Handles the request for the right to speak in a room.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.RoomActionRequest`
-
-    Response (emitted to the room):
-    `right_to_speak_reqeust` event
-
-    Data:
-
-    .. code-block:: json
-
-            {
-                "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
-            }
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -1151,20 +900,6 @@ async def handle_right_to_speak(
         data: HandleRightToSpeakRequest,
         db: Database = Depends(get_db),
 ):
-    """
-    Handles the handling of the right to speak request in a room.
-    Only the admin of the room can handle the right to speak request.
-
-    Request:
-    :py:class:`fliji_sockets.models.socket.HandleRightToSpeakRequest`
-
-    Response (emitted to the room):
-    `right_to_speak_updated` event
-
-    Data:
-    :py:class:`fliji_sockets.models.user_service_api.HandleRightToSpeakResponse`
-
-    """
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -1222,7 +957,7 @@ async def timeline_connect(
         db: Database = Depends(get_db),
 ):
     """
-    Connects the user to the timeline of a video.
+    Подключение к таймлайну видео.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineConnectRequest`
@@ -1328,7 +1063,7 @@ async def timeline_join_user(
         db: Database = Depends(get_db),
 ):
     """
-    Join a single user on the timeline of a video.
+    Присоединиться к одиночному пользователю на таймлайне видео.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineJoinUserRequest`
@@ -1417,7 +1152,7 @@ async def timeline_set_mic_enabled(
         db: Database = Depends(get_db),
 ):
     """
-    Set the mic enabled status for a user on the timeline.
+    Включить или выключить микрофон на таймлайне видео.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineSetMicEnabled`
@@ -1457,7 +1192,9 @@ async def timeline_fetch_chat_history(
         db: Database = Depends(get_db),
 ):
     """
-    Fetches the last 50 chat messages for the timeline.
+    Оставлено для совместимости. При `timeline_connect` уже отправляется история чата.
+
+    Получить историю чата на таймлайне видео.
 
     Response
     Event `timeline_chat_history` is emitted to the user:
@@ -1507,8 +1244,12 @@ async def timeline_update_timecode(
         db: Database = Depends(get_db),
 ):
     """
-    Update the timecode for a user on the timeline. If the user is in the group and is the host,
-    the timecode is updated for the group and an event is emitted to all users in the group.
+    Обновить таймкод для пользователя на таймлайне.
+    Если пользователь находится в группе и является хостом,
+    таймкод обновляется для группы и отправляется событие всем пользователям
+    в группе.
+
+    Если пользователь не находится в группе, таймкод обновляется для пользователя.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
@@ -1576,7 +1317,7 @@ async def timeline_join_group(
         db: Database = Depends(get_db),
 ):
     """
-    Join a group of users on the timeline of a video.
+    Присоединиться к группе пользователей на таймлайне видео.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineJoinGroupRequest`
@@ -1639,7 +1380,12 @@ async def timeline_leave_group(
         db: Database = Depends(get_db),
 ):
     """
-    Leave a group of users on the timeline of a video.
+    Оставлено для совместимости. При `timeline_leave` пользователь покидает группу автоматически.
+
+    При `timeline_join_group` пользователь присоединяется к группе и
+     покидает предыдущую автоматически.
+
+    Покинуть группу пользователей на таймлайне видео.
 
     Response
     Event `timeline_status` is emitted to everybody globally:
@@ -1701,7 +1447,7 @@ async def timeline_leave(
         db: Database = Depends(get_db),
 ):
     """
-    Leave the timeline of a video.
+    Отключиться от таймлайна видео.
 
     Response
     Event `timeline_status` is emitted to everybody globally:
@@ -1736,7 +1482,9 @@ async def timeline_get_server_timestamp(
         sid,
 ):
     """
-    Get the server unix timestamp.
+    Оставлено для совместимости. При `timeline_connect` уже отправляется серверное время.
+
+    Получить timestamp серверного времени.
 
     Response
     Event `timeline_server_timestamp` is emitted to the user:
@@ -1770,7 +1518,9 @@ async def timeline_send_chat_message(
         db: Database = Depends(get_db),
 ):
     """
-    Sends the chats message on the timeline of a video globally.
+    Отправить сообщение в чат на таймлайне видео.
+
+    Ивент о новом сообщении отправляется всем пользователям на таймлайне.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineSendChatMessageRequest`
@@ -1835,9 +1585,6 @@ clear_data_on_startup()
 
 
 def fill_mock_data():
-    """
-    Fill the database with mock data.
-    """
     db = get_database()
 
     user_uuids = [

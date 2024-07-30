@@ -1164,6 +1164,7 @@ async def timeline_join_user(
         video_uuid=watch_session.video_uuid,
         host_user_uuid=data.user_uuid,
         users_count=2,
+        watch_time=host_watch_session.watch_time
     )
     await upsert_timeline_group(db, group)
 

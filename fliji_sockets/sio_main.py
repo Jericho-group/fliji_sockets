@@ -1595,8 +1595,10 @@ async def timeline_set_pause(
     Этот ивент нужен чтобы у других пользователей на таймлайне видео
     отображалось что видео на паузе.
 
+    group_uuid будет null если пользователь не в группе.
+
     Response
-    Event `timeline_pause` is emitted to users in the group if the user is in the group:
+    Event `timeline_pause` is emitted to the users on the timeline:
 
     Data:
 

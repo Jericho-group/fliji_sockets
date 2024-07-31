@@ -233,8 +233,9 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dd><p>Поставить видео на паузу.
 Этот ивент нужен чтобы у других пользователей на таймлайне видео
 отображалось что видео на паузе.</p>
+<p>group_uuid будет null если пользователь не в группе.</p>
 <p>Response
-Event <cite>timeline_pause</cite> is emitted to users in the group if the user is in the group:</p>
+Event <cite>timeline_pause</cite> is emitted to the users on the timeline:</p>
 <p>Data:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>

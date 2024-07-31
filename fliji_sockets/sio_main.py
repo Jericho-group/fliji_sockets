@@ -38,7 +38,7 @@ from fliji_sockets.models.socket import (
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
     TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
-    TimelineSetMicEnabled
+    TimelineSetMicEnabled, TimelineSetPauseStateRequest
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -1015,6 +1015,8 @@ async def timeline_connect(
 ):
     """
     Подключение к таймлайну видео.
+    После подключения пользователь получает статус таймлайна и историю чата.
+    Только после этого ивента можно вызывать остальные timeline_* ивенты.
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineConnectRequest`
@@ -1164,7 +1166,8 @@ async def timeline_join_user(
         video_uuid=watch_session.video_uuid,
         host_user_uuid=data.user_uuid,
         users_count=2,
-        watch_time=host_watch_session.watch_time
+        watch_time=host_watch_session.watch_time,
+        on_pause=host_watch_session.on_pause,
     )
     await upsert_timeline_group(db, group)
 
@@ -1309,6 +1312,8 @@ async def timeline_update_timecode(
 
     Если пользователь не находится в группе, таймкод обновляется для пользователя.
 
+    Если видео было на паузе, то при обновлении таймкода on_pause ставится в False.
+
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
 
@@ -1339,6 +1344,7 @@ async def timeline_update_timecode(
 
     if not user_in_group:
         watch_session.watch_time = data.timecode
+        watch_session.on_pause = False
         await upsert_timeline_watch_session(db, watch_session)
         return
 
@@ -1352,6 +1358,7 @@ async def timeline_update_timecode(
         return
 
     group.watch_time = data.timecode
+    group.on_pause = False
 
     await upsert_timeline_group(db, group)
 
@@ -1533,6 +1540,113 @@ async def timeline_get_server_timestamp(
         "timeline_server_timestamp",
         {"timestamp": int(time.time())},
         room=sid,
+    )
+
+
+@app.event("timeline_get_status")
+async def timeline_get_status(
+        sid,
+        db: Database = Depends(get_db),
+):
+    """
+    Пока не используется.
+
+
+    Запросить статус таймлайна видео.
+    Этот ивент отправляется глобально всем пользователям на таймлайне.
+
+    Локально нужно держать таймер когда приходил последний статус.
+    Если он не обновлялся больше 5 секунд, то отправляется запрос timeline_get_status.
+    Если другой пользователь уже запросил статус, то при обработке статус
+    таймер у других участников должен сбрасываться, чтобы не было слишком много запросов.
+
+    Response
+    Event `timeline_status` is emitted to everybody globally:
+    :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    # emit the global status event
+    timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
+    await app.emit(
+        "timeline_status",
+        timeline_status_data.model_dump(),
+        room=get_room_name(watch_session.video_uuid),
+    )
+
+
+@app.event("timeline_set_pause")
+async def timeline_set_pause(
+        sid,
+        data: TimelineSetPauseStateRequest,
+        db: Database = Depends(get_db),
+):
+    """
+    Поставить видео на паузу.
+    Этот ивент нужен чтобы у других пользователей на таймлайне видео
+    отображалось что видео на паузе.
+
+    Response
+    Event `timeline_pause` is emitted to users in the group if the user is in the group:
+
+    Data:
+
+    .. code-block:: json
+
+        {
+            "timecode": 15,
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "server_timestamp": "1934023948234"
+        }
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    user_in_group = watch_session.group_uuid is not None
+
+    if not user_in_group:
+        watch_session.on_pause = True
+        await upsert_timeline_watch_session(db, watch_session)
+    else:
+        group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
+        group = TimelineGroup.model_validate(group_data)
+
+        if group.host_user_uuid != user_uuid:
+            await app.send_error_message(sid, "You are not the host of the group.")
+            return
+
+        group.on_pause = True
+        await upsert_timeline_group(db, group)
+
+    sio_room_identifier = get_room_name(watch_session.video_uuid)
+
+    await app.emit(
+        "timeline_pause",
+        {
+            "timecode": data.timecode,
+            "server_timestamp": data.server_timestamp,
+            "group_uuid": watch_session.group_uuid,
+            "user_uuid": user_uuid,
+        },
+        room=sio_room_identifier,
     )
 
 

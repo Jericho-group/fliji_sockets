@@ -112,6 +112,11 @@ class TimelineUpdateTimecodeRequest(MyBaseModel):
     server_timestamp: int
 
 
+class TimelineSetPauseStateRequest(MyBaseModel):
+    timecode: int
+    server_timestamp: int
+
+
 class TimelineSendChatMessageRequest(MyBaseModel):
     message: str
 
@@ -135,6 +140,8 @@ class TimelineUserDataResponse(MyBaseModel):
     username: str
     first_name: str | None = None
     last_name: str | None = None
+    mic_enabled: bool | None = None
+    on_pause: bool | None = None
     avatar_url: str | None = None
     bio: str | None = None
     watch_time: int | None = None
@@ -143,6 +150,7 @@ class TimelineUserDataResponse(MyBaseModel):
 class TimelineGroupDataResponse(MyBaseModel):
     group_uuid: str
     host_user_uuid: str
+    on_pause: bool | None = None
     users_count: int
     watch_time: int | None = None
     users: list[TimelineUserDataResponse]

@@ -337,6 +337,8 @@
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineSetMicEnabled.mic_enabled">(fliji_sockets.models.socket.TimelineSetMicEnabled attribute)</a>
 </li>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.mic_enabled">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -379,6 +381,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest.old_owner_uuid">old_owner_uuid (fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest attribute)</a>
 </li>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineGroup.on_pause">on_pause (fliji_sockets.models.database.TimelineGroup attribute)</a>
+
+      <ul>
+        <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.on_pause">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
+</li>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineGroupDataResponse.on_pause">(fliji_sockets.models.socket.TimelineGroupDataResponse attribute)</a>
+</li>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.on_pause">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -440,17 +452,19 @@
       <li><a href="events.html#fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest.server_timestamp">server_timestamp (fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest attribute)</a>
 
       <ul>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineSetPauseStateRequest.server_timestamp">(fliji_sockets.models.socket.TimelineSetPauseStateRequest attribute)</a>
+</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp">(fliji_sockets.models.socket.TimelineUpdateTimecodeRequest attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.sid">sid (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 
       <ul>
         <li><a href="events.html#fliji_sockets.models.database.ViewSession.sid">(fliji_sockets.models.database.ViewSession attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.database.ViewSession.start_time">start_time (fliji_sockets.models.database.ViewSession attribute)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.startup">startup() (in module fliji_sockets.sio_main)</a>
@@ -468,6 +482,8 @@
       <li><a href="events.html#fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest.timecode">timecode (fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest attribute)</a>
 
       <ul>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineSetPauseStateRequest.timecode">(fliji_sockets.models.socket.TimelineSetPauseStateRequest attribute)</a>
+</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode">(fliji_sockets.models.socket.TimelineUpdateTimecodeRequest attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.VideoTimecodeRequest.timecode">(fliji_sockets.models.socket.VideoTimecodeRequest attribute)</a>
@@ -477,9 +493,11 @@
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_fetch_chat_history">timeline_fetch_chat_history() (in module fliji_sockets.sio_main)</a>
 </li>
+      <li><a href="events.html#fliji_sockets.sio_main.timeline_get_server_timestamp">timeline_get_server_timestamp() (in module fliji_sockets.sio_main)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.sio_main.timeline_get_server_timestamp">timeline_get_server_timestamp() (in module fliji_sockets.sio_main)</a>
+      <li><a href="events.html#fliji_sockets.sio_main.timeline_get_status">timeline_get_status() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_join_group">timeline_join_group() (in module fliji_sockets.sio_main)</a>
 </li>
@@ -492,6 +510,8 @@
       <li><a href="events.html#fliji_sockets.sio_main.timeline_send_chat_message">timeline_send_chat_message() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_set_mic_enabled">timeline_set_mic_enabled() (in module fliji_sockets.sio_main)</a>
+</li>
+      <li><a href="events.html#fliji_sockets.sio_main.timeline_set_pause">timeline_set_pause() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_update_timecode">timeline_update_timecode() (in module fliji_sockets.sio_main)</a>
 </li>

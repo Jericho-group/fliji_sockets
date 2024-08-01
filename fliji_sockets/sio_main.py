@@ -1409,7 +1409,7 @@ async def timeline_join_group(
         # leave the previous group if the user was already in the group
         await handle_user_timeline_group_leave(db, watch_session)
 
-    watch_session.group_uuid = group.uuid
+    watch_session.group_uuid = group.group_uuid
     group.users_count += 1
 
     await upsert_timeline_watch_session(db, watch_session)
@@ -1427,15 +1427,6 @@ async def timeline_join_group(
         timeline_status_data.model_dump(),
         room=sio_room_identifier,
     )
-
-    # emit the global status event that the user left the previous group
-    if previous_group_uuid:
-        left_timeline_data = await get_timeline_status(db, previous_group_uuid)
-        await app.emit(
-            "timeline_status",
-            left_timeline_data.model_dump(),
-            room=sio_room_identifier,
-        )
 
 
 @app.event("timeline_leave_group")

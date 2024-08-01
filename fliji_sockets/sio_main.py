@@ -281,9 +281,6 @@ async def disconnect(
 
 async def handle_user_timeline_group_leave(db: Database, watch_session: TimelineWatchSession):
     if watch_session.group_uuid is None:
-        print('oh no')
-        print('blablab')
-        print(watch_session.model_dump_json())
         return
 
     user_uuid = watch_session.user_uuid

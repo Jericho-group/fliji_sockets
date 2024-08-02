@@ -1616,6 +1616,7 @@ async def timeline_set_pause(
 
     if not user_in_group:
         watch_session.on_pause = True
+        watch_session.watch_time = data.timecode
         await upsert_timeline_watch_session(db, watch_session)
     else:
         group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
@@ -1626,6 +1627,7 @@ async def timeline_set_pause(
             return
 
         group.on_pause = True
+        group.watch_time = data.timecode
         await upsert_timeline_group(db, group)
 
     sio_room_identifier = get_room_name(watch_session.video_uuid)

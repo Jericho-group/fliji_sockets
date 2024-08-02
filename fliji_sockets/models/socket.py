@@ -114,7 +114,6 @@ class TimelineUpdateTimecodeRequest(MyBaseModel):
 
 class TimelineSetPauseStateRequest(MyBaseModel):
     timecode: int
-    server_timestamp: int
 
 
 class TimelineSendChatMessageRequest(MyBaseModel):

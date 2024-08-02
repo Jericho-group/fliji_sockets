@@ -1585,6 +1585,9 @@ async def timeline_set_pause(
 
     group_uuid будет null если пользователь не в группе.
 
+    Request:
+    :py:class:`fliji_sockets.models.socket.TimelineSetPauseStateRequest`
+
     Response
     Event `timeline_pause` is emitted to the users on the timeline:
 
@@ -1596,7 +1599,6 @@ async def timeline_set_pause(
             "timecode": 15,
             "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
             "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-            "server_timestamp": "1934023948234"
         }
     """
     session = await app.get_session(sid)

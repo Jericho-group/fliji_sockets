@@ -1740,12 +1740,21 @@ clear_data_on_startup()
 def fill_mock_data():
     db = get_database()
 
+    # Dev
     user_uuids = [
         "cfece5a4-3c73-42b3-bcf3-8ebec14b6325",
         "20765a99-ca3c-44b4-97e4-795b403bb7b7",
         "fbd607fc-6b98-4010-872c-e18d19617ec5",
         "47cb7ac1-bd4a-4595-8775-38b5ed8c7162",
     ]
+
+    # Local
+    # user_uuids = [
+    #     "4f3fc122-ddec-4cb6-bd5e-461078bdb9f0",
+    #     "d14aaf88-01fc-461f-a45d-9c81ce682630",
+    #     "c08bd461-ae64-46ae-a6c3-8668d8e495ec",
+    #     "7e8dc504-9db6-4448-95c9-978ca211225a"
+    # ]
 
     video_uuid = "9d2b6a97-d054-4c68-96ed-af0cb82b97db"
     group_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"

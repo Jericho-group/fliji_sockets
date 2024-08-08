@@ -1567,7 +1567,7 @@ async def timeline_set_video_ended(
     :py:class:`fliji_sockets.models.socket.SetVideoEndedRequest`
 
     Response
-    Event `timeline_video_ended` is emitted to the user:
+    Event `timeline_video_ended` is emitted to all the users on the timeline:
 
     Data:
 

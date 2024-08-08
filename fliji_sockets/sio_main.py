@@ -1196,18 +1196,22 @@ async def timeline_join_user(
     await upsert_timeline_watch_session(db, watch_session)
     await upsert_timeline_watch_session(db, host_watch_session)
 
-    sio_room_identifier = get_room_name(group.group_uuid)
+    # identifier for the room of the group
+    sio_group_room = get_room_name(group.group_uuid)
+
+    # identifier for the room of the timeline video (global)
+    sio_timeline_room = get_room_name(watch_session.video_uuid)
 
     # join socketio room for the group
-    app.enter_room(sid, sio_room_identifier)
-    app.enter_room(host_watch_session.sid, sio_room_identifier)
+    app.enter_room(sid, sio_group_room)
+    app.enter_room(host_watch_session.sid, sio_group_room)
 
     # emit the global status event
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
     await app.emit(
         "timeline_status",
         timeline_status_data.model_dump(),
-        room=sio_room_identifier,
+        room=sio_timeline_room,
     )
 
     await app.emit(
@@ -1215,7 +1219,7 @@ async def timeline_join_user(
         {
             "user_uuid": user_uuid,
         },
-        room=sio_room_identifier,
+        room=sio_group_room,
     )
 
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)
@@ -1251,14 +1255,14 @@ async def timeline_set_mic_enabled(
     watch_session.mic_enabled = data.mic_enabled
     await upsert_timeline_watch_session(db, watch_session)
 
-    sio_room_identifier = get_room_name(watch_session.group_uuid)
-    if sio_room_identifier:
+    sio_timeline_room = get_room_name(watch_session.video_uuid)
+    if sio_timeline_room:
         # emit the global status event
         timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
         await app.emit(
             "timeline_status",
             timeline_status_data.model_dump(),
-            room=sio_room_identifier,
+            room=sio_timeline_room,
         )
 
 

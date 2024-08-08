@@ -155,7 +155,7 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_join_group">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_join_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineJoinGroupRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_join_group" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_join_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.TimelineJoinGroupRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_join_group" title="Link to this definition">¶</a></dt>
 <dd><p>Присоединиться к группе пользователей на таймлайне видео.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineJoinGroupRequest" title="fliji_sockets.models.socket.TimelineJoinGroupRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineJoinGroupRequest</span></code></a></p>
@@ -194,7 +194,7 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_leave_group">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_leave_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_leave_group" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_leave_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc:</span> <span class="pre">~nats.aio.client.Client</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_leave_group" title="Link to this definition">¶</a></dt>
 <dd><p>Покинуть группу пользователей на таймлайне видео.</p>
 <p>При <cite>timeline_leave</cite> пользователь покидает группу автоматически.</p>
 <p>При <cite>timeline_join_group</cite> пользователь автоматически покидает группу и присоединяется к другой.</p>
@@ -243,6 +243,23 @@ Event <cite>timeline_pause</cite> is emitted to the users on the timeline:</p>
 <span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;group_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fliji_sockets.sio_main.timeline_set_video_ended">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.sio_main.</span></span><span class="sig-name descname"><span class="pre">timeline_set_video_ended</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~fliji_sockets.models.socket.SetVideoEndedRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db:</span> <span class="pre">~pymongo.database.Database</span> <span class="pre">=</span> <span class="pre">{'callable':</span> <span class="pre">&lt;function</span> <span class="pre">Depends.&lt;locals&gt;.async_dependency_wrapper&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'type':</span> <span class="pre">'dependency'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fliji_sockets.sio_main.timeline_set_video_ended" title="Link to this definition">¶</a></dt>
+<dd><p>Отметить, что видео закончилось.
+Используется одинаково для хоста группы и одиночного пользователя.</p>
+<p>Request:
+<a class="reference internal" href="#fliji_sockets.models.socket.SetVideoEndedRequest" title="fliji_sockets.models.socket.SetVideoEndedRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.SetVideoEndedRequest</span></code></a></p>
+<p>Response
+Event <cite>timeline_video_ended</cite> is emitted to the user:</p>
+<p>Data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;video_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -582,6 +599,24 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 </dd></dl>
 
 <dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.SetVideoEndedRequest">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">SetVideoEndedRequest</span></span><a class="headerlink" href="#fliji_sockets.models.socket.SetVideoEndedRequest" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.SetVideoEndedRequest.video_duration" title="fliji_sockets.models.socket.SetVideoEndedRequest.video_duration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_duration</span> <span class="pre">(int)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.SetVideoEndedRequest.video_duration">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.SetVideoEndedRequest.video_duration" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineConnectRequest">
 <em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fliji_sockets.models.socket.</span></span><span class="sig-name descname"><span class="pre">TimelineConnectRequest</span></span><a class="headerlink" href="#fliji_sockets.models.socket.TimelineConnectRequest" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MyBaseModel</span></code></p>
@@ -629,6 +664,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.on_pause" title="fliji_sockets.models.socket.TimelineGroupDataResponse.on_pause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pause</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.users" title="fliji_sockets.models.socket.TimelineGroupDataResponse.users"><code class="xref py py-obj docutils literal notranslate"><span class="pre">users</span> <span class="pre">(list[fliji_sockets.models.socket.TimelineUserDataResponse])</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.users_count" title="fliji_sockets.models.socket.TimelineGroupDataResponse.users_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">users_count</span> <span class="pre">(int)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.video_ended" title="fliji_sockets.models.socket.TimelineGroupDataResponse.video_ended"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_ended</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.watch_time" title="fliji_sockets.models.socket.TimelineGroupDataResponse.watch_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">watch_time</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 </ul>
 </dd>
@@ -656,6 +692,11 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineGroupDataResponse.users_count">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">users_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.users_count" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineGroupDataResponse.video_ended">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_ended</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineGroupDataResponse.video_ended" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -860,6 +901,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse.on_pause" title="fliji_sockets.models.socket.TimelineUserDataResponse.on_pause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pause</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse.user_uuid" title="fliji_sockets.models.socket.TimelineUserDataResponse.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse.username" title="fliji_sockets.models.socket.TimelineUserDataResponse.username"><code class="xref py py-obj docutils literal notranslate"><span class="pre">username</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse.video_ended" title="fliji_sockets.models.socket.TimelineUserDataResponse.video_ended"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_ended</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.socket.TimelineUserDataResponse.watch_time" title="fliji_sockets.models.socket.TimelineUserDataResponse.watch_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">watch_time</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 </ul>
 </dd>
@@ -902,6 +944,11 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineUserDataResponse.username">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineUserDataResponse.username" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.socket.TimelineUserDataResponse.video_ended">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_ended</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.socket.TimelineUserDataResponse.video_ended" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -1337,6 +1384,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.id" title="fliji_sockets.models.database.TimelineGroup.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.on_pause" title="fliji_sockets.models.database.TimelineGroup.on_pause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pause</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.users_count" title="fliji_sockets.models.database.TimelineGroup.users_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">users_count</span> <span class="pre">(int)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.video_ended" title="fliji_sockets.models.database.TimelineGroup.video_ended"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_ended</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.video_uuid" title="fliji_sockets.models.database.TimelineGroup.video_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_uuid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.watch_time" title="fliji_sockets.models.database.TimelineGroup.watch_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">watch_time</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 </ul>
@@ -1365,6 +1413,11 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineGroup.users_count">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">users_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineGroup.users_count" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineGroup.video_ended">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_ended</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineGroup.video_ended" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -1398,6 +1451,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.sid" title="fliji_sockets.models.database.TimelineWatchSession.sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.user_uuid" title="fliji_sockets.models.database.TimelineWatchSession.user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.username" title="fliji_sockets.models.database.TimelineWatchSession.username"><code class="xref py py-obj docutils literal notranslate"><span class="pre">username</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.video_ended" title="fliji_sockets.models.database.TimelineWatchSession.video_ended"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_ended</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.video_uuid" title="fliji_sockets.models.database.TimelineWatchSession.video_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_uuid</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.watch_time" title="fliji_sockets.models.database.TimelineWatchSession.watch_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">watch_time</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 </ul>
@@ -1461,6 +1515,11 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineWatchSession.username">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineWatchSession.username" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineWatchSession.video_ended">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_ended</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineWatchSession.video_ended" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -1657,6 +1716,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_send_chat_message"><code class="docutils literal notranslate"><span class="pre">timeline_send_chat_message()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_mic_enabled"><code class="docutils literal notranslate"><span class="pre">timeline_set_mic_enabled()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_pause"><code class="docutils literal notranslate"><span class="pre">timeline_set_pause()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_set_video_ended"><code class="docutils literal notranslate"><span class="pre">timeline_set_video_ended()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.sio_main.timeline_update_timecode"><code class="docutils literal notranslate"><span class="pre">timeline_update_timecode()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ChangeRoleRequest"><code class="docutils literal notranslate"><span class="pre">ChangeRoleRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest"><code class="docutils literal notranslate"><span class="pre">ConfirmRoomOwnershipTransferRequest</span></code></a></li>
@@ -1671,6 +1731,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.RequestRightToSpeakRequest"><code class="docutils literal notranslate"><span class="pre">RequestRightToSpeakRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.RoomActionRequest"><code class="docutils literal notranslate"><span class="pre">RoomActionRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.SendChatMessageRequest"><code class="docutils literal notranslate"><span class="pre">SendChatMessageRequest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.SetVideoEndedRequest"><code class="docutils literal notranslate"><span class="pre">SetVideoEndedRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineConnectRequest"><code class="docutils literal notranslate"><span class="pre">TimelineConnectRequest</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineFetchChatMessages"><code class="docutils literal notranslate"><span class="pre">TimelineFetchChatMessages</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fliji_sockets.models.socket.TimelineGroupDataResponse"><code class="docutils literal notranslate"><span class="pre">TimelineGroupDataResponse</span></code></a></li>

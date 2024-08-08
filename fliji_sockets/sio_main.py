@@ -38,7 +38,7 @@ from fliji_sockets.models.socket import (
     CurrentDurationRequest, ChangeRoleRequest, KickUserRequest, TimelineConnectRequest,
     TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
-    TimelineSetMicEnabled, TimelineSetPauseStateRequest
+    TimelineSetMicEnabled, TimelineSetPauseStateRequest, SetVideoEndedRequest
 )
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
@@ -1552,6 +1552,82 @@ async def timeline_get_server_timestamp(
         "timeline_server_timestamp",
         {"timestamp": int(time.time())},
         room=sid,
+    )
+
+
+@app.event("timeline_set_video_ended")
+async def timeline_set_video_ended(
+        sid, data: SetVideoEndedRequest, db: Database = Depends(get_db),
+):
+    """
+    Отметить, что видео закончилось.
+    Используется одинаково для хоста группы и одиночного пользователя.
+
+    Request:
+    :py:class:`fliji_sockets.models.socket.SetVideoEndedRequest`
+
+    Response
+    Event `timeline_video_ended` is emitted to the user:
+
+    Data:
+
+    .. code-block:: json
+
+            {
+                "video_duration": 15
+            }
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+    user_uuid = session.user_uuid
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
+    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+    user_in_group = watch_session.group_uuid is not None
+
+    if not user_in_group:
+        watch_session.watch_time = data.video_duration
+        watch_session.video_ended = True
+        await upsert_timeline_watch_session(db, watch_session)
+
+        sio_room = get_room_name(watch_session.video_uuid)
+
+        await app.emit(
+            "timeline_video_ended",
+            {
+                "video_duration": data.video_duration,
+            },
+            room=sio_room,
+        )
+        return
+
+    group = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
+    group = TimelineGroup.model_validate(group)
+
+    if group.host_user_uuid != user_uuid:
+        await app.send_error_message(sid,
+                                     "You are not the host of the group." +
+                                     " You can't send the timecode.")
+        return
+
+    group.video_ended = True
+    group.watch_time = data.video_duration
+
+    await upsert_timeline_group(db, group)
+
+    sio_room = get_room_name(watch_session.video_uuid)
+
+    await app.emit(
+        "timeline_video_ended",
+        {
+            "video_duration": data.video_duration,
+        },
+        room=sio_room,
     )
 
 

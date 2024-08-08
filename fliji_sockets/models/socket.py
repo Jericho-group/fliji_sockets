@@ -7,6 +7,10 @@ class UpdateViewSessionRequest(MyBaseModel):
     current_watch_time: int
 
 
+class SetVideoEndedRequest(MyBaseModel):
+    video_duration: int
+
+
 class GetViewSessionsForVideoRequest(MyBaseModel):
     video_uuid: str
 
@@ -142,6 +146,7 @@ class TimelineUserDataResponse(MyBaseModel):
     mic_enabled: bool | None = None
     on_pause: bool | None = None
     avatar_url: str | None = None
+    video_ended: bool | None = None
     bio: str | None = None
     watch_time: int | None = None
 
@@ -151,6 +156,7 @@ class TimelineGroupDataResponse(MyBaseModel):
     host_user_uuid: str
     on_pause: bool | None = None
     users_count: int
+    video_ended: bool | None = None
     watch_time: int | None = None
     users: list[TimelineUserDataResponse]
 

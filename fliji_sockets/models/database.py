@@ -41,6 +41,7 @@ class TimelineWatchSession(MyBaseModel):
     group_uuid: str | None = None
     watch_time: int | None = None
     on_pause: bool | None = False
+    video_ended: bool | None = False
     last_update_time: datetime
     mic_enabled: bool
     avatar: str | None = None
@@ -57,6 +58,7 @@ class TimelineGroup(MyBaseModel):
     host_user_uuid: str
     users_count: int
     on_pause: bool | None = False
+    video_ended: bool | None = False
     watch_time: int | None = None
 
 

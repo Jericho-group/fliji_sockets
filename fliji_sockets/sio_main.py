@@ -1683,7 +1683,7 @@ async def timeline_set_pause(
     Этот ивент нужен чтобы у других пользователей на таймлайне видео
     отображалось что видео на паузе.
 
-    group_uuid будет null если пользователь не в группе.
+    Если пользователь в группе, то нужно сначала отправить ивент
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineSetPauseStateRequest`

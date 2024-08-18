@@ -1187,11 +1187,12 @@ async def timeline_join_user(
     await upsert_timeline_group(db, group)
 
     # update the watch sessions
+    host_watch_session.last_update_time = datetime.now()
+    host_watch_session.group_uuid = group.group_uuid
+
     watch_session.last_update_time = datetime.now()
     watch_session.group_uuid = group.group_uuid
 
-    host_watch_session.last_update_time = datetime.now()
-    host_watch_session.group_uuid = group.group_uuid
 
     await upsert_timeline_watch_session(db, watch_session)
     await upsert_timeline_watch_session(db, host_watch_session)

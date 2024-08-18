@@ -214,7 +214,7 @@ async def delete_timeline_group_by_uuid(db: Database, group_uuid: str) -> int:
 
 async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:
     groups = db.timeline_groups.find({"video_uuid": video_uuid})
-    users = db.timeline_watch_sessions.find({"video_uuid": video_uuid})
+    users = db.timeline_watch_sessions.find({"video_uuid": video_uuid}).sort("last_update_time")
 
     groups_dict = {}
     for group in groups:

@@ -333,7 +333,7 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
     # leave the room
     logging.debug(f"Leaving room {group_uuid} for user {user_uuid}")
     watch_session.group_uuid = None
-    await delete_timeline_watch_session_by_user_uuid(db, user_uuid)
+    await upsert_timeline_watch_session(db, watch_session)
 
     # emit the global status event to all the users in the group that the user left
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)

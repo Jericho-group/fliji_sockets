@@ -1193,7 +1193,6 @@ async def timeline_join_user(
     watch_session.last_update_time = datetime.now()
     watch_session.group_uuid = group.group_uuid
 
-
     await upsert_timeline_watch_session(db, watch_session)
     await upsert_timeline_watch_session(db, host_watch_session)
 
@@ -1366,6 +1365,16 @@ async def timeline_update_timecode(
         watch_session.watch_time = data.timecode
         watch_session.on_pause = False
         await upsert_timeline_watch_session(db, watch_session)
+
+        sio_room_identifier = get_room_name(watch_session.video_uuid)
+        await app.emit(
+            "timeline_timecode",
+            {
+                "timecode": data.timecode,
+                "server_timestamp": data.server_timestamp,
+            },
+            room=sio_room_identifier,
+        )
         return
 
     group = await get_timeline_group_by_uuid(db, watch_session.group_uuid)

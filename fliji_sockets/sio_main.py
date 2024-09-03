@@ -356,14 +356,14 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
     if group.host_user_uuid == user_uuid:
         group_users = await get_timeline_group_users(db, group_uuid)
         if group_users:
-            last_user = None
+            last_user_uuid = None
 
             for group_user in group_users:
                 if group_user.get("user_uuid") != user_uuid:
-                    last_user = group_user.get("user_uuid")
+                    last_user_uuid = group_user.get("user_uuid")
                     break
 
-            group.host_user_uuid = last_user.get("user_uuid")
+            group.host_user_uuid = last_user_uuid
             await upsert_timeline_group(db, group)
 
 

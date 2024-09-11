@@ -1,5 +1,5 @@
 # --- Build Stage ---
-FROM python:3.10-slim as builder
+FROM python:3.12-slim as builder
 WORKDIR /app
 
 # Install system dependencies required for compiling
@@ -23,7 +23,7 @@ COPY pyproject.toml pdm.lock ./
 RUN pdm install --prod --frozen-lockfile --no-editable
 
 # --- Final Stage ---
-FROM python:3.10-slim
+FROM python:3.12-slim
 WORKDIR /app
 
 # Upgrade pip and install PDM

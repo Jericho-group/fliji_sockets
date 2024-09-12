@@ -275,8 +275,10 @@ async def disconnect(
     await publish_user_disconnected(nc, user_uuid)
 
     timeline_watch_session_data = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
-    timeline_watch_session = TimelineWatchSession.model_validate(timeline_watch_session_data)
-    await handle_user_timeline_leave(db, nc, timeline_watch_session)
+
+    if timeline_watch_session_data:
+        timeline_watch_session = TimelineWatchSession.model_validate(timeline_watch_session_data)
+        await handle_user_timeline_leave(db, nc, timeline_watch_session)
 
 
 async def handle_user_timeline_group_leave(nc: Client, db: Database,

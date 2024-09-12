@@ -6,13 +6,14 @@ socketio = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --host 0.0.0.0 --port 80
 socketio-prod = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --proxy-headers --host 0.0.0.0 --port 80'
 event-listener = {call = "fliji_sockets.api_event_listener:main"}
 docs = "sphinx-build -b html docs/source docs/_build"
-test = "pytest tests/test_main.py"
+test = "pytest -s tests/test_main.py"
 
 [tool.pdm.dev-dependencies]
 dev = [
     "sphinx>=7.2.6",
     "autodoc-pydantic>=2.1.0",
     "pytest>=8.3.3",
+    "starlette>=0.38.5",
 ]
 [project]
 name = "fliji-sockets"
@@ -28,7 +29,7 @@ dependencies = [
     "httpx>=0.26.0",
     "nats-py>=2.7.2",
     "sentry-sdk>=2.4.0",
-    "pydantic>=2.7.3",
+    "pydantic>=2.9.1",
     "redis>=5.0.8",
 ]
 requires-python = "==3.12.*"

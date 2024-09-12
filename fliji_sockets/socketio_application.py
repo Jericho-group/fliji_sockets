@@ -41,6 +41,7 @@ class SocketioApplication:
     def get_remote_emitter() -> socketio.AsyncRedisManager:
         return socketio.AsyncRedisManager(REDIS_CONNECTION_STRING, write_only=True)
 
+    # noinspection PyMethodMayBeStatic
     async def resolve_dependency(self, dep: dict[str, Any]):
         if dep["type"] == "dependency":
             # If it's marked as a dependency, call the associated callable
@@ -49,6 +50,7 @@ class SocketioApplication:
 
     def event(self, event_name: str):
         def decorator(func: Callable):
+            # noinspection PyUnusedLocal
             async def wrapper(sid, data=None, *args, **kwargs):
                 validation_error = None
 

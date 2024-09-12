@@ -127,11 +127,11 @@ class SocketioApplication:
         await self.sio.emit("err", {"message": message, "body": body}, room=sid)
         logging.debug(f"Emitting error message to {sid}: {message}")
 
-    def enter_room(self, sid, room) -> None:
-        self.sio.enter_room(sid, room)
+    async def enter_room(self, sid, room) -> None:
+        await self.sio.enter_room(sid, room)
 
-    def leave_room(self, sid, room) -> None:
-        self.sio.leave_room(sid, room)
+    async def leave_room(self, sid, room) -> None:
+        await self.sio.leave_room(sid, room)
 
     async def send_fatal_error_message(self, sid, message, body=None) -> None:
         """Send a fatal error message to the client."""

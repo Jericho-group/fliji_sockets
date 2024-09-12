@@ -301,7 +301,7 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
         logging.warning(f"Group {group_uuid} not found. Could not leave the group.")
         return
 
-    app.leave_room(watch_session.sid, get_room_name(group_uuid))
+    await app.leave_room(watch_session.sid, get_room_name(group_uuid))
     group.users_count -= 1
 
     # users of the group
@@ -376,7 +376,7 @@ async def handle_user_timeline_leave(db: Database, nc: Client,
     await delete_timeline_watch_session_by_user_uuid(db, watch_session.user_uuid)
 
     try:
-        app.leave_room(watch_session.sid, get_room_name(watch_session.video_uuid))
+        await app.leave_room(watch_session.sid, get_room_name(watch_session.video_uuid))
     except Exception as e:
         logging.error(f"Error leaving room: {e}")
 
@@ -510,7 +510,7 @@ async def join_room(
     await delete_temp_room_user_by_user_uuid(db, user_uuid)
 
     # join socketio room
-    app.enter_room(sid, get_room_name(data.room_uuid))
+    await app.enter_room(sid, get_room_name(data.room_uuid))
 
     # emit the event to all the participants in the room about the new user
     await app.emit(
@@ -1089,7 +1089,7 @@ async def timeline_connect(
     sio_room_identifier = get_room_name(data.video_uuid)
 
     # join socketio room
-    app.enter_room(sid, sio_room_identifier)
+    await app.enter_room(sid, sio_room_identifier)
 
     # emit the global status event
     timeline_status_data = (await get_timeline_status(db, data.video_uuid)).model_dump()
@@ -1203,8 +1203,8 @@ async def timeline_join_user(
     sio_timeline_room = get_room_name(watch_session.video_uuid)
 
     # join socketio room for the group
-    app.enter_room(sid, sio_group_room)
-    app.enter_room(host_watch_session.sid, sio_group_room)
+    await app.enter_room(sid, sio_group_room)
+    await app.enter_room(host_watch_session.sid, sio_group_room)
 
     # emit the global status event
     timeline_status_data = await get_timeline_status(db, group.video_uuid)
@@ -1438,7 +1438,7 @@ async def timeline_join_group(
     sio_room_identifier = get_room_name(group.group_uuid)
 
     # join socketio room
-    app.enter_room(sid, sio_room_identifier)
+    await app.enter_room(sid, sio_room_identifier)
 
     # emit the global status event that the user joined the group
     timeline_status_data = await get_timeline_status(db, group.video_uuid)

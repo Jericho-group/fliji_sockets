@@ -1,3 +1,5 @@
+from pydantic import ConfigDict
+
 from fliji_sockets.models.base import MyBaseModel
 from fliji_sockets.models.enums import RoomUserRole
 
@@ -129,13 +131,14 @@ class MostWatchedVideosResponse(MyBaseModel):
     video_uuid: str
     watching_count: int
 
-    class Config:
-        json_extra_schema = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "video_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",
                 "watch_count": 100,
             },
         }
+    )
 
 
 class TimelineUserDataResponse(MyBaseModel):

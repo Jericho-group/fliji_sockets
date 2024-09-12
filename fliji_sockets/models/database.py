@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import Field
+from pydantic import Field, ConfigDict
 
 from fliji_sockets.models.base import PyObjectId, MyBaseModel
 from fliji_sockets.models.enums import RoomUserRole
@@ -20,8 +20,8 @@ class ViewSession(MyBaseModel):
     last_name: str | None = None
     bio: str | None = None
 
-    class Config:
-        json_extra_schema = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "1234567890",
                 "user_uuid": "32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d",
@@ -31,6 +31,7 @@ class ViewSession(MyBaseModel):
                 "last_update_time": "2021-08-01 12:00:00",
             },
         }
+    )
 
 
 class TimelineWatchSession(MyBaseModel):

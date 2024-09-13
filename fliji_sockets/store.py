@@ -1,4 +1,5 @@
 import json
+import logging
 
 from pymongo import MongoClient
 from pymongo.database import Database
@@ -50,6 +51,9 @@ def get_database():
     db = client[
         MONGO_DB
     ]  # Replace 'your_database_name' with your desired database name
+
+    # set logging level to INFO so it's not too verbose
+    logging.getLogger('pymongo').setLevel(logging.INFO)
 
     ensure_indexes(db)
     return db

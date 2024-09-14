@@ -1392,6 +1392,8 @@ async def timeline_update_timecode(
 
     sio_room_identifier = get_room_name(watch_session.video_uuid)
 
+    logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")
+
     await app.emit(
         "timeline_timecode",
         {

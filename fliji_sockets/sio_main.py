@@ -1339,13 +1339,16 @@ async def timeline_update_timecode(
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
 
     Response
-    Event `timeline_timecode` is emitted to users in the group:
+    group_uuid может быть None, если пользователь не находится в группе.
+    Event `timeline_timecode` is emitted to users on the timeline:
 
     Data:
 
     .. code-block:: json
 
         {
+            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
             "timecode": 15,
             "server_timestamp": "1934023948234"
         }
@@ -1369,25 +1372,31 @@ async def timeline_update_timecode(
         await upsert_timeline_watch_session(db, watch_session)
         return
 
-    group = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
-    group = TimelineGroup.model_validate(group)
+    group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
+    group = None
+    group_uuid = None
+    if group_data:
+        group = TimelineGroup.model_validate(group_data)
 
-    if group.host_user_uuid != user_uuid:
-        await app.send_error_message(sid,
-                                     "You are not the host of the group." +
-                                     " You can't send the timecode.")
-        return
+    if group:
+        if group.host_user_uuid != user_uuid:
+            await app.send_error_message(sid,
+                                         "You are not the host of the group." +
+                                         " You can't send the timecode.")
+            return
 
-    group.watch_time = data.timecode
-    group.on_pause = False
+        group.watch_time = data.timecode
+        group.on_pause = False
+        group_uuid = group.group_uuid
+        await upsert_timeline_group(db, group)
 
-    await upsert_timeline_group(db, group)
-
-    sio_room_identifier = get_room_name(watch_session.group_uuid)
+    sio_room_identifier = get_room_name(watch_session.video_uuid)
 
     await app.emit(
         "timeline_timecode",
         {
+            "user_uuid": user_uuid,
+            "group_uuid": group_uuid,
             "timecode": data.timecode,
             "server_timestamp": data.server_timestamp,
         },

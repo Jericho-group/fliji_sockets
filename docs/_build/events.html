@@ -7,10 +7,11 @@
 
     <title>Events &#8212; websockets  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css?v=a0a71c94" />
     <script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -233,7 +234,7 @@ Event <cite>timeline_status</cite> is emitted to everybody globally:
 <dd><p>Поставить видео на паузу.
 Этот ивент нужен чтобы у других пользователей на таймлайне видео
 отображалось что видео на паузе.</p>
-<p>group_uuid будет null если пользователь не в группе.</p>
+<p>Если пользователь в группе, то нужно сначала отправить ивент</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineSetPauseStateRequest" title="fliji_sockets.models.socket.TimelineSetPauseStateRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineSetPauseStateRequest</span></code></a></p>
 <p>Response
@@ -256,7 +257,7 @@ Event <cite>timeline_pause</cite> is emitted to the users on the timeline:</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.SetVideoEndedRequest" title="fliji_sockets.models.socket.SetVideoEndedRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.SetVideoEndedRequest</span></code></a></p>
 <p>Response
-Event <cite>timeline_video_ended</cite> is emitted to the user:</p>
+Event <cite>timeline_video_ended</cite> is emitted to all the users on the timeline:</p>
 <p>Data:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;video_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
@@ -277,9 +278,12 @@ Event <cite>timeline_video_ended</cite> is emitted to the user:</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></code></a></p>
 <p>Response
-Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
+group_uuid может быть None, если пользователь не находится в группе.
+Event <cite>timeline_timecode</cite> is emitted to users on the timeline:</p>
 <p>Data:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;group_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;server_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1934023948234&quot;</span>
 <span class="p">}</span>
@@ -506,17 +510,6 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dt class="sig sig-object py" id="fliji_sockets.models.socket.MostWatchedVideosResponse.watching_count">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">watching_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#fliji_sockets.models.socket.MostWatchedVideosResponse.watching_count" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.MostWatchedVideosResponse.Config">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#fliji_sockets.models.socket.MostWatchedVideosResponse.Config" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="fliji_sockets.models.socket.MostWatchedVideosResponse.Config.json_extra_schema">
-<span class="sig-name descname"><span class="pre">json_extra_schema</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'example':</span> <span class="pre">{'video_uuid':</span> <span class="pre">'32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d',</span> <span class="pre">'watch_count':</span> <span class="pre">100}}</span></em><a class="headerlink" href="#fliji_sockets.models.socket.MostWatchedVideosResponse.Config.json_extra_schema" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
 
 </dd></dl>
 
@@ -1061,14 +1054,25 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Fields<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.Chat.id" title="fliji_sockets.models.database.Chat.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.Chat.id" title="fliji_sockets.models.database.Chat.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.Chat.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.Chat.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.Chat.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -1080,7 +1084,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dt class="field-odd">Fields<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.chat_id" title="fliji_sockets.models.database.ChatMessage.chat_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chat_id</span> <span class="pre">(int)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.id" title="fliji_sockets.models.database.ChatMessage.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.id" title="fliji_sockets.models.database.ChatMessage.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.internal_chat_id" title="fliji_sockets.models.database.ChatMessage.internal_chat_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">internal_chat_id</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.message" title="fliji_sockets.models.database.ChatMessage.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ChatMessage.room_uuid" title="fliji_sockets.models.database.ChatMessage.room_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">room_uuid</span> <span class="pre">(str)</span></code></a></p></li>
@@ -1095,8 +1099,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.ChatMessage.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.ChatMessage.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.ChatMessage.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.ChatMessage.internal_chat_id">
@@ -1130,7 +1145,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.author" title="fliji_sockets.models.database.Room.author"><code class="xref py py-obj docutils literal notranslate"><span class="pre">author</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.chat_id" title="fliji_sockets.models.database.Room.chat_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chat_id</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.created_at" title="fliji_sockets.models.database.Room.created_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">created_at</span> <span class="pre">(datetime.datetime)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.id" title="fliji_sockets.models.database.Room.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.id" title="fliji_sockets.models.database.Room.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.mode" title="fliji_sockets.models.database.Room.mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mode</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.name" title="fliji_sockets.models.database.Room.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.Room.permissions" title="fliji_sockets.models.database.Room.permissions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permissions</span> <span class="pre">(int)</span></code></a></p></li>
@@ -1159,8 +1174,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.Room.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.Room.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.Room.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.Room.mode">
@@ -1215,7 +1241,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.chat_id" title="fliji_sockets.models.database.RoomUser.chat_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chat_id</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.created_at" title="fliji_sockets.models.database.RoomUser.created_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">created_at</span> <span class="pre">(datetime.datetime)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.first_name" title="fliji_sockets.models.database.RoomUser.first_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.id" title="fliji_sockets.models.database.RoomUser.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.id" title="fliji_sockets.models.database.RoomUser.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.internal_chat_id" title="fliji_sockets.models.database.RoomUser.internal_chat_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">internal_chat_id</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.last_name" title="fliji_sockets.models.database.RoomUser.last_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.RoomUser.mic" title="fliji_sockets.models.database.RoomUser.mic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic</span> <span class="pre">(bool)</span></code></a></p></li>
@@ -1251,8 +1277,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.RoomUser.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.RoomUser.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.RoomUser.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.RoomUser.internal_chat_id">
@@ -1315,7 +1352,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.created_at" title="fliji_sockets.models.database.TimelineChatMessage.created_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">created_at</span> <span class="pre">(datetime.datetime)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.first_name" title="fliji_sockets.models.database.TimelineChatMessage.first_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.id" title="fliji_sockets.models.database.TimelineChatMessage.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.id" title="fliji_sockets.models.database.TimelineChatMessage.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.last_name" title="fliji_sockets.models.database.TimelineChatMessage.last_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.message" title="fliji_sockets.models.database.TimelineChatMessage.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineChatMessage.user_avatar" title="fliji_sockets.models.database.TimelineChatMessage.user_avatar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_avatar</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
@@ -1337,8 +1374,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineChatMessage.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineChatMessage.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineChatMessage.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineChatMessage.last_name">
@@ -1381,7 +1429,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.group_uuid" title="fliji_sockets.models.database.TimelineGroup.group_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_uuid</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.host_user_uuid" title="fliji_sockets.models.database.TimelineGroup.host_user_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">host_user_uuid</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.id" title="fliji_sockets.models.database.TimelineGroup.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.id" title="fliji_sockets.models.database.TimelineGroup.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.on_pause" title="fliji_sockets.models.database.TimelineGroup.on_pause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pause</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.users_count" title="fliji_sockets.models.database.TimelineGroup.users_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">users_count</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineGroup.video_ended" title="fliji_sockets.models.database.TimelineGroup.video_ended"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video_ended</span> <span class="pre">(bool</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
@@ -1402,8 +1450,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineGroup.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineGroup.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineGroup.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineGroup.on_pause">
@@ -1443,7 +1502,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.bio" title="fliji_sockets.models.database.TimelineWatchSession.bio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bio</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.first_name" title="fliji_sockets.models.database.TimelineWatchSession.first_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.group_uuid" title="fliji_sockets.models.database.TimelineWatchSession.group_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_uuid</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.id" title="fliji_sockets.models.database.TimelineWatchSession.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.id" title="fliji_sockets.models.database.TimelineWatchSession.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.last_name" title="fliji_sockets.models.database.TimelineWatchSession.last_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.last_update_time" title="fliji_sockets.models.database.TimelineWatchSession.last_update_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_update_time</span> <span class="pre">(datetime.datetime)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.TimelineWatchSession.mic_enabled" title="fliji_sockets.models.database.TimelineWatchSession.mic_enabled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mic_enabled</span> <span class="pre">(bool)</span></code></a></p></li>
@@ -1479,8 +1538,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineWatchSession.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineWatchSession.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.TimelineWatchSession.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.TimelineWatchSession.last_name">
@@ -1545,7 +1615,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.bio" title="fliji_sockets.models.database.ViewSession.bio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bio</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.current_watch_time" title="fliji_sockets.models.database.ViewSession.current_watch_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_watch_time</span> <span class="pre">(int</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.first_name" title="fliji_sockets.models.database.ViewSession.first_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.id" title="fliji_sockets.models.database.ViewSession.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(fliji_sockets.models.base.PyObjectId)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.id" title="fliji_sockets.models.database.ViewSession.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(bson.objectid.ObjectId)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.last_name" title="fliji_sockets.models.database.ViewSession.last_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_name</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.last_update_time" title="fliji_sockets.models.database.ViewSession.last_update_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_update_time</span> <span class="pre">(datetime.datetime)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#fliji_sockets.models.database.ViewSession.sid" title="fliji_sockets.models.database.ViewSession.sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sid</span> <span class="pre">(str)</span></code></a></p></li>
@@ -1578,8 +1648,19 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.ViewSession.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PyObjectId</span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.ViewSession.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">ObjectId</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ObjectIdAnnotation</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Optional]</span></em><a class="headerlink" href="#fliji_sockets.models.database.ViewSession.id" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
+<li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11ae55440&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x11ae554e0&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="fliji_sockets.models.database.ViewSession.last_name">
@@ -1615,17 +1696,6 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 <dt class="sig sig-object py" id="fliji_sockets.models.database.ViewSession.video_uuid">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">video_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fliji_sockets.models.database.ViewSession.video_uuid" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="fliji_sockets.models.database.ViewSession.Config">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#fliji_sockets.models.database.ViewSession.Config" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="fliji_sockets.models.database.ViewSession.Config.json_extra_schema">
-<span class="sig-name descname"><span class="pre">json_extra_schema</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'example':</span> <span class="pre">{'id':</span> <span class="pre">'1234567890',</span> <span class="pre">'last_update_time':</span> <span class="pre">'2021-08-01</span> <span class="pre">12:00:00',</span> <span class="pre">'sid':</span> <span class="pre">'1234567890',</span> <span class="pre">'start_time':</span> <span class="pre">'2021-08-01</span> <span class="pre">12:00:00',</span> <span class="pre">'user_uuid':</span> <span class="pre">'32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d',</span> <span class="pre">'video_uuid':</span> <span class="pre">'32d6b6e3-3f3e-4e3d-8f3e-3e3d3e3d3e3d'}}</span></em><a class="headerlink" href="#fliji_sockets.models.database.ViewSession.Config.json_extra_schema" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
 
 </dd></dl>
 
@@ -1684,7 +1754,7 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">websockets</a></h1>
 
@@ -1695,7 +1765,16 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
@@ -1769,16 +1848,6 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1795,8 +1864,8 @@ Event <cite>timeline_timecode</cite> is emitted to users in the group:</p>
       &#169;2024, Leo.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/events.rst.txt"

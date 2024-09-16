@@ -43,7 +43,7 @@ from fliji_sockets.models.socket import (
 from fliji_sockets.models.user_service_api import (
     AuthUserResponse,
 )
-from fliji_sockets.settings import APP_ENV
+from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
     delete_view_session_by_socket_id,
@@ -1849,7 +1849,7 @@ def fill_mock_data():
     #     "7e8dc504-9db6-4448-95c9-978ca211225a"
     # ]
 
-    video_uuid = "9d2b6a97-d054-4c68-96ed-af0cb82b97db"
+    video_uuid = TEST_VIDEO_UUID
     group_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"
     timeline_users = [
         TimelineWatchSession(

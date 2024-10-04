@@ -11,7 +11,8 @@ class AuthUserResponse(MyBaseModel):
 
 
 class LoginResponse(MyBaseModel):
-    token: str
+    access_token: str
+    refresh_token: str
     uuid: str
 
 

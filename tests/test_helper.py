@@ -17,7 +17,7 @@ class TestHelper:
         user = UserDto(
             email=email,
             password=password,
-            token=login_response.token,
+            token=login_response.access_token,
             uuid=login_response.uuid,
         )
 

@@ -23,7 +23,7 @@ class FlijiApiService:
     def __init__(self):
         self.api_key = USER_SERVICE_API_KEY
         self.base_sockets_url = USER_SERVICE_URL + "/sockets-api/v1"
-        self.base_main_url = USER_SERVICE_URL + "/api/v1"
+        self.base_main_url = USER_SERVICE_URL + "/api/v2"
 
     async def authenticate_user(self, token) -> dict or None:
         async with httpx.AsyncClient() as httpx_client:
@@ -47,7 +47,7 @@ class FlijiApiService:
             try:
                 response = await httpx_client.post(
                     f"{self.base_main_url}/auth/login",
-                    json={"email": email, "password": password},
+                    json={"email": email, "password": password, "device_identifier": "some_device_id"},
                     timeout=5,
                 )
                 if response.status_code == 200:
@@ -66,7 +66,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_main_url}/users/profile",
+                    f"{self.base_main_url}/users/my/profile",
                     headers={"Authorization": "Bearer " + token, },
                     timeout=5,
                 )
@@ -87,7 +87,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_main_url}/video/trending",
+                    f"{self.base_main_url}/videos/popular",
                     headers={"Authorization": "Bearer " + token, },
                     timeout=5,
                 )
@@ -108,7 +108,7 @@ class FlijiApiService:
         async with httpx.AsyncClient() as httpx_client:
             try:
                 response = await httpx_client.get(
-                    f"{self.base_main_url}/video/{video_uuid}",
+                    f"{self.base_main_url}/videos/{video_uuid}",
                     headers={"Authorization": "Bearer " + token, },
                     timeout=5,
                 )

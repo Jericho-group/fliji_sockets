@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from pymongo.database import Database
 
 from fliji_sockets.dependencies import get_db, get_nats_client
-from fliji_sockets.event_publisher import publish_user_watched_video, \
+from fliji_sockets.event_publisher import \
     publish_user_disconnected, \
     publish_user_online, publish_user_offline, publish_user_connected_to_timeline, \
     publish_user_joined_timeline_group, \
@@ -25,16 +25,12 @@ from fliji_sockets.models.socket import (
     TimelineConnectRequest,
     TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
-    TimelineSetMicEnabled, TimelineSetPauseStateRequest, SetVideoEndedRequest
+    TimelineSetMicEnabled, TimelineSetPauseStateRequest, TimelineSetVideoEndedRequest
 )
 from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID, JWT_SECRET
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
-    delete_view_session_by_socket_id,
-    delete_view_session_by_user_uuid,
     get_database,
-    delete_all_sessions,
-    get_view_session_by_user_uuid, get_room_users_by_user_uuid, delete_room_users_by_user_uuid,
     upsert_timeline_watch_session, delete_timeline_watch_session_by_user_uuid,
     get_timeline_watch_session_by_user_uuid, get_timeline_group_by_uuid, upsert_timeline_group,
     get_timeline_status, delete_all_timeline_groups, delete_all_timeline_watch_sessions,
@@ -202,36 +198,20 @@ async def disconnect(
     """
     user_session = await app.get_session(sid)
 
-    # If the session data was corrupted somehow, delete whatever we can
-    if not user_session:
-        await delete_view_session_by_socket_id(db, sid)
-        return
-
     user_uuid = user_session.user_uuid
-    room_users = await get_room_users_by_user_uuid(db, user_uuid)
-    for room_user in room_users:
-        await app.emit(
-            "leave_user",
-            {"uuid": user_uuid},
-            room=get_room_name(room_user.get("room_uuid")),
-            skip_sid=sid,
-        )
 
-    # save the dangling view session
-    view_session = await get_view_session_by_user_uuid(db, user_uuid)
+    watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
 
+    # save the dangling watch session
     if (
-            view_session
-            and (view_session.get("video_uuid") is not None)
-            and (view_session.get("current_watch_time") is not None)
+            watch_session
+            and (watch_session.get("video_uuid") is not None)
+            and (watch_session.get("watch_time") is not None)
     ):
-        video_uuid = view_session.get("video_uuid")
-        current_watch_time = view_session.get("current_watch_time")
-        await publish_user_watched_video(
-            nc, user_uuid, video_uuid, current_watch_time
-        )
-
-        if view_session.get("group_uuid") is not None:
+        video_uuid = watch_session.get("video_uuid")
+        watch_time = watch_session.get("watch_time")
+        await publish_user_left_timeline(nc, user_uuid, video_uuid, watch_time)
+        if watch_session.get("group_uuid") is not None:
             # emit the global status event to all the users in the group that the user left
             timeline_status_data = await get_timeline_status(db, video_uuid)
 
@@ -241,9 +221,6 @@ async def disconnect(
                 timeline_status_data.model_dump(),
                 room=sio_room_identifier,
             )
-
-    await delete_room_users_by_user_uuid(db, user_uuid)
-    await delete_view_session_by_user_uuid(db, user_session.user_uuid)
 
     await publish_user_disconnected(nc, user_uuid)
 
@@ -355,7 +332,7 @@ async def handle_user_timeline_leave(db: Database, nc: Client,
     except Exception as e:
         logging.error(f"Error leaving room: {e}")
 
-    await publish_user_left_timeline(nc, watch_session.user_uuid, watch_session.video_uuid)
+    await publish_user_left_timeline(nc, watch_session.user_uuid, watch_session.video_uuid, watch_session.watch_time)
 
     # emit the global status event to all the users in the group that the user left
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
@@ -915,7 +892,7 @@ async def timeline_get_server_timestamp(
 
 @app.event("timeline_set_video_ended")
 async def timeline_set_video_ended(
-        sid, data: SetVideoEndedRequest, db: Database = Depends(get_db),
+        sid, data: TimelineSetVideoEndedRequest, db: Database = Depends(get_db),
 ):
     """
     Отметить, что видео закончилось.
@@ -1164,7 +1141,6 @@ async def timeline_send_chat_message(
 def clear_data_on_startup():
     # remove all transient session data
     database = get_database()
-    delete_all_sessions(database)
 
     # timeline groups and watch sessions
     delete_all_timeline_groups(database)

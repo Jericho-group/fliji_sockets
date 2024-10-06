@@ -2,7 +2,7 @@ import nats
 from nats.aio.client import Client
 from pymongo.database import Database
 
-from fliji_sockets.api_client import FlijiApiService
+from tests.test_api_client import FlijiApiService
 from fliji_sockets.settings import NATS_TOKEN, NATS_HOST
 from fliji_sockets.store import get_database
 

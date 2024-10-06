@@ -7,7 +7,7 @@ import pytest
 import socketio
 import uvicorn
 
-from fliji_sockets.api_client import FlijiApiService
+from tests.test_api_client import FlijiApiService
 from tests.test_helper import TestHelper
 
 

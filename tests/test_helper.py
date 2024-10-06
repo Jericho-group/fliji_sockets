@@ -1,6 +1,6 @@
 import asyncio
 
-from fliji_sockets.api_client import FlijiApiService
+from tests.test_api_client import FlijiApiService
 from fliji_sockets.models.user_service_api import UserDto, LoginResponse
 
 

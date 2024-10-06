@@ -148,7 +148,8 @@ class TimelineUserDataResponse(MyBaseModel):
     last_name: str | None = None
     mic_enabled: bool | None = None
     on_pause: bool | None = None
-    avatar_url: str | None = None
+    avatar: str | None = None
+    avatar_thumbnail: str | None = None
     video_ended: bool | None = None
     bio: str | None = None
     watch_time: int | None = None

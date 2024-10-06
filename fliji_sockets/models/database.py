@@ -46,6 +46,7 @@ class TimelineWatchSession(MyBaseModel):
     last_update_time: datetime
     mic_enabled: bool
     avatar: str | None = None
+    avatar_thumbnail: str | None = None
     username: str | None = None
     first_name: str | None = None
     last_name: str | None = None

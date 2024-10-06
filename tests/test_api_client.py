@@ -22,7 +22,6 @@ class FlijiApiService:
 
     def __init__(self):
         self.api_key = USER_SERVICE_API_KEY
-        self.base_sockets_url = USER_SERVICE_URL + "/sockets-api/v1"
         self.base_main_url = USER_SERVICE_URL + "/api/v2"
 
     async def login(self, email: str, password: str) -> LoginResponse or None:

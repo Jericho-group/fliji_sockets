@@ -4,7 +4,6 @@ distribution = false
 _.env_file = ".env"
 socketio = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --host 0.0.0.0 --port 8097 --reload'
 socketio-prod = 'uvicorn fliji_sockets.sio_main:sio_asgi_app --proxy-headers --host 0.0.0.0 --port 80'
-event-listener = {call = "fliji_sockets.api_event_listener:main"}
 docs = "sphinx-build -b html docs/source docs/_build"
 test = "pytest -s tests/test_main.py"
 

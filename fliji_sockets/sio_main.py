@@ -198,6 +198,10 @@ async def disconnect(
     """
     user_session = await app.get_session(sid)
 
+    if not user_session:
+        logging.warning(f"On disconnect: user session not found for sid {sid}")
+        return
+
     user_uuid = user_session.user_uuid
 
     watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)

@@ -25,23 +25,6 @@ class FlijiApiService:
         self.base_sockets_url = USER_SERVICE_URL + "/sockets-api/v1"
         self.base_main_url = USER_SERVICE_URL + "/api/v2"
 
-    async def authenticate_user(self, token) -> dict or None:
-        async with httpx.AsyncClient() as httpx_client:
-            try:
-                response = await httpx_client.get(
-                    f"{self.base_sockets_url}/auth",
-                    headers={
-                        "Authorization": "Bearer " + token,
-                        "X-API-KEY": self.api_key,
-                    },
-                    timeout=5,
-                )
-                if response.status_code == 200:
-                    return response.json()  # Assuming JSON response with user_uuid
-            except httpx.TimeoutException:
-                logging.error("Authentication service timed out")
-                return None
-
     async def login(self, email: str, password: str) -> LoginResponse or None:
         async with httpx.AsyncClient() as httpx_client:
             try:

@@ -4,12 +4,12 @@ import time
 import uuid
 from datetime import datetime
 
+import jwt
 from nats.aio.client import Client
 from pydantic import ValidationError
 from pymongo.database import Database
 
-from fliji_sockets.api_client import FlijiApiService, ApiException
-from fliji_sockets.dependencies import get_db, get_api_service, get_nats_client
+from fliji_sockets.dependencies import get_db, get_nats_client
 from fliji_sockets.event_publisher import publish_user_watched_video, \
     publish_user_started_watching_video, publish_user_joined_room, \
     publish_user_left_all_rooms, publish_chat_message, publish_user_disconnected, \
@@ -40,10 +40,7 @@ from fliji_sockets.models.socket import (
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
     TimelineSetMicEnabled, TimelineSetPauseStateRequest, SetVideoEndedRequest
 )
-from fliji_sockets.models.user_service_api import (
-    AuthUserResponse,
-)
-from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID
+from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID, JWT_SECRET
 from fliji_sockets.socketio_application import SocketioApplication, Depends
 from fliji_sockets.store import (
     delete_view_session_by_socket_id,
@@ -71,7 +68,6 @@ configure_sentry()
 async def startup(
         sid,
         data: OnConnectRequest,
-        api_service: FlijiApiService = Depends(get_api_service),
         nc: Client = Depends(get_nats_client),
 ):
     """
@@ -89,50 +85,44 @@ async def startup(
     Raises:
         FatalError: If the user's auth token is invalid or the user's UUID cannot be found.
     """
-    logging.debug(f"validated request {data} for sid {sid}")
-
     try:
-        response = await api_service.authenticate_user(data.auth_token)
-        response_data = AuthUserResponse.model_validate(response)
-    except ApiException as e:
-        await app.send_fatal_error_message(sid, f"Could not authenticate user: {e}")
-        return
-    except ValidationError as e:
+        decoded = jwt.decode(data.auth_token, JWT_SECRET, algorithms=['HS256'])
+    except jwt.exceptions.InvalidTokenError as e:
+        logging.info(
+            f"Could not decode token for sid {sid} with token {data.auth_token}. Error: {e}")
         await app.send_fatal_error_message(
-            sid, f"Could not authenticate user: {e.errors()} {e.json()}"
+            sid, f"Could not authenticate user: Invalid token."
         )
         return
 
-    if not response:
-        await app.send_fatal_error_message(sid, "Could not authenticate user.")
+    try:
+        user_session = UserSession(
+            user_uuid=decoded.get("user_uuid"),
+            username=decoded.get("username"),
+            first_name=decoded.get("first_name"),
+            last_name=decoded.get("last_name"),
+            bio=decoded.get("bio"),
+            avatar=decoded.get("avatar"),
+            avatar_thumbnail=decoded.get("avatar_thumbnail"),
+        )
+    except ValidationError as e:
+        logging.error(f"Error validating user session: {e}")
+        await app.send_fatal_error_message(sid, f"Error validating user session: {e}")
         return
 
-    logging.debug(f"user_uuid found for sid {sid}")
-    if not response_data.uuid:
-        await app.send_fatal_error_message(sid, "Authentication service failed.")
-        return
-
-    logging.debug(f"authenticated user {response_data.uuid} for sid {sid}")
-
-    await publish_user_online(nc, response_data.uuid)
-
-    # Also store user_uuid in the user's session for later use
     try:
         await app.save_session(
             sid,
-            UserSession(
-                user_uuid=response_data.uuid,
-                username=response_data.username,
-                avatar=response_data.image,
-                first_name=response_data.first_name,
-                last_name=response_data.last_name,
-                bio=response_data.bio,
-            ),
+            user_session
         )
     except Exception as e:
         logging.error(f"Could not save session: {e}")
         await app.send_fatal_error_message(sid, f"Could not save session: {e}")
         return
+
+    logging.info(f"User {user_session.user_uuid} authenticated successfully")
+
+    await publish_user_online(nc, user_session.user_uuid)
 
 
 @app.event("go_online")

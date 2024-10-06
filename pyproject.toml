@@ -33,6 +33,7 @@ dependencies = [
     # python-socketio dependencies
     "redis>=5.0.8",
     "websocket-client>=1.8.0",
+    "PyJWT>=2.9.0",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"

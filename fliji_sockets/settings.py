@@ -34,4 +34,7 @@ REDIS_DB = int(os.environ.get("REDIS_DB", "5"))
 REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", "")
 REDIS_CONNECTION_STRING = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
+JWT_SECRET = os.environ.get("JWT_SECRET", "secret")
+JWT_ALGO = os.environ.get("JWT_ALGO", "HS256")
+
 TEST_VIDEO_UUID = os.environ.get("TEST_VIDEO_UUID", "9d2b6a97-d054-4c68-96ed-af0cb82b97db")

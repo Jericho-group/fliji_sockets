@@ -46,7 +46,6 @@
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
- | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -60,22 +59,22 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.OnConnectRequest.auth_token">auth_token (fliji_sockets.models.socket.OnConnectRequest attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.LoginResponse.access_token">access_token (fliji_sockets.models.user_service_api.LoginResponse attribute)</a>
 </li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.author">author (fliji_sockets.models.database.Room attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.socket.OnConnectRequest.auth_token">auth_token (fliji_sockets.models.socket.OnConnectRequest attribute)</a>
 </li>
       <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.avatar">avatar (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.avatar">(fliji_sockets.models.database.ViewSession attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.avatar">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.avatar_url">avatar_url (fliji_sockets.models.database.RoomUser attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.avatar_thumbnail">avatar_thumbnail (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.avatar_url">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.avatar_thumbnail">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -87,11 +86,7 @@
       <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.bio">bio (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.bio">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.bio">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.bio">(fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -100,30 +95,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.ChatMessage.chat_id">chat_id (fliji_sockets.models.database.ChatMessage attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.Room.chat_id">(fliji_sockets.models.database.Room attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.created_at">created_at (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.chat_id">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.created_at">created_at (fliji_sockets.models.database.Room attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.created_at">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.created_at">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.ViewSession.current_watch_time">current_watch_time (fliji_sockets.models.database.ViewSession attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.socket.UpdateViewSessionRequest.current_watch_time">(fliji_sockets.models.socket.UpdateViewSessionRequest attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -136,13 +109,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.disconnect">disconnect() (in module fliji_sockets.sio_main)</a>
 </li>
-      <li><a href="events.html#fliji_sockets.models.socket.CurrentDurationRequest.duration">duration (fliji_sockets.models.socket.CurrentDurationRequest attribute)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.UserDto.email">email (fliji_sockets.models.user_service_api.UserDto attribute)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.enable_fliji_mode">enable_fliji_mode() (in module fliji_sockets.sio_main)</a>
 </li>
@@ -152,18 +127,12 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.first_name">first_name (fliji_sockets.models.database.RoomUser attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.first_name">first_name (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.first_name">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.first_name">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.first_name">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.first_name">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.first_name">(fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
 </li>
       </ul></li>
       <li>
@@ -240,84 +209,44 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.Chat.id">id (fliji_sockets.models.database.Chat attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.id">id (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.ChatMessage.id">(fliji_sockets.models.database.ChatMessage attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.Room.id">(fliji_sockets.models.database.Room attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.id">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.id">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineGroup.id">(fliji_sockets.models.database.TimelineGroup attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.id">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.id">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.image">image (fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.database.ChatMessage.internal_chat_id">internal_chat_id (fliji_sockets.models.database.ChatMessage attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.internal_chat_id">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.socket.CurrentDurationRequest.is_played">is_played (fliji_sockets.models.socket.CurrentDurationRequest attribute)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.last_name">last_name (fliji_sockets.models.database.RoomUser attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.last_name">last_name (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.last_name">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.last_name">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.last_name">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.last_name">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.last_name">(fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.last_update_time">last_update_time (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.last_update_time">(fliji_sockets.models.database.ViewSession attribute)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.ChatMessage.message">message (fliji_sockets.models.database.ChatMessage attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.message">message (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.message">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.SendChatMessageRequest.message">(fliji_sockets.models.socket.SendChatMessageRequest attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineSendChatMessageRequest.message">(fliji_sockets.models.socket.TimelineSendChatMessageRequest attribute)</a>
 </li>
       </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.mic">mic (fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.mic_ban">mic_ban (fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
       <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.mic_enabled">mic_enabled (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 
       <ul>
@@ -330,8 +259,6 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.Room.mode">mode (fliji_sockets.models.database.Room attribute)</a>
-</li>
       <li>
     module
 
@@ -348,25 +275,9 @@
   </ul></td>
 </tr></table>
 
-<h2 id="N">N</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.Room.name">name (fliji_sockets.models.database.Room attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.TransferRoomOwnershipRequest.new_owner_uuid">new_owner_uuid (fliji_sockets.models.socket.TransferRoomOwnershipRequest attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.new_role">new_role (fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest.old_owner_uuid">old_owner_uuid (fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest attribute)</a>
-</li>
       <li><a href="events.html#fliji_sockets.models.database.TimelineGroup.on_pause">on_pause (fliji_sockets.models.database.TimelineGroup attribute)</a>
 
       <ul>
@@ -383,7 +294,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.Room.permissions">permissions (fliji_sockets.models.database.Room attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.UserDto.password">password (fliji_sockets.models.user_service_api.UserDto attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -391,44 +302,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.right_to_speak">right_to_speak (fliji_sockets.models.database.RoomUser attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.right_to_speak">(fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.LoginResponse.refresh_token">refresh_token (fliji_sockets.models.user_service_api.LoginResponse attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.role">role (fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.database.ChatMessage.room_uuid">room_uuid (fliji_sockets.models.database.ChatMessage attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.room_uuid">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.room_uuid">(fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest.room_uuid">(fliji_sockets.models.socket.ConfirmRoomOwnershipTransferRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.CurrentDurationRequest.room_uuid">(fliji_sockets.models.socket.CurrentDurationRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.room_uuid">(fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.JoinRoomRequest.room_uuid">(fliji_sockets.models.socket.JoinRoomRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.KickUserRequest.room_uuid">(fliji_sockets.models.socket.KickUserRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.RequestRightToSpeakRequest.room_uuid">(fliji_sockets.models.socket.RequestRightToSpeakRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.RoomActionRequest.room_uuid">(fliji_sockets.models.socket.RoomActionRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.SendChatMessageRequest.room_uuid">(fliji_sockets.models.socket.SendChatMessageRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.ToggleVoiceUserMicRequest.room_uuid">(fliji_sockets.models.socket.ToggleVoiceUserMicRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.TransferRoomOwnershipRequest.room_uuid">(fliji_sockets.models.socket.TransferRoomOwnershipRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.VideoTimecodeRequest.room_uuid">(fliji_sockets.models.socket.VideoTimecodeRequest attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -441,15 +316,9 @@
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.server_timestamp">(fliji_sockets.models.socket.TimelineUpdateTimecodeRequest attribute)</a>
 </li>
       </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.sid">sid (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.sid">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.ViewSession.start_time">start_time (fliji_sockets.models.database.ViewSession attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.sid">sid (fliji_sockets.models.database.TimelineWatchSession attribute)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.startup">startup() (in module fliji_sockets.sio_main)</a>
 </li>
@@ -459,18 +328,12 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.EndVideoWatchSessionRequest.time">time (fliji_sockets.models.socket.EndVideoWatchSessionRequest attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.time_leave">time_leave (fliji_sockets.models.database.Room attribute)</a>
-</li>
       <li><a href="events.html#fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest.timecode">timecode (fliji_sockets.models.socket.TimelineSendTimecodeToGroupRequest attribute)</a>
 
       <ul>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineSetPauseStateRequest.timecode">(fliji_sockets.models.socket.TimelineSetPauseStateRequest attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest.timecode">(fliji_sockets.models.socket.TimelineUpdateTimecodeRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.VideoTimecodeRequest.timecode">(fliji_sockets.models.socket.VideoTimecodeRequest attribute)</a>
 </li>
       </ul></li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_connect">timeline_connect() (in module fliji_sockets.sio_main)</a>
@@ -479,12 +342,12 @@
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_get_server_timestamp">timeline_get_server_timestamp() (in module fliji_sockets.sio_main)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_get_status">timeline_get_status() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_join_group">timeline_join_group() (in module fliji_sockets.sio_main)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_join_user">timeline_join_user() (in module fliji_sockets.sio_main)</a>
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_leave">timeline_leave() (in module fliji_sockets.sio_main)</a>
@@ -501,62 +364,36 @@
 </li>
       <li><a href="events.html#fliji_sockets.sio_main.timeline_update_timecode">timeline_update_timecode() (in module fliji_sockets.sio_main)</a>
 </li>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.UserDto.token">token (fliji_sockets.models.user_service_api.UserDto attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.Room.updated_at">updated_at (fliji_sockets.models.database.Room attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.updated_at">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-      </ul></li>
       <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.user_avatar">user_avatar (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 </li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.user_limit">user_limit (fliji_sockets.models.database.Room attribute)</a>
-</li>
-      <li><a href="events.html#fliji_sockets.models.database.ChatMessage.user_uuid">user_uuid (fliji_sockets.models.database.ChatMessage attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.user_uuid">user_uuid (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.RoomUser.user_uuid">(fliji_sockets.models.database.RoomUser attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.user_uuid">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.user_uuid">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.user_uuid">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.ChangeRoleRequest.user_uuid">(fliji_sockets.models.socket.ChangeRoleRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.HandleRightToSpeakRequest.user_uuid">(fliji_sockets.models.socket.HandleRightToSpeakRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.KickUserRequest.user_uuid">(fliji_sockets.models.socket.KickUserRequest attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineJoinUserRequest.user_uuid">(fliji_sockets.models.socket.TimelineJoinUserRequest attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.user_uuid">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.socket.ToggleVoiceUserMicRequest.user_uuid">(fliji_sockets.models.socket.ToggleVoiceUserMicRequest attribute)</a>
+      </ul></li>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.username">username (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
+
+      <ul>
+        <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.username">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
+</li>
+        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.username">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.database.RoomUser.username">username (fliji_sockets.models.database.RoomUser attribute)</a>
-
-      <ul>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.username">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.username">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.username">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.username">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.username">(fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
-</li>
-      </ul></li>
       <li><a href="events.html#fliji_sockets.models.socket.TimelineGroupDataResponse.users">users (fliji_sockets.models.socket.TimelineGroupDataResponse attribute)</a>
 
       <ul>
@@ -569,10 +406,10 @@
         <li><a href="events.html#fliji_sockets.models.socket.TimelineGroupDataResponse.users_count">(fliji_sockets.models.socket.TimelineGroupDataResponse attribute)</a>
 </li>
       </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.uuid">uuid (fliji_sockets.models.database.Room attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.user_service_api.LoginResponse.uuid">uuid (fliji_sockets.models.user_service_api.LoginResponse attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.user_service_api.AuthUserResponse.uuid">(fliji_sockets.models.user_service_api.AuthUserResponse attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.user_service_api.UserDto.uuid">(fliji_sockets.models.user_service_api.UserDto attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -581,7 +418,7 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.SetVideoEndedRequest.video_duration">video_duration (fliji_sockets.models.socket.SetVideoEndedRequest attribute)</a>
+      <li><a href="events.html#fliji_sockets.models.socket.TimelineSetVideoEndedRequest.video_duration">video_duration (fliji_sockets.models.socket.TimelineSetVideoEndedRequest attribute)</a>
 </li>
       <li><a href="events.html#fliji_sockets.models.database.TimelineGroup.video_ended">video_ended (fliji_sockets.models.database.TimelineGroup attribute)</a>
 
@@ -593,22 +430,16 @@
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.video_ended">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
       </ul></li>
-      <li><a href="events.html#fliji_sockets.models.database.Room.video_uuid">video_uuid (fliji_sockets.models.database.Room attribute)</a>
+      <li><a href="events.html#fliji_sockets.sio_main.video_set_viewed">video_set_viewed() (in module fliji_sockets.sio_main)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.video_uuid">video_uuid (fliji_sockets.models.database.TimelineChatMessage attribute)</a>
 
       <ul>
-        <li><a href="events.html#fliji_sockets.models.database.TimelineChatMessage.video_uuid">(fliji_sockets.models.database.TimelineChatMessage attribute)</a>
-</li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineGroup.video_uuid">(fliji_sockets.models.database.TimelineGroup attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.database.TimelineWatchSession.video_uuid">(fliji_sockets.models.database.TimelineWatchSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.database.ViewSession.video_uuid">(fliji_sockets.models.database.ViewSession attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.EndVideoWatchSessionRequest.video_uuid">(fliji_sockets.models.socket.EndVideoWatchSessionRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.GetViewSessionsForVideoRequest.video_uuid">(fliji_sockets.models.socket.GetViewSessionsForVideoRequest attribute)</a>
-</li>
-        <li><a href="events.html#fliji_sockets.models.socket.MostWatchedVideosResponse.video_uuid">(fliji_sockets.models.socket.MostWatchedVideosResponse attribute)</a>
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineConnectRequest.video_uuid">(fliji_sockets.models.socket.TimelineConnectRequest attribute)</a>
 </li>
@@ -616,7 +447,7 @@
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineStatusResponse.video_uuid">(fliji_sockets.models.socket.TimelineStatusResponse attribute)</a>
 </li>
-        <li><a href="events.html#fliji_sockets.models.socket.UpdateViewSessionRequest.video_uuid">(fliji_sockets.models.socket.UpdateViewSessionRequest attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.socket.VideoSetViewedRequest.video_uuid">(fliji_sockets.models.socket.VideoSetViewedRequest attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -634,11 +465,9 @@
 </li>
         <li><a href="events.html#fliji_sockets.models.socket.TimelineUserDataResponse.watch_time">(fliji_sockets.models.socket.TimelineUserDataResponse attribute)</a>
 </li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="events.html#fliji_sockets.models.socket.MostWatchedVideosResponse.watching_count">watching_count (fliji_sockets.models.socket.MostWatchedVideosResponse attribute)</a>
+        <li><a href="events.html#fliji_sockets.models.socket.VideoSetViewedRequest.watch_time">(fliji_sockets.models.socket.VideoSetViewedRequest attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

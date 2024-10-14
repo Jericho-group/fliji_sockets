@@ -25,7 +25,8 @@ from fliji_sockets.models.socket import (
     TimelineConnectRequest,
     TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
-    TimelineSetMicEnabled, TimelineSetPauseStateRequest, TimelineSetVideoEndedRequest
+    TimelineSetMicEnabled, TimelineSetPauseStateRequest, TimelineSetVideoEndedRequest,
+    VideoSetViewedRequest
 )
 from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID, JWT_SECRET
 from fliji_sockets.socketio_application import SocketioApplication, Depends
@@ -183,6 +184,33 @@ async def disable_fliji_mode(
         return
 
     await publish_disable_fliji_mode(nc, session.user_uuid)
+
+
+@app.event("video_set_viewed")
+async def video_set_viewed(
+        sid,
+        data: VideoSetViewedRequest,
+        nc: Client = Depends(get_nats_client),
+):
+    """
+    Request:
+    :py:class:`fliji_sockets.models.socket.VideoSetViewedRequest`
+
+    Сохраняет информацию о просмотре видео.
+    Нужно вызывать этот ивент когда пользователь закончил просмотр видео с выключенным режимом флиджи.
+    Если режим флиджи включен, то при выходе из таймлайна видео, информация о просмотре сохраняется автоматически.
+    """
+    session = await app.get_session(sid)
+    if not session:
+        await app.send_fatal_error_message(
+            sid, "Unauthorized: could not find user_uuid in socketio session"
+        )
+        return
+
+    logging.critical(f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
+    await publish_user_left_timeline(nc, session.user_uuid, data.video_uuid, data.watch_time)
+
+    logging.critical("sent user left timeline")
 
 
 @app.event("disconnect")

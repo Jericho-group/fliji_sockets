@@ -9,6 +9,10 @@ class OnConnectRequest(MyBaseModel):
     auth_token: str
 
 
+class VideoSetViewedRequest(MyBaseModel):
+    video_uuid: str
+    watch_time: int
+
 
 class TimelineConnectRequest(MyBaseModel):
     video_uuid: str

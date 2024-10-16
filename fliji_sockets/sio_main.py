@@ -1300,16 +1300,29 @@ def fill_mock_data():
             mic_enabled=True,
         ),
     ]
-    group = TimelineGroup(
+    group1 = TimelineGroup(
         group_uuid=group1_uuid,
         video_uuid=video_uuid,
-        host_user_uuid=timeline_users[2].user_uuid,
+        host_user_uuid=timeline_users[6].user_uuid,
+        users_count=2,
+    )
+
+    group2 = TimelineGroup(
+        group_uuid=group2_uuid,
+        video_uuid=video_uuid,
+        host_user_uuid=timeline_users[3].user_uuid,
         users_count=2,
     )
 
     db.timeline_groups.update_one(
-        {"group_uuid": group.group_uuid},
-        {"$set": group.model_dump(exclude_none=True)},
+        {"group_uuid": group1.group_uuid},
+        {"$set": group1.model_dump(exclude_none=True)},
+        upsert=True,
+    )
+
+    db.timeline_groups.update_one(
+        {"group_uuid": group2.group_uuid},
+        {"$set": group2.model_dump(exclude_none=True)},
         upsert=True,
     )
 

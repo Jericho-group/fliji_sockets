@@ -1188,10 +1188,15 @@ def fill_mock_data():
 
     # Dev
     user_uuids = [
-        "cfece5a4-3c73-42b3-bcf3-8ebec14b6325",
-        "20765a99-ca3c-44b4-97e4-795b403bb7b7",
-        "fbd607fc-6b98-4010-872c-e18d19617ec5",
-        "47cb7ac1-bd4a-4595-8775-38b5ed8c7162",
+        "b0e4566e-b62d-43eb-ac8e-498f32afab71",
+        "f392edf1-7610-47f2-9899-f659613b1874",
+        "8e994e36-c060-4e58-9e83-d2434183b5c0",
+        "58226fb5-1389-44bf-bb53-e2a2caa10b8d",
+        "c0033b0a-e416-4ffa-9f94-b52d99af9ec3",
+        "92c3e776-b7e5-4802-ad50-4d2bdcd49254",
+        "40ab7278-f7de-4e70-8034-34516a6648b7",
+        "368e50c5-d82c-472e-a0d2-697990cf0a26",
+        "a60b284f-fa1c-46bc-9e6d-def74bd3386d"
     ]
 
     # Local

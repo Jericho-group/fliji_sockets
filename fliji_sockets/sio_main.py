@@ -1214,7 +1214,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=30,
+            watch_time=30 * 1000,
             video_uuid=video_uuid,
             user_uuid=user_uuids.pop(),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
@@ -1228,7 +1228,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=50,
+            watch_time=50 * 1000,
             video_uuid=video_uuid,
             user_uuid=user_uuids.pop(),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
@@ -1242,7 +1242,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=10,
+            watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
             user_uuid=user_uuids.pop(),
@@ -1257,7 +1257,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=10,
+            watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
             user_uuid=user_uuids.pop(),
@@ -1272,7 +1272,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=100,
+            watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
             user_uuid=user_uuids.pop(),
@@ -1287,7 +1287,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
-            watch_time=100,
+            watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
             user_uuid=user_uuids.pop(),

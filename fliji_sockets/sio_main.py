@@ -1303,14 +1303,14 @@ def fill_mock_data():
     group1 = TimelineGroup(
         group_uuid=group1_uuid,
         video_uuid=video_uuid,
-        host_user_uuid=timeline_users[6].user_uuid,
+        host_user_uuid=timeline_users[5].user_uuid,
         users_count=2,
     )
 
     group2 = TimelineGroup(
         group_uuid=group2_uuid,
         video_uuid=video_uuid,
-        host_user_uuid=timeline_users[3].user_uuid,
+        host_user_uuid=timeline_users[2].user_uuid,
         users_count=2,
     )
 

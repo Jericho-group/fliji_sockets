@@ -337,7 +337,7 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
     await publish_user_left_timeline_group(nc, user_uuid, group_uuid, group_participants_uuids)
 
     # if host left the group, change the host
-    if group.host_user_uuid == user_uuid:
+    if group and (group.host_user_uuid == user_uuid):
         group_users = await get_timeline_group_users(db, group_uuid)
         if group_users:
             last_user_uuid = None

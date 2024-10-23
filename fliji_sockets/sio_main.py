@@ -744,7 +744,7 @@ async def timeline_update_timecode(
         group_uuid = group.group_uuid
         await upsert_timeline_group(db, group)
 
-    sio_room_identifier = get_room_name(watch_session.video_uuid)
+    sio_room_identifier = get_room_name(watch_session.group_uuid)
 
     logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")
 

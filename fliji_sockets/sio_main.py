@@ -502,6 +502,23 @@ async def timeline_join_user(
     Event `timeline_status` is emitted to everybody globally:
     :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
 
+    To the host and the joining user event `timeline_group_created` is emitted:
+
+    Data:
+
+    .. code-block:: json
+
+        {
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "host_user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "users_count": 2,
+            "video_ended": false,
+            "watch_time": 0,
+            "joining_user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
+        }
+
+
+    TODO: this should be deprecated in favor of `timeline_group_created`
     Also emits `timeline_group_user_joined` event to the host.
     This can be used to show a notification to the host.
 
@@ -513,6 +530,8 @@ async def timeline_join_user(
             "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
         }
     """
+
+
     session = await app.get_session(sid)
     if not session:
         await app.send_fatal_error_message(
@@ -574,6 +593,19 @@ async def timeline_join_user(
         "timeline_group_user_joined",
         {
             "user_uuid": user_uuid,
+        },
+        room=sio_group_room,
+    )
+
+    await app.emit(
+        "timeline_group_created",
+        {
+            "group_uuid": group.group_uuid,
+            "host_user_uuid": group.host_user_uuid,
+            "users_count": group.users_count,
+            "video_ended": group.video_ended,
+            "watch_time": group.watch_time,
+            "joining_user_uuid": user_uuid,
         },
         room=sio_group_room,
     )

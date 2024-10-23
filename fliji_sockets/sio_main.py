@@ -728,7 +728,6 @@ async def timeline_update_timecode(
 
     group_data = await get_timeline_group_by_uuid(db, watch_session.group_uuid)
     group = None
-    group_uuid = None
     if group_data:
         group = TimelineGroup.model_validate(group_data)
 
@@ -744,20 +743,21 @@ async def timeline_update_timecode(
         group_uuid = group.group_uuid
         await upsert_timeline_group(db, group)
 
-    sio_room_identifier = get_room_name(watch_session.group_uuid)
+        sio_room_identifier = get_room_name(watch_session.group_uuid)
 
-    logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")
+        logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")
 
-    await app.emit(
-        "timeline_timecode",
-        {
-            "user_uuid": user_uuid,
-            "group_uuid": group_uuid,
-            "timecode": data.timecode,
-            "server_timestamp": data.server_timestamp,
-        },
-        room=sio_room_identifier,
-    )
+        await app.emit(
+            "timeline_timecode",
+            {
+                "user_uuid": user_uuid,
+                "group_uuid": group_uuid,
+                "timecode": data.timecode,
+                "server_timestamp": data.server_timestamp,
+            },
+            room=sio_room_identifier,
+        )
+
 
 
 @app.event("timeline_join_group")

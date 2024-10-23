@@ -755,6 +755,7 @@ async def timeline_update_timecode(
                 "timecode": data.timecode,
                 "server_timestamp": data.server_timestamp,
             },
+            skip_sid=sid,
             room=sio_room_identifier,
         )
 

@@ -10,6 +10,7 @@ class TimelineWatchSession(MyBaseModel):
     user_uuid: str
     sid: str
     video_uuid: str | None = None
+    agora_id: int | None = None
     group_uuid: str | None = None
     watch_time: int | None = None
     on_pause: bool | None = False

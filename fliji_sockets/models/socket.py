@@ -58,6 +58,7 @@ class TimelineUserDataResponse(MyBaseModel):
     user_uuid: str
     username: str
     first_name: str | None = None
+    agora_id: int | None = None
     last_name: str | None = None
     mic_enabled: bool | None = None
     on_pause: bool | None = None

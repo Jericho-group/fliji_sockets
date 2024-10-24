@@ -428,6 +428,10 @@ async def timeline_connect(
     watch_session = TimelineWatchSession(
         sid=sid,
         last_update_time=datetime.now(),
+        # agora_id is a random 32-bit integer
+        # this is needed because the client needs to identify the user in the agora stream
+        # and the agora stream id is a 32-bit integer so we can't use the user_uuid
+        agora_id = random.randint(0, 2**32 - 1),
         watch_time=0,
         video_uuid=data.video_uuid,
         user_uuid=user_uuid,
@@ -1247,6 +1251,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=30 * 1000,
             video_uuid=video_uuid,
             user_uuid=user_uuids.pop(),
@@ -1261,6 +1266,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=50 * 1000,
             video_uuid=video_uuid,
             user_uuid=user_uuids.pop(),
@@ -1275,6 +1281,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
@@ -1290,6 +1297,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
@@ -1305,6 +1313,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
@@ -1320,6 +1329,7 @@ def fill_mock_data():
         TimelineWatchSession(
             sid="sid",
             last_update_time=datetime.now(),
+            agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,

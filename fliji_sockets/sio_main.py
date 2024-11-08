@@ -207,10 +207,10 @@ async def video_set_viewed(
         )
         return
 
-    logging.critical(f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
+    logging.info(f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
     await publish_user_left_timeline(nc, session.user_uuid, data.video_uuid, data.watch_time)
 
-    logging.critical("sent user left timeline")
+    logging.info("sent user left timeline")
 
 
 @app.event("disconnect")

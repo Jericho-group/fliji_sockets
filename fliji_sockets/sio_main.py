@@ -171,10 +171,13 @@ async def enable_fliji_mode(
 @app.event("disable_fliji_mode")
 async def disable_fliji_mode(
         sid,
+        db: Database = Depends(get_db),
         nc: Client = Depends(get_nats_client),
 ):
     """
     Выключает режим флиджи для пользователя.
+
+    Пользователь автоматически покидает таймлайн видео, если он находится в нем.
     """
     session = await app.get_session(sid)
     if not session:
@@ -184,6 +187,22 @@ async def disable_fliji_mode(
         return
 
     await publish_disable_fliji_mode(nc, session.user_uuid)
+
+    timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, session.user_uuid)
+
+    if timeline_watch_session:
+        watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+        await handle_user_timeline_leave(db, nc, watch_session)
+
+        # emit the global status event
+        timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
+        await app.emit(
+            "timeline_status",
+            timeline_status_data.model_dump(),
+            room=get_room_name(watch_session.video_uuid),
+        )
+
 
 
 @app.event("video_set_viewed")

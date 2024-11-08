@@ -1060,9 +1060,6 @@ async def timeline_get_status(
         db: Database = Depends(get_db),
 ):
     """
-    Пока не используется.
-
-
     Запросить статус таймлайна видео.
     Этот ивент отправляется глобально всем пользователям на таймлайне.
 
@@ -1070,6 +1067,7 @@ async def timeline_get_status(
     Если он не обновлялся больше 5 секунд, то отправляется запрос timeline_get_status.
     Если другой пользователь уже запросил статус, то при обработке статус
     таймер у других участников должен сбрасываться, чтобы не было слишком много запросов.
+
 
     Response
     Event `timeline_status` is emitted to everybody globally:
@@ -1084,15 +1082,17 @@ async def timeline_get_status(
     user_uuid = session.user_uuid
 
     timeline_watch_session = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
-    watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
 
-    # emit the global status event
-    timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
-    await app.emit(
-        "timeline_status",
-        timeline_status_data.model_dump(),
-        room=get_room_name(watch_session.video_uuid),
-    )
+    if timeline_watch_session is not None:
+        watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+
+        # emit the global status event
+        timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
+        await app.emit(
+            "timeline_status",
+            timeline_status_data.model_dump(),
+            room=get_room_name(watch_session.video_uuid),
+        )
 
 
 @app.event("timeline_set_pause")

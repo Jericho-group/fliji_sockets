@@ -1070,7 +1070,7 @@ async def timeline_get_status(
 
 
     Response
-    Event `timeline_status` is emitted to everybody globally:
+    Event `timeline_positions` is emitted to everybody globally:
     :py:class:`fliji_sockets.models.socket.TimelineStatusResponse`
     """
     session = await app.get_session(sid)
@@ -1089,7 +1089,7 @@ async def timeline_get_status(
         # emit the global status event
         timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
         await app.emit(
-            "timeline_status",
+            "timeline_positions",
             timeline_status_data.model_dump(),
             room=get_room_name(watch_session.video_uuid),
         )

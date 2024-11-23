@@ -1204,7 +1204,7 @@ async def timeline_send_chat_message(
         first_name=watch_session.first_name,
         last_name=watch_session.last_name,
         video_uuid=watch_session.video_uuid,
-        created_at=datetime.now().isoformat(),
+        created_at=datetime.now(),
     )
 
     await insert_timeline_chat_message(db, chat_message)
@@ -1412,7 +1412,7 @@ def fill_mock_data():
             first_name="first_name",
             last_name="last_name",
             video_uuid=video_uuid,
-            created_at=datetime.now().isoformat(),
+            created_at=datetime.now(),
         )
 
         # upsert the message by user_uuid and video_uuid and message

@@ -204,7 +204,6 @@ async def disable_fliji_mode(
         )
 
 
-
 @app.event("video_set_viewed")
 async def video_set_viewed(
         sid,
@@ -226,7 +225,8 @@ async def video_set_viewed(
         )
         return
 
-    logging.info(f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
+    logging.info(
+        f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
     await publish_user_left_timeline(nc, session.user_uuid, data.video_uuid, data.watch_time)
 
     logging.info("sent user left timeline")
@@ -383,7 +383,8 @@ async def handle_user_timeline_leave(db: Database, nc: Client,
     except Exception as e:
         logging.error(f"Error leaving room: {e}")
 
-    await publish_user_left_timeline(nc, watch_session.user_uuid, watch_session.video_uuid, watch_session.watch_time)
+    await publish_user_left_timeline(nc, watch_session.user_uuid, watch_session.video_uuid,
+                                     watch_session.watch_time)
 
     # emit the global status event to all the users in the group that the user left
     timeline_status_data = await get_timeline_status(db, watch_session.video_uuid)
@@ -450,7 +451,7 @@ async def timeline_connect(
         # agora_id is a random 32-bit integer
         # this is needed because the client needs to identify the user in the agora stream
         # and the agora stream id is a 32-bit integer so we can't use the user_uuid
-        agora_id = random.randint(0, 2**32 - 1),
+        agora_id=random.randint(0, 2 ** 32 - 1),
         watch_time=0,
         video_uuid=data.video_uuid,
         user_uuid=user_uuid,
@@ -553,7 +554,6 @@ async def timeline_join_user(
             "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p"
         }
     """
-
 
     session = await app.get_session(sid)
     if not session:
@@ -813,7 +813,6 @@ async def timeline_update_timecode(
             skip_sid=sid,
             room=sio_room_identifier,
         )
-
 
 
 @app.event("timeline_join_group")

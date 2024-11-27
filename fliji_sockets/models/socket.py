@@ -1,4 +1,8 @@
-from fliji_sockets.models.base import MyBaseModel
+from datetime import datetime
+
+from pydantic import RootModel
+
+from fliji_sockets.models.base import MyBaseModel, PyObjectId
 
 
 class TimelineSetVideoEndedRequest(MyBaseModel):
@@ -54,6 +58,17 @@ class TimelineSendChatMessageRequest(MyBaseModel):
     message: str
 
 
+class TimelineChatMessageResponse(MyBaseModel):
+    id: PyObjectId
+    user_uuid: str
+    message: str
+    username: str
+    user_avatar: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    created_at: datetime
+
+
 class TimelineUserDataResponse(MyBaseModel):
     user_uuid: str
     username: str
@@ -83,3 +98,16 @@ class TimelineStatusResponse(MyBaseModel):
     video_uuid: str
     groups: list[TimelineGroupDataResponse]
     users: list[TimelineUserDataResponse]
+
+
+class TimelineChatHistoryResponse(RootModel, MyBaseModel):
+    root: list[TimelineChatMessageResponse]
+
+class TimelineSingleUsersResponse(RootModel, MyBaseModel):
+    root: list[TimelineUserDataResponse]
+
+class TimelineGroupResponse(RootModel, MyBaseModel):
+    root: list[TimelineGroupDataResponse]
+
+class TimelineCurrentGroupResponse(RootModel, MyBaseModel):
+    root: list[TimelineUserDataResponse]

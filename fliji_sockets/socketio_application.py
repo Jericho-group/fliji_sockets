@@ -119,6 +119,9 @@ class SocketioApplication:
         await self.sio.save_session(sid, session)
 
     async def emit(self, event, data, room=None, skip_sid=None) -> None:
+        # Convert Pydantic model to a dictionary if it's an instance of BaseModel
+        if isinstance(data, BaseModel):
+            data = data.model_dump(mode='json')
         await self.sio.emit(event, data, room=room, skip_sid=skip_sid)
 
     async def send_error_message(self, sid, message, body=None) -> None:

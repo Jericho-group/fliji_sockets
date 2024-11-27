@@ -46,9 +46,6 @@ PyObjectId = Annotated[ObjectId, ObjectIdAnnotation]
 
 class MyBaseModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-        # @field_serializer('id')
-        # def serialize_object_id(cls, v):
-        #     return str(v)
 
 
 class UserSession(MyBaseModel):

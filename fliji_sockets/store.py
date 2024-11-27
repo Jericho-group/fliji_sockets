@@ -43,6 +43,7 @@ def get_database():
     ensure_indexes(db)
     return db
 
+
 async def upsert_timeline_watch_session(db: Database, watch_session: TimelineWatchSession) -> int:
     watch_session_id = db.timeline_watch_sessions.update_one(
         {"user_uuid": watch_session.user_uuid, "video_uuid": watch_session.video_uuid},
@@ -87,6 +88,60 @@ async def upsert_timeline_group(db: Database, group: TimelineGroup) -> int:
 async def delete_timeline_group_by_uuid(db: Database, group_uuid: str) -> int:
     result = db.timeline_groups.delete_one({"group_uuid": group_uuid})
     return result.deleted_count
+
+
+async def get_timeline_single_users(db: Database, video_uuid: str):
+    users = db.timeline_watch_sessions.find(
+        {
+            "video_uuid": video_uuid,
+            "group_uuid": None
+        }
+    ).sort("last_update_time")
+
+    return users
+
+
+async def get_timeline_groups(db: Database, video_uuid: str):
+    users = list(db.timeline_watch_sessions.find(
+        {
+            "video_uuid": video_uuid,
+            "group_uuid": {"$ne": None}
+        }
+    ).sort("last_update_time"))
+    groups = list(db.timeline_groups.find({"video_uuid": video_uuid}))
+
+    # if either groups or users is empty, return empty list
+    if len(groups) == 0 or len(users) == 0:
+        return []
+
+    groups_dict = {}
+    for group in groups:
+        group["users"] = []
+        groups_dict[group["group_uuid"]] = group
+
+    for user in users:
+        group_uuid = user.get("group_uuid")
+        if group_uuid in groups_dict.keys():
+            groups_dict[group_uuid]["users"].append(user)
+
+    return groups
+
+
+async def get_timeline_group(db: Database, video_uuid: str, group_uuid: str):
+    users = db.timeline_watch_sessions.find(
+        {
+            "video_uuid": video_uuid,
+            "group_uuid": group_uuid
+        }
+    ).sort("last_update_time")
+
+    group = db.timeline_groups.find_one({"video_uuid": video_uuid, "group_uuid": group_uuid})
+
+    if group is None:
+        return []
+
+    group["users"] = users
+    return group
 
 
 async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:
@@ -144,6 +199,6 @@ async def insert_timeline_chat_message(db: Database, chat_message: TimelineChatM
     return result
 
 
-async def get_timeline_chat_messages_by_video_uuid(db: Database, video_uuid: str) -> list[dict]:
+async def get_timeline_chat_messages_by_video_uuid(db: Database, video_uuid: str):
     messages = db.timeline_chat_messages.find({"video_uuid": video_uuid})
     return messages

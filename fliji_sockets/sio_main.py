@@ -551,7 +551,7 @@ async def timeline_join_user(
     :py:class:`fliji_sockets.models.socket.TimelineJoinUserRequest`
 
     Response
-    Vvent `timeline_group_created` is sent to everybody on the timeline:
+    Event `timeline_group_created` is sent to everybody on the timeline:
 
     Data:
 

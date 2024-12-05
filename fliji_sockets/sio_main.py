@@ -277,7 +277,7 @@ async def disconnect(
 
     # save the dangling watch session
     if (
-            watch_session
+            watch_session is not None
             and (watch_session.get("video_uuid") is not None)
             and (watch_session.get("watch_time") is not None)
     ):

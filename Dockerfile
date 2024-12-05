@@ -1,5 +1,5 @@
 # --- Build Stage ---
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 WORKDIR /app
 
 # Install system dependencies required for compiling
@@ -14,7 +14,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Upgrade pip and install PDM
 RUN pip install -U pip setuptools wheel
-RUN pip install pdm==2.12.3
+RUN pip install pdm
 
 # Copy only the necessary files for installation
 COPY pyproject.toml pdm.lock ./

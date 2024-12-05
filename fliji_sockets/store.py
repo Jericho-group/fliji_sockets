@@ -127,7 +127,7 @@ async def get_timeline_groups(db: Database, video_uuid: str):
     return groups
 
 
-async def get_timeline_group(db: Database, video_uuid: str, group_uuid: str):
+async def get_timeline_group_users_data(db: Database, video_uuid: str, group_uuid: str):
     users = db.timeline_watch_sessions.find(
         {
             "video_uuid": video_uuid,
@@ -140,8 +140,7 @@ async def get_timeline_group(db: Database, video_uuid: str, group_uuid: str):
     if group is None:
         return []
 
-    group["users"] = users
-    return group
+    return list(users)
 
 
 async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:

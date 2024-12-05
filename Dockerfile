@@ -28,7 +28,7 @@ WORKDIR /app
 
 # Upgrade pip and install PDM
 RUN pip install -U pip setuptools wheel
-RUN pip install pdm==2.12.3
+RUN pip install pdm
 
 # Copy installed packages from the builder stage
 COPY --from=builder /app/.venv /app/.venv

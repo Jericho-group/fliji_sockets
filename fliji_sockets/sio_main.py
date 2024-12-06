@@ -123,13 +123,6 @@ async def ping(
         }
 
     """
-    session = await app.get_session(sid)
-    if not session:
-        await app.send_fatal_error_message(
-            sid, "Unauthorized: could not find user_uuid in socketio session"
-        )
-        return
-
     await app.emit("pong", {"message": "pong"}, room=sid)
 
 

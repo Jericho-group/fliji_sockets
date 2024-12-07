@@ -126,8 +126,6 @@ async def ping(
     await app.emit("pong", {"message": "pong"}, room=sid)
 
 
-
-
 @app.event("go_online")
 async def go_online(
         sid,
@@ -358,9 +356,9 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
     await upsert_timeline_watch_session(db, watch_session)
 
     await app.emit(
-        "timeline_user_left_current_group",
-        {"user_uuid": user_uuid},
-        room=get_room_name(watch_session.video_uuid)
+        "timeline_you_left_group",
+        {"group_uuid": group_uuid},
+        room=watch_session.sid
     )
 
     timeline_single_users = await get_timeline_single_users(db, watch_session.video_uuid)
@@ -574,14 +572,14 @@ async def timeline_join_user(
 
     Response
 
-    Event `timeline_user_joined_current_group` is emitted to everybody in the group:
+    Event `timeline_you_joined_group` is emitted to the host and the joining user:
 
     Data:
 
     .. code-block:: json
 
         {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
         }
 
     Event `timeline_single_users` is emitted to everybody on the timeline:
@@ -645,9 +643,15 @@ async def timeline_join_user(
     await app.enter_room(host_watch_session.sid, sio_group_room)
 
     await app.emit(
-        "timeline_user_joined_current_group",
-        {"user_uuid": session.user_uuid},
-        room=sio_group_room
+        "timeline_you_joined_group",
+        {"group_uuid": group.group_uuid},
+        room=host_watch_session.sid
+    )
+
+    await app.emit(
+        "timeline_you_joined_group",
+        {"group_uuid": group.group_uuid},
+        room=sid
     )
 
     timeline_single_users = await get_timeline_single_users(db, watch_session.video_uuid)
@@ -878,14 +882,14 @@ async def timeline_join_group(
 
     Response
 
-    Event `timeline_user_joined_current_group` is emitted to everybody in the group:
+    Event `timeline_you_joined_group` is emitted to the user joining the group:
 
     Data:
 
     .. code-block:: json
 
         {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
         }
 
 
@@ -933,9 +937,9 @@ async def timeline_join_group(
     await app.enter_room(sid, get_room_name(group.group_uuid))
 
     await app.emit(
-        "timeline_user_joined_current_group",
-        {"user_uuid": session.user_uuid},
-        room=get_room_name(group.group_uuid)
+        "timeline_you_joined_group",
+        {"group_uuid": group.group_uuid},
+        room=sid
     )
 
     timeline_groups = await get_timeline_groups(db, watch_session.video_uuid)
@@ -979,14 +983,14 @@ async def timeline_leave_group(
     Response is an array of:
     :py:class:`fliji_sockets.models.database.TimelineUserDataResponse`
 
-    `timeline_user_left_current_group` is emitted to the users in the group:
+    `timeline_you_left_group` is emitted to the users in the group:
 
     Data:
 
     .. code-block:: json
 
         {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
         }
 
     Event `timeline_groups` is emitted to the user:
@@ -1033,14 +1037,14 @@ async def timeline_leave(
     :py:class:`fliji_sockets.models.database.TimelineUserDataResponse`
 
     If the user left the group as well, the following events are emitted:
-    `timeline_user_left_current_group` to the users in the group:
+    `timeline_you_left_group` to the users in the group:
 
     Data:
 
     .. code-block:: json
 
         {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
         }
 
     Event `timeline_groups` is emitted to the user:

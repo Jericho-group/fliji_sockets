@@ -317,8 +317,8 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
     group_users = await get_timeline_group_users(db, group_uuid)
 
     # if next to last user left the group, delete the group
+    other_group_user = None
     if group.users_count <= 1:
-        other_group_user = None
         # find the last user in the users list
         if group_users:
             for group_user in group_users:
@@ -373,6 +373,14 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
         {"group_uuid": group_uuid},
         room=watch_session.sid
     )
+
+    # to the other user if the group
+    if other_group_user is not None:
+        await app.emit(
+            "timeline_you_left_group",
+            {"group_uuid": group_uuid},
+            room=other_group_user.sid
+        )
 
     group_participants_uuids = []
     if group_users:

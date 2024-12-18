@@ -485,12 +485,11 @@ async def timeline_connect(
         return
     user_uuid = session.user_uuid
 
-    session_already_exists = await get_timeline_watch_session_by_user_uuid(db, user_uuid)
-    if session_already_exists is None:
-        await publish_user_connected_to_timeline(nc, user_uuid, data.video_uuid)
-
     # delete the old view session
     await delete_timeline_watch_session_by_user_uuid(db, user_uuid)
+
+    # publish that the user connected to the timeline
+    await publish_user_connected_to_timeline(nc, user_uuid, data.video_uuid)
 
     watch_session = TimelineWatchSession(
         sid=sid,

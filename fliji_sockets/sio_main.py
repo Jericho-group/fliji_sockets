@@ -105,6 +105,7 @@ async def startup(
     logging.info(f"User {user_session.user_uuid} authenticated successfully")
 
     await publish_user_online(nc, user_session.user_uuid)
+    await publish_enable_fliji_mode(nc, user_session.user_uuid)
 
 
 @app.event("ping")
@@ -510,6 +511,8 @@ async def timeline_connect(
         bio=session.bio,
     )
 
+    await publish_enable_fliji_mode(nc, user_uuid)
+
     await upsert_timeline_watch_session(db, watch_session)
 
     sio_room_identifier = get_room_name(data.video_uuid)
@@ -675,7 +678,6 @@ async def timeline_join_user(
         {"group_uuid": group.group_uuid},
         room=sid
     )
-
 
     await publish_user_joined_timeline_group(nc, session.user_uuid, group.group_uuid)
 
@@ -960,7 +962,6 @@ async def timeline_join_group(
         {"group_uuid": group.group_uuid},
         room=sid
     )
-
 
     await publish_user_joined_timeline_group(nc, user_uuid, group.group_uuid)
 

@@ -947,6 +947,13 @@ async def timeline_join_group(
         room=get_room_name(watch_session.video_uuid),
     )
 
+    timeline_single_users = await get_timeline_single_users(db, watch_session.video_uuid)
+    await app.emit(
+        "timeline_single_users",
+        TimelineSingleUsersResponse(root=timeline_single_users),
+        room=get_room_name(watch_session.video_uuid),
+    )
+
     timeline_current_group = await get_timeline_group_users_data(db, watch_session.video_uuid,
                                                                  watch_session.group_uuid)
     if timeline_current_group:

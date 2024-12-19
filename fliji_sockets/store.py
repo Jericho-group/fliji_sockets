@@ -143,7 +143,7 @@ async def get_timeline_group_users_data(db: Database, group_uuid: str):
 
     # set is host for the host
     for user in users:
-        user["is_host"] = user.get("user_uuid") == group.get("host_uuid")
+        user["is_host"] = user.get("user_uuid") == group.get("host_user_uuid")
 
     return users
 

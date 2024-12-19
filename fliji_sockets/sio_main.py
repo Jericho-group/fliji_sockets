@@ -672,7 +672,7 @@ async def timeline_join_user(
         {
             "group_uuid": group.group_uuid,
             "timecode": host_watch_session.watch_time
-         },
+        },
         room=host_watch_session.sid
     )
 
@@ -807,6 +807,19 @@ async def timeline_update_timecode(
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
+
+    Response
+    Event `timeline_unpause` is emitted to the users on the timeline IF the group was paused:
+
+    Data:
+
+    .. code-block:: json
+
+        {
+            "timecode": 15,
+            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+        }
     """
     session = await app.get_session(sid)
     if not session:
@@ -840,7 +853,21 @@ async def timeline_update_timecode(
             return
 
         group.watch_time = data.timecode
-        group.on_pause = False
+
+        if group.on_pause:
+            group.on_pause = False
+
+            await app.emit(
+                "timeline_unpause",
+                {
+                    "timecode": data.timecode,
+                    "server_timestamp": data.server_timestamp,
+                    "group_uuid": watch_session.group_uuid,
+                    "user_uuid": user_uuid,
+                },
+                room=get_room_name(watch_session.group_uuid),
+            )
+
         await upsert_timeline_group(db, group)
 
         logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")

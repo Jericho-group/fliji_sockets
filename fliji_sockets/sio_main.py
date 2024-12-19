@@ -595,6 +595,7 @@ async def timeline_join_user(
 
         {
             "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "timecode": 1500
         }
 
     """
@@ -668,13 +669,19 @@ async def timeline_join_user(
     # sent last for iOs compatibility
     await app.emit(
         "timeline_you_joined_group",
-        {"group_uuid": group.group_uuid},
+        {
+            "group_uuid": group.group_uuid,
+            "timecode": host_watch_session.watch_time
+         },
         room=host_watch_session.sid
     )
 
     await app.emit(
         "timeline_you_joined_group",
-        {"group_uuid": group.group_uuid},
+        {
+            "group_uuid": group.group_uuid,
+            "timecode": host_watch_session.watch_time
+        },
         room=sid
     )
 
@@ -800,21 +807,6 @@ async def timeline_update_timecode(
 
     Request:
     :py:class:`fliji_sockets.models.socket.TimelineUpdateTimecodeRequest`
-
-    Response
-    group_uuid может быть None, если пользователь не находится в группе.
-    Event `timeline_timecode` is emitted to users on the timeline:
-
-    Data:
-
-    .. code-block:: json
-
-        {
-            "user_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-            "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
-            "timecode": 15,
-            "server_timestamp": "1934023948234"
-        }
     """
     session = await app.get_session(sid)
     if not session:
@@ -849,24 +841,9 @@ async def timeline_update_timecode(
 
         group.watch_time = data.timecode
         group.on_pause = False
-        group_uuid = group.group_uuid
         await upsert_timeline_group(db, group)
 
-        sio_room_identifier = get_room_name(watch_session.group_uuid)
-
         logging.info(f"Emitting event: timeline_update_timecode: {data.timecode}")
-
-        await app.emit(
-            "timeline_timecode",
-            {
-                "user_uuid": user_uuid,
-                "group_uuid": group_uuid,
-                "timecode": data.timecode,
-                "server_timestamp": data.server_timestamp,
-            },
-            skip_sid=sid,
-            room=sio_room_identifier,
-        )
 
 
 @app.event("timeline_join_group")
@@ -907,6 +884,7 @@ async def timeline_join_group(
 
         {
             "group_uuid": "a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p",
+            "timecode": 1500
         }
 
 
@@ -964,7 +942,10 @@ async def timeline_join_group(
     # sent last for iOs compatibility
     await app.emit(
         "timeline_you_joined_group",
-        {"group_uuid": group.group_uuid},
+        {
+            "group_uuid": group.group_uuid,
+            "timecode": group.watch_time,
+        },
         room=sid
     )
 
@@ -1405,6 +1386,10 @@ def fill_mock_data():
     video_uuid = TEST_VIDEO_UUID
     group1_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"
     group2_uuid = "abdf521d-bf2c-46be-84f1-b22fcd1ff121"
+
+    # generate user uuid for the host
+    user_uuid = uuid.uuid4()
+
     timeline_users = [
         TimelineWatchSession(
             sid="sid",

@@ -353,6 +353,16 @@ Event <cite>timeline_video_ended</cite> is emitted to all the users on the timel
 <p>Если видео было на паузе, то при обновлении таймкода on_pause ставится в False.</p>
 <p>Request:
 <a class="reference internal" href="#fliji_sockets.models.socket.TimelineUpdateTimecodeRequest" title="fliji_sockets.models.socket.TimelineUpdateTimecodeRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">fliji_sockets.models.socket.TimelineUpdateTimecodeRequest</span></code></a></p>
+<p>Response
+Event <cite>timeline_unpause</cite> is emitted to the users on the timeline IF the group was paused:</p>
+<p>Data:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;timecode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;group_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a3f4c5d6-7e8f-9g0h-1i2j-3k4l5m6n7o8p&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -438,7 +448,7 @@ Event <cite>timeline_video_ended</cite> is emitted to all the users on the timel
 <li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
 <li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
 <li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
-<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11246d300&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x1124fa520&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x1199ec5e0&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x119a69800&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
 <li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
 </ul>
 </dd>
@@ -966,7 +976,7 @@ Event <cite>timeline_video_ended</cite> is emitted to all the users on the timel
 <li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
 <li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
 <li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
-<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11246d300&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x1124fa520&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x1199ec5e0&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x119a69800&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
 <li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
 </ul>
 </dd>
@@ -1042,7 +1052,7 @@ Event <cite>timeline_video_ended</cite> is emitted to all the users on the timel
 <li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
 <li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
 <li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
-<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11246d300&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x1124fa520&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x1199ec5e0&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x119a69800&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
 <li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
 </ul>
 </dd>
@@ -1142,7 +1152,7 @@ Event <cite>timeline_video_ended</cite> is emitted to all the users on the timel
 <li><p><strong>__module__</strong> = fliji_sockets.models.base</p></li>
 <li><p><strong>__get_pydantic_core_schema__</strong> = &lt;bound method ObjectIdAnnotation.__get_pydantic_core_schema__ of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
 <li><p><strong>validate</strong> = &lt;bound method ObjectIdAnnotation.validate of &lt;class ‘fliji_sockets.models.base.ObjectIdAnnotation’&gt;&gt;</p></li>
-<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x11246d300&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x1124fa520&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
+<li><p><strong>__dict__</strong> = {‘__module__’: ‘fliji_sockets.models.base’, ‘__get_pydantic_core_schema__’: &lt;classmethod(&lt;function ObjectIdAnnotation.__get_pydantic_core_schema__ at 0x1199ec5e0&gt;)&gt;, ‘validate’: &lt;classmethod(&lt;function ObjectIdAnnotation.validate at 0x119a69800&gt;)&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;, ‘__doc__’: None}</p></li>
 <li><p><strong>__weakref__</strong> = &lt;attribute ‘__weakref__’ of ‘ObjectIdAnnotation’ objects&gt;</p></li>
 </ul>
 </dd>

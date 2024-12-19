@@ -136,6 +136,10 @@ async def get_timeline_group_users_data(db: Database, video_uuid: str, group_uui
 
     group = db.timeline_groups.find_one({"video_uuid": video_uuid})
 
+    # set is host for the host
+    for user in users:
+        user["is_host"] = user.get("user_uuid") == group.get("host_uuid")
+
     if group is None:
         return []
 

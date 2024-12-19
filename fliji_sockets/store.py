@@ -130,12 +130,11 @@ async def get_timeline_groups(db: Database, video_uuid: str):
 async def get_timeline_group_users_data(db: Database, video_uuid: str, group_uuid: str):
     users = db.timeline_watch_sessions.find(
         {
-            "video_uuid": video_uuid,
             "group_uuid": group_uuid
         }
     ).sort("last_update_time")
 
-    group = db.timeline_groups.find_one({"video_uuid": video_uuid, "group_uuid": group_uuid})
+    group = db.timeline_groups.find_one({"video_uuid": video_uuid})
 
     if group is None:
         return []

@@ -1362,33 +1362,9 @@ clear_data_on_startup()
 def fill_mock_data():
     db = get_database()
 
-    # Dev
-    user_uuids = [
-        "b0e4566e-b62d-43eb-ac8e-498f32afab71",
-        "f392edf1-7610-47f2-9899-f659613b1874",
-        "8e994e36-c060-4e58-9e83-d2434183b5c0",
-        "58226fb5-1389-44bf-bb53-e2a2caa10b8d",
-        "c0033b0a-e416-4ffa-9f94-b52d99af9ec3",
-        "92c3e776-b7e5-4802-ad50-4d2bdcd49254",
-        "40ab7278-f7de-4e70-8034-34516a6648b7",
-        "368e50c5-d82c-472e-a0d2-697990cf0a26",
-        "a60b284f-fa1c-46bc-9e6d-def74bd3386d"
-    ]
-
-    # Local
-    # user_uuids = [
-    #     "4f3fc122-ddec-4cb6-bd5e-461078bdb9f0",
-    #     "d14aaf88-01fc-461f-a45d-9c81ce682630",
-    #     "c08bd461-ae64-46ae-a6c3-8668d8e495ec",
-    #     "7e8dc504-9db6-4448-95c9-978ca211225a"
-    # ]
-
     video_uuid = TEST_VIDEO_UUID
     group1_uuid = "0ebc493f-bf2c-46be-84f1-b22fcd1ff165"
     group2_uuid = "abdf521d-bf2c-46be-84f1-b22fcd1ff121"
-
-    # generate user uuid for the host
-    user_uuid = uuid.uuid4()
 
     timeline_users = [
         TimelineWatchSession(
@@ -1397,7 +1373,7 @@ def fill_mock_data():
             agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=30 * 1000,
             video_uuid=video_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="onetwo",
@@ -1412,7 +1388,7 @@ def fill_mock_data():
             agora_id=random.randint(0, 2 ** 32 - 1),
             watch_time=50 * 1000,
             video_uuid=video_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="willsmith",
@@ -1428,7 +1404,7 @@ def fill_mock_data():
             watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="jarjar",
@@ -1444,7 +1420,7 @@ def fill_mock_data():
             watch_time=10 * 1000,
             video_uuid=video_uuid,
             group_uuid=group2_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="obiwan",
@@ -1460,7 +1436,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="alice",
@@ -1476,7 +1452,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1492,7 +1468,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1508,7 +1484,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1524,7 +1500,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1540,7 +1516,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1556,7 +1532,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1572,7 +1548,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1588,7 +1564,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1604,7 +1580,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1620,7 +1596,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",
@@ -1636,7 +1612,7 @@ def fill_mock_data():
             watch_time=100 * 1000,
             video_uuid=video_uuid,
             group_uuid=group1_uuid,
-            user_uuid=user_uuids.pop(),
+            user_uuid=str(uuid.uuid4()),
             avatar="https://api.dicebear.com/avatars/avataaars/robot",
             avatar_thumbnail="https://api.dicebear.com/avatars/avataaars/robot",
             username="username",

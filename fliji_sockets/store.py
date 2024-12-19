@@ -127,23 +127,25 @@ async def get_timeline_groups(db: Database, video_uuid: str):
     return groups
 
 
-async def get_timeline_group_users_data(db: Database, video_uuid: str, group_uuid: str):
-    users = db.timeline_watch_sessions.find(
+async def get_timeline_group_users_data(db: Database, group_uuid: str):
+    users_cursor = db.timeline_watch_sessions.find(
         {
             "group_uuid": group_uuid
         }
     ).sort("last_update_time")
 
-    group = db.timeline_groups.find_one({"video_uuid": video_uuid})
+    users = list(users_cursor)
+
+    group = db.timeline_groups.find_one({"group_uuid": group_uuid})
+
+    if group is None:
+        return []
 
     # set is host for the host
     for user in users:
         user["is_host"] = user.get("user_uuid") == group.get("host_uuid")
 
-    if group is None:
-        return []
-
-    return list(users)
+    return users
 
 
 async def get_timeline_status(db: Database, video_uuid: str) -> TimelineStatusResponse:

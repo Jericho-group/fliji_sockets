@@ -359,8 +359,7 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
         room=get_room_name(watch_session.video_uuid),
     )
 
-    timeline_current_group = await get_timeline_group_users_data(db, watch_session.video_uuid,
-                                                                 group_uuid)
+    timeline_current_group = await get_timeline_group_users_data(db, group_uuid)
     if timeline_current_group:
         await app.emit(
             "timeline_current_group",
@@ -547,8 +546,7 @@ async def timeline_connect(
         room=sid,
     )
 
-    timeline_current_group = await get_timeline_group_users_data(db, watch_session.video_uuid,
-                                                                 watch_session.group_uuid)
+    timeline_current_group = await get_timeline_group_users_data(db, watch_session.group_uuid)
     if timeline_current_group:
         await app.emit(
             "timeline_current_group",
@@ -658,8 +656,7 @@ async def timeline_join_user(
         room=get_room_name(watch_session.video_uuid),
     )
 
-    timeline_current_group = await get_timeline_group_users_data(db, watch_session.video_uuid,
-                                                                 group.group_uuid)
+    timeline_current_group = await get_timeline_group_users_data(db, group.group_uuid)
     await app.emit(
         "timeline_current_group",
         TimelineCurrentGroupResponse(root=timeline_current_group),
@@ -958,8 +955,7 @@ async def timeline_join_group(
         room=get_room_name(watch_session.video_uuid),
     )
 
-    timeline_current_group = await get_timeline_group_users_data(db, watch_session.video_uuid,
-                                                                 watch_session.group_uuid)
+    timeline_current_group = await get_timeline_group_users_data(db, group.group_uuid)
     await app.emit(
         "timeline_current_group",
         TimelineCurrentGroupResponse(root=timeline_current_group),

@@ -858,7 +858,6 @@ async def timeline_update_timecode(
                 "timeline_unpause",
                 {
                     "timecode": data.timecode,
-                    "server_timestamp": data.server_timestamp,
                     "group_uuid": watch_session.group_uuid,
                     "user_uuid": user_uuid,
                 },
@@ -1302,7 +1301,6 @@ async def timeline_set_pause(
         "timeline_pause",
         {
             "timecode": data.timecode,
-            "server_timestamp": data.server_timestamp,
             "group_uuid": watch_session.group_uuid,
             "user_uuid": user_uuid,
         },

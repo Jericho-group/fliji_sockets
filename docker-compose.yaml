@@ -8,16 +8,8 @@ services:
     container_name: fliji-sockets
     image: ${FLIJI_SOCKETS_IMAGE:-harbor.fliji.xyz/fliji/sockets:main}
     env_file: .env
-    entrypoint: ./entrypoint-sockets.sh
+    entrypoint: ./entrypoint.sh
     ports:
       - "8097:80"
-    networks:
-        - fliji-db
-
-  fliji-sockets-event-listener:
-    container_name: fliji-sockets-event-listener
-    image: ${FLIJI_SOCKETS_IMAGE:-harbor.fliji.xyz/fliji/sockets:main}
-    entrypoint: ./entrypoint-event-listener.sh
-    env_file: .env
     networks:
         - fliji-db

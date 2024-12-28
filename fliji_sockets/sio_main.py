@@ -26,7 +26,7 @@ from fliji_sockets.models.socket import (
     TimelineJoinGroupRequest,
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineJoinUserRequest,
     TimelineSetMicEnabled, TimelineSetPauseStateRequest, TimelineSetVideoEndedRequest,
-    VideoSetViewedRequest, TimelineChatHistoryResponse, TimelineSingleUsersResponse,
+    TimelineChatHistoryResponse, TimelineSingleUsersResponse,
     TimelineGroupResponse, TimelineCurrentGroupResponse
 )
 from fliji_sockets.settings import APP_ENV, TEST_VIDEO_UUID, JWT_SECRET

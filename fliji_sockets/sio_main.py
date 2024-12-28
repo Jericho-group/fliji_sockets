@@ -218,34 +218,6 @@ async def disable_fliji_mode(
         await handle_user_timeline_leave(db, nc, watch_session)
 
 
-@app.event("video_set_viewed")
-async def video_set_viewed(
-        sid,
-        data: VideoSetViewedRequest,
-        nc: Client = Depends(get_nats_client),
-):
-    """
-    Request:
-    :py:class:`fliji_sockets.models.socket.VideoSetViewedRequest`
-
-    Сохраняет информацию о просмотре видео.
-    Нужно вызывать этот ивент когда пользователь закончил просмотр видео с выключенным режимом флиджи.
-    Если режим флиджи включен, то при выходе из таймлайна видео, информация о просмотре сохраняется автоматически.
-    """
-    session = await app.get_session(sid)
-    if not session:
-        await app.send_fatal_error_message(
-            sid, "Unauthorized: could not find user_uuid in socketio session"
-        )
-        return
-
-    logging.info(
-        f"User {session.user_uuid} viewed video {data.video_uuid} for {data.watch_time} seconds")
-    await publish_user_left_timeline(nc, session.user_uuid, data.video_uuid, data.watch_time)
-
-    logging.info("sent user left timeline")
-
-
 @app.event("disconnect")
 async def disconnect(
         sid,

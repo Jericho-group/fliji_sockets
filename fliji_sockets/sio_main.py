@@ -306,10 +306,21 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
             other_group_user.group_uuid = None
             logging.debug(f"Setting group of {other_group_user.user_uuid} to None")
             await upsert_timeline_watch_session(db, other_group_user)
-        group = None
-
         await delete_timeline_group_by_uuid(db, group_uuid)
     else:
+        # if host left the group, change the host
+        if group.host_user_uuid == user_uuid:
+            group_users = await get_timeline_group_users(db, group_uuid)
+            if group_users:
+                last_user_uuid = None
+
+                for group_user in group_users:
+                    if group_user.get("user_uuid") != user_uuid:
+                        last_user_uuid = group_user.get("user_uuid")
+                        break
+
+                group.host_user_uuid = last_user_uuid
+
         await upsert_timeline_group(db, group)
 
     # leave the room
@@ -361,20 +372,6 @@ async def handle_user_timeline_group_leave(nc: Client, db: Database,
                 group_participants_uuids.append(group_user.get("user_uuid"))
 
     await publish_user_left_timeline_group(nc, user_uuid, group_uuid, group_participants_uuids)
-
-    # if host left the group, change the host
-    if group and (group.host_user_uuid == user_uuid):
-        group_users = await get_timeline_group_users(db, group_uuid)
-        if group_users:
-            last_user_uuid = None
-
-            for group_user in group_users:
-                if group_user.get("user_uuid") != user_uuid:
-                    last_user_uuid = group_user.get("user_uuid")
-                    break
-
-            group.host_user_uuid = last_user_uuid
-            await upsert_timeline_group(db, group)
 
 
 async def handle_user_timeline_leave(db: Database, nc: Client,

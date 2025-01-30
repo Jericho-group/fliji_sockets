@@ -58,16 +58,6 @@ async def publish_user_connected_to_timeline(nc: Client, user_uuid: str, video_u
     await nc.flush()
 
 
-async def publish_user_joined_timeline_group(nc: Client, user_uuid: str, group_uuid: str):
-    payload = {
-        "user_uuid": user_uuid,
-        "group_uuid": group_uuid,
-    }
-
-    await nc.publish("timeline.user_joined_group", json.dumps(payload).encode())
-    await nc.flush()
-
-
 async def publish_user_left_timeline_group(nc: Client, user_uuid: str, group_uuid: str,
                                            group_participants_uuids: list[str]):
     payload = {

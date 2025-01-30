@@ -8,13 +8,11 @@ from fliji_sockets.models.base import PyObjectId, MyBaseModel
 class TimelineWatchSession(MyBaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, validation_alias="_id")
     user_uuid: str
+    created_at: datetime
     sid: str
     video_uuid: str | None = None
     agora_id: int | None = None
     group_uuid: str | None = None
-    watch_time: int | None = None
-    on_pause: bool | None = False
-    video_ended: bool | None = False
     last_update_time: datetime
     mic_enabled: bool
     avatar: str | None = None
@@ -32,7 +30,6 @@ class TimelineGroup(MyBaseModel):
     host_user_uuid: str
     users_count: int
     on_pause: bool | None = False
-    video_ended: bool | None = False
     watch_time: int | None = None
 
 

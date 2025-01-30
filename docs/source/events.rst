@@ -1,7 +1,7 @@
 Events
 ======================================
 
-.. automodule:: fliji_sockets.sio_main
+.. automodule:: fliji_sockets.events.handlers
    :members:
    :undoc-members:
    :show-inheritance:
@@ -13,11 +13,6 @@ Events
    :show-inheritance:
 
 .. automodule:: fliji_sockets.models.database
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: fliji_sockets.models.user_service_api
    :members:
    :undoc-members:
    :show-inheritance:

@@ -21,6 +21,11 @@ class TimelineJoinGroupRequest(MyBaseModel):
     group_uuid: str
 
 
+class TimelineChangeGroupRequest(MyBaseModel):
+    group_uuid: str | None = None
+    user_uuid: str | None = None
+
+
 class TimelineJoinUserRequest(MyBaseModel):
     user_uuid: str
     video_uuid: str
@@ -37,15 +42,13 @@ class TimelineFetchChatMessages(MyBaseModel):
 class TimelineSendTimecodeToGroupRequest(MyBaseModel):
     group_uuid: str
     timecode: int
-    server_timestamp: int
 
 
 class TimelineUpdateTimecodeRequest(MyBaseModel):
     timecode: int
-    server_timestamp: int
 
 
-class TimelineSetPauseStateRequest(MyBaseModel):
+class TimelinePauseRequest(MyBaseModel):
     timecode: int
 
 
@@ -96,14 +99,30 @@ class TimelineStatusResponse(MyBaseModel):
     users: list[TimelineUserDataResponse]
 
 
+class TimelineUserAvatar(MyBaseModel):
+    user_uuid: str
+    avatar: str
+    username: str
+    first_name: str | None = None
+    last_name: str | None = None
+    mic_enabled: bool | None = None
+
+
+class TimelineUserAvatars(RootModel, MyBaseModel):
+    root: list[TimelineUserAvatar]
+
+
+class TimelineUserAvatarsResponse(MyBaseModel):
+    users: list[TimelineUserAvatar]
+    count: int
+
 class TimelineChatHistoryResponse(RootModel, MyBaseModel):
     root: list[TimelineChatMessageResponse]
 
-class TimelineSingleUsersResponse(RootModel, MyBaseModel):
-    root: list[TimelineUserDataResponse]
-
-class TimelineGroupResponse(RootModel, MyBaseModel):
-    root: list[TimelineGroupDataResponse]
 
 class TimelineCurrentGroupResponse(RootModel, MyBaseModel):
     root: list[TimelineUserDataResponse]
+
+
+class TimelineGroupResponse(RootModel, MyBaseModel):
+    root: list[TimelineGroupDataResponse]

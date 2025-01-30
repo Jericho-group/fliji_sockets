@@ -48,7 +48,7 @@ class MyBaseModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class UserSession(MyBaseModel):
+class UserSioSession(MyBaseModel):
     user_uuid: str
     username: str | None = None
     first_name: str | None = None

@@ -75,9 +75,6 @@ async def handle_user_leaving_group(
 
     # users of the group
     group_users = list(await get_timeline_group_users(db, group_uuid))
-    logging.critical(f"Group users: {group_users}")
-    logging.critical(f"Group users len: {len(group_users)}")
-    logging.critical(f"Group host: {group.host_user_uuid}")
 
     # if host left the group and there are still people, change the host
     if group.host_user_uuid == user_uuid:
@@ -142,6 +139,7 @@ async def handle_user_leaving_group(
 async def handle_user_leaving_timeline(app: SocketioApplication, db: Database, nc: Client,
                                        timeline_watch_session: TimelineWatchSession):
     watch_session = TimelineWatchSession.model_validate(timeline_watch_session)
+    logging.debug(f"Handling user leaving timeline: {watch_session}")
 
     watch_time = 0
     try:

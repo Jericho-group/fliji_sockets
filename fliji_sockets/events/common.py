@@ -91,11 +91,11 @@ async def handle_user_leaving_group(
         group.host_user_uuid = last_user_uuid
 
 
+    group.users_count -= 1
     # if the last user left the group, delete the group
     if len(group_users) <= 1:
         await delete_timeline_group_by_uuid(db, group_uuid)
     else:
-        group.users_count -= 1
         await upsert_timeline_group(db, group)
 
     # leave the room
@@ -108,6 +108,7 @@ async def handle_user_leaving_group(
         "timeline_groups",
         TimelineGroupResponse(root=timeline_groups),
         room=get_room_name(watch_session.video_uuid),
+        skip_sid=watch_session.sid
     )
 
     # we sent an update to users left in the group if the group still exists
@@ -120,11 +121,13 @@ async def handle_user_leaving_group(
         )
 
     # sent last for iOs compatibility
-    await app.emit(
-        "timeline_you_left_group",
-        {"group_uuid": group_uuid},
-        room=watch_session.sid
-    )
+    # when users is the only one in the group, we treat it as though the user left the group
+    if group.users_count == 1:
+        await app.emit(
+            "timeline_you_left_group",
+            {"group_uuid": group_uuid},
+            room=watch_session.sid
+        )
 
     # collects the users that the user had conversations with
     group_participants_uuids = []

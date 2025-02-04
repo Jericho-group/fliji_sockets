@@ -27,6 +27,8 @@ class SocketioApplication:
             client_manager=mgr,
             logger=enable_socketio_logger,
             engineio_logger=enable_socketio_logger,
+            ping_interval=10,
+            ping_timeout=4000
         )
         if APP_ENV != "prod":
             self.sio.instrument(

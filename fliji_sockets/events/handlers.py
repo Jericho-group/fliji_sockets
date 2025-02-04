@@ -102,6 +102,7 @@ async def ping(
 
 async def disconnect(
         sid,
+        reason = None,
         app: SocketioApplication = Depends("app"),
         db: Database = Depends("db"),
         nc: Client = Depends("nats"),
@@ -111,6 +112,9 @@ async def disconnect(
 
     Можно не вызывать вручную, так как он вызывается автоматически при отключении пользователя.
     """
+    if reason:
+        logging.info(f"User {sid} disconnected with reason: {reason}")
+
     user_session = await app.get_session(sid)
 
     if not user_session:

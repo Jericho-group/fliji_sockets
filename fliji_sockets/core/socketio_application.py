@@ -9,7 +9,8 @@ from pydantic import ValidationError, BaseModel
 
 from fliji_sockets.core.di import container, Context
 from fliji_sockets.models.base import UserSioSession
-from fliji_sockets.settings import REDIS_CONNECTION_STRING, LOG_LEVEL
+from fliji_sockets.settings import REDIS_CONNECTION_STRING, LOG_LEVEL, SIO_ADMIN_USERNAME, \
+    SIO_ADMIN_PASSWORD, APP_ENV
 
 
 class SocketioApplication:
@@ -25,8 +26,16 @@ class SocketioApplication:
             cors_allowed_origins="*",
             client_manager=mgr,
             logger=enable_socketio_logger,
-            engineio_logger=enable_socketio_logger
+            engineio_logger=enable_socketio_logger,
         )
+        if APP_ENV != "prod":
+            self.sio.instrument(
+                auth={
+                    'username': SIO_ADMIN_USERNAME,
+                    'password': SIO_ADMIN_PASSWORD
+                }
+            )
+
         self.sio_app = socketio.ASGIApp(self.sio)
 
     @staticmethod
@@ -53,7 +62,15 @@ class SocketioApplication:
             # noinspection PyUnusedLocal
             @wraps(func)
             async def wrapper(sid: str, data=None, *args, **kwargs):
-                validation_error = None
+                logging.critical("#######")
+                logging.critical("#######")
+                logging.critical("#######")
+                logging.critical(event_name)
+                logging.critical(args)
+                logging.critical(kwargs)
+                logging.critical("#######")
+                logging.critical("#######")
+                dependency_error = None
                 sig = inspect.signature(func)
 
                 try:
@@ -94,17 +111,37 @@ class SocketioApplication:
                                     f"Invalid request for model: {param.annotation.__name__}",
                                     e.errors()
                                 )
-                                validation_error = e
+                                dependency_error = e
                                 break
                         elif isinstance(value, dict) and value.get("type") == "dependency":
-                            dependency_resolved = await self.resolve_dependency(value, sid)
-                            bound.arguments[name] = dependency_resolved
+                            try:
+                                dependency_resolved = await self.resolve_dependency(value, sid)
+                                bound.arguments[name] = dependency_resolved
+                            except Exception as e:
+                                await self.send_error_message(
+                                    sid,
+                                    f"Error resolving dependency: {name}",
+                                    str(e)
+                                )
+                                dependency_error = e
+                                break
 
                     # Handle connect event environ
                     if event_name == "connect" and len(args) > 0:
                         bound.arguments["environ"] = args[0]
 
-                    if not validation_error:
+                    # Handle connect event reason
+                    if event_name == "disconnect":
+                        logging.critical("#######")
+                        logging.critical("#######")
+                        logging.critical("#######")
+                        logging.critical(args)
+                        logging.critical(kwargs)
+                        logging.critical("#######")
+                        logging.critical("#######")
+                        # bound.arguments["reason"] = args[0]
+
+                    if not dependency_error:
                         await func(*bound.args, **bound.kwargs)
                 except Exception as e:
                     await self.send_fatal_error_message(

@@ -38,3 +38,6 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "secret")
 JWT_ALGO = os.environ.get("JWT_ALGO", "HS256")
 
 TEST_VIDEO_UUID = os.environ.get("TEST_VIDEO_UUID", "9d2b6a97-d054-4c68-96ed-af0cb82b97db")
+
+SIO_ADMIN_USERNAME = os.environ.get("SIO_ADMIN_USERNAME", "docs")
+SIO_ADMIN_PASSWORD = os.environ.get("SIO_ADMIN_PASSWORD", "admin")

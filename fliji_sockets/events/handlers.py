@@ -31,19 +31,71 @@ from fliji_sockets.store import (
     get_video_watch_session_count, )
 
 
+# async def connect(
+#         sid,
+#         app: SocketioApplication = Depends("app"),
+#         environ=None,
+#         nc: Client = Depends("nats"),
+# ):
+#     if environ is None or not isinstance(environ, dict) or environ.get("token") is None:
+#         logging.info(f"Token not found for sid {sid}")
+#         raise ConnectionRefusedError(
+#             f"Token not found for sid {sid}"
+#         )
+#
+#     token = environ.get("token")
+#
+#     try:
+#         decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+#     except jwt.exceptions.InvalidTokenError as e:
+#         logging.info(
+#             f"Could not decode token for sid {sid} with token {token[:10]}... Error: {e}")
+#         raise ConnectionRefusedError(
+#             f"Could not decode token for sid {sid} with token {token[:10]}... Error: {e}")
+#
+#     try:
+#         user_session = UserSioSession(
+#             user_uuid=decoded.get("user_uuid"),
+#             username=decoded.get("username"),
+#             first_name=decoded.get("first_name"),
+#             last_name=decoded.get("last_name"),
+#             bio=decoded.get("bio"),
+#             avatar=decoded.get("avatar"),
+#             avatar_thumbnail=decoded.get("avatar_thumbnail"),
+#         )
+#     except ValidationError as e:
+#         logging.error(f"Error validating user session: {e}")
+#         raise ConnectionRefusedError(f"Error validating user session: {e}")
+#
+#     try:
+#         await app.save_session(
+#             sid,
+#             user_session
+#         )
+#     except Exception as e:
+#         logging.error(f"Could not save session: {e}")
+#
+#     logging.info(f"User {user_session.user_uuid} authenticated successfully")
+#
+#     await publish_user_online(nc, user_session.user_uuid)
+#     await publish_enable_fliji_mode(nc, user_session.user_uuid)
+
 async def connect(
         sid,
+        data,
         app: SocketioApplication = Depends("app"),
-        environ=None,
         nc: Client = Depends("nats"),
 ):
-    if environ is None or not isinstance(environ, dict) or environ.get("token") is None:
-        logging.info(f"Token not found for sid {sid}")
-        raise ConnectionRefusedError(
-            f"Token not found for sid {sid}"
-        )
+    # logging.info(f"ENVIRON {data}")
+    query_string = data.get('QUERY_STRING', '')
+    params = dict(q.split("=") for q in query_string.split("&") if "=" in q)
+    token = params.get("token")
 
-    token = environ.get("token")
+    if not token:
+        logging.info(f"Token not found for sid {sid}")
+        raise ConnectionRefusedError(f"Token not found for sid {sid}")
+
+    logging.info(f"Received token: {token}")
 
     try:
         decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])

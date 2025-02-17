@@ -286,7 +286,7 @@ async def timeline_connect(
     await app.emit(
         "timeline_groups",
         TimelineGroupResponse(root=timeline_groups),
-        room=sid,
+        room=get_room_name(watch_session.video_uuid),
     )
 
     timeline_user_avatars = await get_timeline_user_avatars(db, watch_session.video_uuid)

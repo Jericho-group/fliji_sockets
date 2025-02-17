@@ -100,13 +100,13 @@ async def handle_user_leaving_group(
     watch_session.group_uuid = None
     await upsert_timeline_watch_session(db, watch_session)
 
-    timeline_groups = await get_timeline_groups(db, watch_session.video_uuid)
-    await app.emit(
-        "timeline_groups",
-        TimelineGroupResponse(root=timeline_groups),
-        room=get_room_name(watch_session.video_uuid),
-        skip_sid=watch_session.sid
-    )
+    # timeline_groups = await get_timeline_groups(db, watch_session.video_uuid)
+    # await app.emit(
+    #     "timeline_groups",
+    #     TimelineGroupResponse(root=timeline_groups),
+    #     room=get_room_name(watch_session.video_uuid),
+    #     skip_sid=watch_session.sid
+    # )
 
     # we sent an update to users left in the group if the group still exists
     timeline_current_group = await get_timeline_group_users_data(db, group_uuid)

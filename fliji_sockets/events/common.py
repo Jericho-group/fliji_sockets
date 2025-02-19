@@ -110,10 +110,16 @@ async def handle_user_leaving_group(
 
     # we sent an update to users left in the group if the group still exists
     timeline_current_group = await get_timeline_group_users_data(db, group_uuid)
-    if timeline_current_group:
+    if len(timeline_current_group) > 1:
         await app.emit(
             "timeline_current_group",
             TimelineCurrentGroupResponse(root=timeline_current_group),
+            room=get_room_name(group_uuid)
+        )
+    else:
+        await app.emit(
+            "timeline_group_alone",
+            {"group_uuid": f"{group_uuid}"},
             room=get_room_name(group_uuid)
         )
 

@@ -552,6 +552,15 @@ async def timeline_change_group(
             room=sid
         )
 
+        # sent event to host user for start chat
+        if len(timeline_current_group) == 2:
+            host_user_sid = await get_watch_session_or_fail(db, new_group.host_user_uuid)
+            await app.emit(
+                "timeline_start_voice_chat",
+                {"group_uuid": new_group.group_uuid},
+                room=host_user_sid.sid
+            )
+
     timeline_groups = await get_timeline_groups(db, watch_session.video_uuid)
     await app.emit(
         "timeline_groups",

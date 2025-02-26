@@ -411,30 +411,37 @@ async def timeline_update_timecode(
 
     group.watch_time = data.timecode
 
-    if group.on_pause:
-        group.on_pause = False
+    # if group.on_pause:
+    #     group.on_pause = False
+    #
+    #     await app.emit(
+    #         "timeline_unpause",
+    #         {
+    #             "timecode": data.timecode,
+    #             "group_uuid": group.group_uuid,
+    #             "user_uuid": user_uuid,
+    #         },
+    #         room=get_room_name(group.group_uuid),
+    #     )
 
-        await app.emit(
-            "timeline_unpause",
-            {
-                "timecode": data.timecode,
-                "group_uuid": group.group_uuid,
-                "user_uuid": user_uuid,
-            },
-            room=get_room_name(group.group_uuid),
-        )
-
-    await app.emit(
-        "timeline_timecode",
-        {
-            "timecode": data.timecode,
-            "group_uuid": group.group_uuid,
-            "user_uuid": user_uuid,
-        },
-        room=get_room_name(group.video_uuid),
-    )
+    # await app.emit(
+    #     "timeline_timecode",
+    #     {
+    #         "timecode": data.timecode,
+    #         "group_uuid": group.group_uuid,
+    #         "user_uuid": user_uuid,
+    #     },
+    #     room=get_room_name(group.video_uuid),
+    # )
 
     await upsert_timeline_group(db, group)
+
+    groups = await get_timeline_groups(db, group.video_uuid)
+    await app.emit(
+        "timeline_groups",
+        TimelineGroupResponse(root=groups),
+        room=get_room_name(group.video_uuid),
+    )
 
 
 async def timeline_change_group(

@@ -524,6 +524,10 @@ async def timeline_change_group(
     else:
         group_uuid = data.group_uuid
 
+    # disable user mic when change or leave group
+    watch_session.mic_enabled = False
+    await upsert_timeline_watch_session(db, watch_session)
+
     # join an existing room
     if group_uuid:
         try:

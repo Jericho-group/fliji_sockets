@@ -11,10 +11,11 @@ from fliji_sockets.helpers import get_room_name
 from fliji_sockets.models.database import TimelineGroup, TimelineWatchSession
 from fliji_sockets.models.socket import TimelineGroupResponse, TimelineCurrentGroupResponse, \
     TimelineUserAvatarsResponse
-from fliji_sockets.store import upsert_timeline_group, \
+from fliji_sockets.store import (upsert_timeline_group, \
     upsert_timeline_watch_session, get_timeline_groups, get_timeline_group_users_data, \
     get_timeline_group_users, delete_timeline_group_by_uuid, \
-    delete_timeline_watch_session_by_user_uuid, get_group_or_fail, get_video_watch_session_count
+    delete_timeline_watch_session_by_user_uuid, get_group_or_fail, get_video_watch_session_count,
+                                 get_watch_session_or_fail)
 
 
 async def handle_user_joining_new_single_room(
@@ -117,6 +118,10 @@ async def handle_user_leaving_group(
             room=get_room_name(group_uuid)
         )
     else:
+        if timeline_current_group:
+            host_watch_session = await get_watch_session_or_fail(db, timeline_current_group[0]['user_uuid'])
+            host_watch_session.mic_enabled = False
+            await upsert_timeline_watch_session(db, host_watch_session)
         await app.emit(
             "timeline_group_alone",
             {"group_uuid": f"{group_uuid}"},

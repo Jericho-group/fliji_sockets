@@ -126,3 +126,8 @@ class TimelineCurrentGroupResponse(RootModel, MyBaseModel):
 
 class TimelineGroupResponse(RootModel, MyBaseModel):
     root: list[TimelineGroupDataResponse]
+
+
+class TimelineReConnectRequest(MyBaseModel):
+    video_uuid: str
+    group_uuid: str

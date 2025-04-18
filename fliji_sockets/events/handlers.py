@@ -19,7 +19,7 @@ from fliji_sockets.models.socket import (
     TimelineSendChatMessageRequest, TimelineUpdateTimecodeRequest, TimelineSetMicEnabled,
     TimelinePauseRequest, TimelineChatHistoryResponse,
     TimelineGroupResponse, TimelineCurrentGroupResponse, TimelineChangeGroupRequest,
-    TimelineUserAvatars
+    TimelineUserAvatars, TimelineReConnectRequest
 )
 from fliji_sockets.settings import JWT_SECRET
 from fliji_sockets.store import (
@@ -755,11 +755,106 @@ async def timeline_send_chat_message(
     )
 
 
+async def timeline_reconnect(
+        sid,
+        data: TimelineReConnectRequest,
+        app: SocketioApplication = Depends("app"),
+        nc: Client = Depends("nats"),
+        db: Database = Depends("db"),
+        session: UserSioSession = Depends("sio_session"),
+):
+
+    user_uuid = session.user_uuid
+
+    # delete the old view session
+    await delete_timeline_watch_session_by_user_uuid(db, user_uuid)
+
+    # publish that the user connected to the timeline
+    await publish_user_connected_to_timeline(nc, user_uuid, data.video_uuid)
+
+    # create a single group on the timeline for the user
+    group = TimelineGroup(
+        group_uuid=str(uuid.uuid4()),
+        video_uuid=data.video_uuid,
+        host_user_uuid=user_uuid,
+        users_count=1,
+        watch_time=0
+    )
+
+    watch_session = TimelineWatchSession(
+        sid=sid,
+        last_update_time=datetime.now(),
+        created_at=datetime.now(),
+        agora_id=random.randint(0, 2 ** 32 - 1),
+        video_uuid=data.video_uuid,
+        group_uuid=group.group_uuid,
+        user_uuid=user_uuid,
+        mic_enabled=False,
+        avatar=session.avatar,
+        avatar_thumbnail=session.avatar_thumbnail,
+        username=session.username,
+        first_name=session.first_name,
+        last_name=session.last_name,
+        bio=session.bio,
+    )
+
+    try:
+        old_group = await get_group_or_fail(db, data.group_uuid)
+        watch_session.group_uuid = old_group.group_uuid
+        group = old_group
+        group.users_count += 1
+    except Exception:
+        pass
+
+    await upsert_timeline_group(db, group)
+    await upsert_timeline_watch_session(db, watch_session)
+
+    sio_video_room_identifier = get_room_name(data.video_uuid)
+    sio_group_room_identifier = get_room_name(group.group_uuid)
+
+    # join socketio rooms
+    await app.enter_room(sid, sio_video_room_identifier)
+    await app.enter_room(sid, sio_group_room_identifier)
+
+    timeline_current_group = await get_timeline_group_users_data(db, group.group_uuid)
+    await app.emit(
+        "timeline_current_group",
+        TimelineCurrentGroupResponse(root=timeline_current_group),
+        room=get_room_name(group.group_uuid)
+    )
+
+    # sent last for iOs compatibility
+    await app.emit(
+        "timeline_you_joined_group",
+        {
+            "group_uuid": group.group_uuid,
+            "timecode": group.watch_time,
+        },
+        room=sid
+    )
+
+    if len(timeline_current_group) == 2:
+        host_user_sid = await get_watch_session_or_fail(db, group.host_user_uuid)
+        await app.emit(
+            "timeline_start_voice_chat",
+            {"group_uuid": group.group_uuid},
+            room=host_user_sid.sid
+        )
+
+    timeline_groups = await get_timeline_groups(db, watch_session.video_uuid)
+    await app.emit(
+        "timeline_groups",
+        TimelineGroupResponse(root=timeline_groups),
+        room=get_room_name(watch_session.video_uuid),
+    )
+
+
 def register_events(app: SocketioApplication) -> None:
     app.event("connect")(connect)
     app.event("disconnect")(disconnect)
     app.event("ping")(ping)
     app.event("timeline_connect")(timeline_connect)
+    app.event("timeline_reconnect")(timeline_reconnect)
     app.event("timeline_set_mic_enabled")(timeline_set_mic_enabled)
     app.event("timeline_update_timecode")(timeline_update_timecode)
     app.event("timeline_change_group")(timeline_change_group)
@@ -767,3 +862,4 @@ def register_events(app: SocketioApplication) -> None:
     app.event("timeline_pause")(timeline_pause)
     app.event("timeline_unpause")(timeline_unpause)
     app.event("timeline_send_chat_message")(timeline_send_chat_message)
+

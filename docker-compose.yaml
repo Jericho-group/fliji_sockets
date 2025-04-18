@@ -6,7 +6,7 @@ networks:
 services:
   fliji-sockets:
     container_name: fliji-sockets
-    image: ${FLIJI_SOCKETS_IMAGE:-harbor.fliji.xyz/fliji/sockets:main}
+    image: fliji_sockets_local_image:latest
     env_file: .env
     entrypoint: ./entrypoint.sh
     ports:
